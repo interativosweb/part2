@@ -59,12 +59,7 @@
             transition: all 0.3s ease;
         }
 
-        .nav-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: white;
-        }
-
+        .nav-btn svg { width: 24px; height: 24px; fill: white; }
         .nav-btn.ativo { background-color: var(--success); }
         .nav-btn.inativo { background-color: var(--btn-gray); opacity: 0.7; }
 
@@ -102,7 +97,7 @@
             display: flex;
             gap: 50px;
             align-items: flex-start;
-            border-bottom: 1px solid var(--border-color); /* Linha divisória voltou */
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 50px;
         }
 
@@ -128,7 +123,7 @@
 
         .topo-info {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end; /* Alinha placar à direita já que removemos o contador */
             margin-bottom: 20px;
             font-size: 0.85rem;
             color: var(--text-light);
@@ -149,7 +144,7 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 15px;
-            margin-bottom: 20px; /* Margem para o botão próximo */
+            margin-bottom: 20px;
         }
 
         .btn-opcao {
@@ -177,12 +172,8 @@
         .btn-opcao.errado { border-color: var(--error); color: var(--error); background-color: rgba(255, 59, 48, 0.1); }
         .btn-opcao:disabled { cursor: default; }
 
-        /* BOTÃO PRÓXIMO (Agora logo abaixo das opções) */
-        .area-botao-proximo {
-            margin-top: 10px;
-            height: 50px; /* Reserva espaço para evitar pulos layout */
-        }
-        
+        /* BOTÃO PRÓXIMO */
+        .area-botao-proximo { margin-top: 10px; height: 50px; }
         .btn-proximo {
             background-color: var(--accent);
             color: white;
@@ -194,56 +185,115 @@
             cursor: pointer;
             transition: background 0.2s;
             width: 100%;
-            display: none; /* Começa invisível */
+            display: none;
         }
         .btn-proximo:hover { background-color: #005bb5; }
 
-        /* --- SEÇÃO RESPOSTA (Separada no final) --- */
+        /* --- SEÇÃO RESPOSTA --- */
         .secao-resposta {
-            display: none; /* Aparece via JS */
+            display: none;
             padding-top: 20px;
             animation: fadeIn 0.5s ease;
         }
-
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .titulo-feedback {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            display: block;
-        }
+        .titulo-feedback { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; display: block; }
+        .texto-resolucao { font-size: 1.1rem; line-height: 1.6; color: var(--text-main); margin-bottom: 20px; }
 
-        .texto-resolucao {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: var(--text-main);
-            margin-bottom: 20px;
-        }
-
+        /* --- RODAPÉ E BOTÃO RESET --- */
         .rodape {
             margin-top: 40px;
             text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-light);
             border-top: 1px solid var(--border-color);
-            padding-top: 20px;
+            padding-top: 30px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
             align-items: center;
         }
 
-        .btn-reset {
-            background: none;
-            border: none;
+        .texto-creditos {
+            font-size: 0.8rem;
             color: var(--text-light);
-            text-decoration: underline;
-            cursor: pointer;
-            font-size: 0.75rem;
         }
-        .btn-reset:hover { color: var(--error); }
 
+        .btn-reset {
+            background-color: var(--error);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 2px 5px rgba(255, 59, 48, 0.3);
+        }
+        .btn-reset:hover {
+            background-color: #d63228;
+            transform: scale(1.02);
+        }
+
+        /* --- MODAL (POPUP) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            display: none; /* Oculto por padrão */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeInModal 0.3s ease;
+        }
+
+        @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: scale(1);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .modal-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
+        .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 20px; }
+
+        .input-senha {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            outline: none;
+            text-align: center;
+            transition: border 0.2s;
+        }
+        .input-senha:focus { border-color: var(--accent); }
+
+        .modal-botoes { display: flex; gap: 10px; justify-content: center; }
+
+        .btn-modal {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-cancelar { background-color: #f2f2f7; color: var(--text-main); }
+        .btn-confirmar { background-color: var(--accent); color: white; }
+        
         @media (max-width: 900px) {
             .secao-pergunta { flex-direction: column; }
             .grid-opcoes { grid-template-columns: repeat(4, 1fr); }
@@ -262,15 +312,11 @@
         <div>
             <div class="header-navegacao">
                 <div class="nav-btn ativo" id="btnIntro">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>
                     Introdução
                 </div>
                 <div class="nav-btn inativo" id="btnComplementar">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>
                     Atividade complementar
                 </div>
             </div>
@@ -287,7 +333,6 @@
 
             <div class="coluna-conteudo">
                 <div class="topo-info">
-                    <span id="contadorQ">Questão 1 de 10</span>
                     <div>
                         <span style="color:var(--success)">Acertos: <span id="scoreC">0</span></span>
                         <span style="margin:0 10px; color:#ddd">|</span>
@@ -311,10 +356,24 @@
         </section>
 
         <div class="rodape">
-            <span>Desenvolvido por Gilberto Fernandes - Matemática [Atividade Professora Simone Vieira]</span>
-            <button class="btn-reset" onclick="resetarHistorico()">Resetar Histórico</button>
+            <button class="btn-reset" onclick="abrirModalReset()">Resetar Histórico</button>
+            <span class="texto-creditos">Desenvolvido por Gilberto Fernandes - Matemática [Atividade Professora Simone Vieira]</span>
         </div>
 
+    </div>
+
+    <div id="modalReset" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-titulo">Resetar Histórico</div>
+            <div class="modal-desc">Digite a senha do professor para apagar todo o progresso.</div>
+            
+            <input type="password" id="inputSenha" class="input-senha" placeholder="Senha" inputmode="numeric">
+            
+            <div class="modal-botoes">
+                <button class="btn-modal btn-cancelar" onclick="fecharModalReset()">Cancelar</button>
+                <button class="btn-modal btn-confirmar" onclick="confirmarReset()">Confirmar</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -368,15 +427,29 @@
             localStorage.setItem('erros', erros);
         }
 
-        function resetarHistorico() {
-            const senha = prompt("Digite a senha para resetar o histórico:");
+        // --- FUNÇÕES DO MODAL ---
+        function abrirModalReset() {
+            document.getElementById('modalReset').style.display = 'flex';
+            document.getElementById('inputSenha').value = '';
+            document.getElementById('inputSenha').focus();
+        }
+
+        function fecharModalReset() {
+            document.getElementById('modalReset').style.display = 'none';
+        }
+
+        function confirmarReset() {
+            const senha = document.getElementById('inputSenha').value;
             if (senha === "4241") {
                 localStorage.clear();
                 location.reload();
-            } else if (senha !== null) {
+            } else {
                 alert("Senha incorreta.");
+                document.getElementById('inputSenha').value = '';
+                document.getElementById('inputSenha').focus();
             }
         }
+        // ------------------------
 
         function atualizarBotoesHeader() {
             const btnIntro = document.getElementById('btnIntro');
@@ -391,7 +464,12 @@
         }
 
         function atualizarBarraProgresso() {
-            const porcentagem = (acertos / questoes.length) * 100;
+            // A barra aumenta baseada na QUANTIDADE de respostas dadas (Acertos + Erros)
+            const respondidas = acertos + erros;
+            // Se preferir que a barra seja baseada em "quantas etapas passaram" (índice atual), use: 
+            // const respondidas = indice;
+            
+            const porcentagem = (respondidas / questoes.length) * 100;
             const largura = porcentagem > 100 ? 100 : porcentagem;
             document.getElementById('barraFill').style.width = largura + '%';
         }
@@ -405,15 +483,14 @@
             if (indice >= questoes.length) {
                 document.querySelector('.secao-pergunta').innerHTML = "<div style='text-align:center; width:100%; padding:50px'><h2>Atividade Concluída!</h2><p>Você respondeu todas as questões.</p></div>";
                 document.getElementById('areaResposta').style.display = 'none';
-                document.querySelector('.rodape').style.display = 'block';
+                document.querySelector('.rodape').style.display = 'flex'; // Mantém rodapé visível
                 return;
             }
 
             const q = questoes[indice];
             document.getElementById('areaResposta').style.display = 'none';
-            document.getElementById('btnProximo').style.display = 'none'; // Esconde botão próximo
+            document.getElementById('btnProximo').style.display = 'none';
             
-            document.getElementById('contadorQ').innerText = `Questão ${indice + 1} de ${questoes.length}`;
             document.getElementById('imgQuestao').src = q.img;
             document.getElementById('textoPergunta').innerHTML = q.pergunta;
 
@@ -434,7 +511,6 @@
             const todos = document.querySelectorAll('.btn-opcao');
             todos.forEach(b => b.disabled = true);
             
-            // Exibe o botão próximo e a resposta
             document.getElementById('btnProximo').style.display = 'block';
             document.getElementById('areaResposta').style.display = 'block';
 
@@ -456,11 +532,9 @@
             salvarProgresso();
             document.getElementById('scoreC').innerText = acertos;
             document.getElementById('scoreE').innerText = erros;
-            atualizarBarraProgresso();
+            atualizarBarraProgresso(); // Atualiza a barra assim que responde
 
             document.getElementById('textoResolucao').innerHTML = q.resolucao;
-            
-            // Nenhuma rolagem automática é feita
         }
 
         function proximaQuestao() {
