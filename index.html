@@ -11,11 +11,11 @@
             --text-light: #86868b;
             --border-color: #d2d2d7;
             --accent: #0071e3;
-            --success: #34c759;
+            --success: #34c759; /* Verde */
             --error: #ff3b30;
-            --purple: #af52de;
+            --orange: #ff9500;  /* Laranja Novo */
             --radius: 12px;
-            --btn-gray: #8e8e93;
+            --btn-gray: #8e8e93; /* Cinza */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -31,7 +31,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 1100px; /* Aumentei um pouco para caber tudo na linha */
+            max-width: 1100px;
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -39,17 +39,16 @@
             transition: opacity 0.5s;
         }
 
-        /* --- HEADER UNIFICADO (Tudo na mesma linha) --- */
+        /* --- HEADER UNIFICADO --- */
         .header-unificado {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px; /* Espaço entre os botões */
-            flex-wrap: wrap; /* Permite quebrar linha em celular muito pequeno */
+            gap: 15px;
+            flex-wrap: wrap;
             margin-bottom: 5px;
         }
 
-        /* Estilo base para todos os botões do topo */
         .top-item {
             display: flex;
             align-items: center;
@@ -62,25 +61,18 @@
             user-select: none;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            height: 44px; /* Altura fixa para todos ficarem iguais */
-            white-space: nowrap; /* Impede quebra de texto dentro do botão */
+            height: 44px;
+            white-space: nowrap;
         }
 
-        /* Ícones */
         .top-item svg { width: 20px; height: 20px; fill: white; }
 
-        /* Cores e Estados */
+        /* CORES DO HEADER */
         .bg-verde-ativo { background-color: var(--success); }
-        
-        /* Cor Cinza (Usada para Inativo e para Série) */
-        .bg-cinza-padrao { 
-            background-color: var(--btn-gray); 
-            opacity: 0.7; /* Mesma transparência para ambos */
-        }
+        .bg-cinza-padrao { background-color: var(--btn-gray); opacity: 0.7; }
+        .bg-laranja { background-color: var(--orange); }
 
-        .bg-roxo { background-color: var(--purple); }
-
-        /* --- BARRA DE PROGRESSO --- */
+        /* --- BARRA DE PROGRESSO (AGORA VERDE) --- */
         .barra-progresso-container {
             width: 100%;
             max-width: 50%;
@@ -94,7 +86,7 @@
         .barra-progresso-fill {
             height: 100%;
             width: 0%;
-            background-color: var(--accent);
+            background-color: var(--success); /* MUDOU PARA VERDE */
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -189,10 +181,10 @@
         .btn-opcao.errado { border-color: var(--error); color: var(--error); background-color: rgba(255, 59, 48, 0.1); }
         .btn-opcao:disabled { cursor: default; }
 
-        /* BOTÃO PRÓXIMO */
+        /* BOTÃO PRÓXIMO (AGORA VERDE) */
         .area-botao-proximo { margin-top: 10px; height: 50px; }
         .btn-proximo {
-            background-color: var(--accent);
+            background-color: var(--success); /* MUDOU PARA VERDE */
             color: white;
             border: none;
             padding: 12px 25px;
@@ -204,7 +196,7 @@
             width: 100%;
             display: none;
         }
-        .btn-proximo:hover { background-color: #005bb5; }
+        .btn-proximo:hover { background-color: #2da84e; }
 
         /* --- SEÇÃO RESPOSTA --- */
         .secao-resposta {
@@ -234,8 +226,9 @@
             color: var(--text-light);
         }
 
+        /* BOTÃO RESETAR (AGORA CINZA) */
         .btn-reset {
-            background-color: var(--error);
+            background-color: var(--btn-gray); /* MUDOU PARA CINZA */
             color: white;
             border: none;
             padding: 10px 20px;
@@ -244,10 +237,10 @@
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s, background-color 0.2s;
-            box-shadow: 0 2px 5px rgba(255, 59, 48, 0.3);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .btn-reset:hover {
-            background-color: #d63228;
+            background-color: #7a7a7e;
             transform: scale(1.02);
         }
 
@@ -425,16 +418,16 @@
                 Introdução
             </div>
 
-            <div class="top-item bg-cinza-padrao" id="btnComplementar">
+            <div class="top-item bg-laranja" id="btnComplementar">
                 <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>
                 Atividade complementar
             </div>
 
-            <div id="badgeNome" class="top-item bg-roxo">
+            <div id="badgeNome" class="top-item bg-laranja">
                 Aluno
             </div>
 
-            <div id="badgeSerie" class="top-item bg-cinza-padrao">
+            <div id="badgeSerie" class="top-item bg-laranja">
                 Série
             </div>
         </div>
@@ -625,10 +618,10 @@
             
             if (modoAtual === 'intro') {
                 btnIntro.className = 'top-item bg-verde-ativo';
-                btnComp.className = 'top-item bg-cinza-padrao';
+                btnComp.className = 'top-item bg-laranja'; // Agora fica laranja
             } else {
                 btnIntro.className = 'top-item bg-cinza-padrao';
-                btnComp.className = 'top-item bg-verde-ativo'; // Se o modo mudar, verde ativa
+                btnComp.className = 'top-item bg-verde-ativo';
             }
         }
 
