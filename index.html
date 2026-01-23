@@ -9,13 +9,15 @@
             --bg-page: #f5f5f7;
             --text-main: #1d1d1f;
             --text-light: #86868b;
-            --border-color: #d2d2d7;
+            --border-color: transparent; /* LINHAS INVISÍVEIS */
             --accent: #0071e3;
             --success: #34c759; /* Verde */
             --error: #ff3b30;
-            --orange: #ff9500;  /* Laranja Novo */
             --radius: 12px;
-            --btn-gray: #8e8e93; /* Cinza */
+            
+            /* Cores dos Botões */
+            --btn-reset-gray: #8e8e93; /* Cinza Escuro (Resetar) */
+            --btn-top-gray: #b3b3b8;   /* Cinza Mais Claro (Topos) */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -69,10 +71,11 @@
 
         /* CORES DO HEADER */
         .bg-verde-ativo { background-color: var(--success); }
-        .bg-cinza-padrao { background-color: var(--btn-gray); opacity: 0.7; }
-        .bg-laranja { background-color: var(--orange); }
+        
+        /* Cor para Atividade, Nome e Série (Cinza mais claro que o reset) */
+        .bg-cinza-claro { background-color: var(--btn-top-gray); } 
 
-        /* --- BARRA DE PROGRESSO (AGORA VERDE) --- */
+        /* --- BARRA DE PROGRESSO --- */
         .barra-progresso-container {
             width: 100%;
             max-width: 50%;
@@ -86,7 +89,7 @@
         .barra-progresso-fill {
             height: 100%;
             width: 0%;
-            background-color: var(--success); /* MUDOU PARA VERDE */
+            background-color: var(--success);
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -106,7 +109,7 @@
             display: flex;
             gap: 50px;
             align-items: flex-start;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color); /* Agora é transparente */
             padding-bottom: 50px;
         }
 
@@ -158,7 +161,7 @@
 
         .btn-opcao {
             background-color: transparent;
-            border: 1px solid var(--border-color);
+            border: 1px solid #d2d2d7; /* Borda dos botões mantém visível */
             border-radius: var(--radius);
             aspect-ratio: 1 / 1;
             font-size: 1.6rem;
@@ -181,10 +184,10 @@
         .btn-opcao.errado { border-color: var(--error); color: var(--error); background-color: rgba(255, 59, 48, 0.1); }
         .btn-opcao:disabled { cursor: default; }
 
-        /* BOTÃO PRÓXIMO (AGORA VERDE) */
+        /* BOTÃO PRÓXIMO */
         .area-botao-proximo { margin-top: 10px; height: 50px; }
         .btn-proximo {
-            background-color: var(--success); /* MUDOU PARA VERDE */
+            background-color: var(--success);
             color: white;
             border: none;
             padding: 12px 25px;
@@ -213,7 +216,7 @@
         .rodape {
             margin-top: 40px;
             text-align: center;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-color); /* Agora é transparente */
             padding-top: 30px;
             display: flex;
             flex-direction: column;
@@ -226,9 +229,9 @@
             color: var(--text-light);
         }
 
-        /* BOTÃO RESETAR (AGORA CINZA) */
+        /* BOTÃO RESETAR (CINZA MAIS ESCURO) */
         .btn-reset {
-            background-color: var(--btn-gray); /* MUDOU PARA CINZA */
+            background-color: var(--btn-reset-gray);
             color: white;
             border: none;
             padding: 10px 20px;
@@ -244,7 +247,7 @@
             transform: scale(1.02);
         }
 
-        /* --- MODAL (GERAL) --- */
+        /* --- MODAL --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -282,7 +285,7 @@
         .input-generico {
             width: 100%;
             padding: 12px;
-            border: 1px solid var(--border-color);
+            border: 1px solid #d2d2d7;
             border-radius: 8px;
             font-size: 1rem;
             margin-bottom: 5px;
@@ -306,7 +309,6 @@
         .btn-cancelar { background-color: #f2f2f7; color: var(--text-main); }
         .btn-confirmar { background-color: var(--accent); color: white; }
 
-        /* ESTILOS DE SELEÇÃO (LOGIN) */
         .grupo-selecao {
             display: flex;
             justify-content: center;
@@ -319,7 +321,7 @@
         
         .grupo-selecao label {
             padding: 10px 15px;
-            border: 1px solid var(--border-color);
+            border: 1px solid #d2d2d7;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -418,16 +420,16 @@
                 Introdução
             </div>
 
-            <div class="top-item bg-laranja" id="btnComplementar">
+            <div class="top-item bg-cinza-claro" id="btnComplementar">
                 <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>
                 Atividade complementar
             </div>
 
-            <div id="badgeNome" class="top-item bg-laranja">
+            <div id="badgeNome" class="top-item bg-cinza-claro">
                 Aluno
             </div>
 
-            <div id="badgeSerie" class="top-item bg-laranja">
+            <div id="badgeSerie" class="top-item bg-cinza-claro">
                 Série
             </div>
         </div>
@@ -555,6 +557,9 @@
             if (nome.includes(" ")) { aviso.innerText = "Digite apenas o primeiro nome."; return; }
             if (nome.length > 15) { aviso.innerText = "O nome deve ter no máximo 15 letras."; return; }
 
+            // Lógica de Maiúscula na primeira letra
+            nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+
             const anoSelecionado = document.querySelector('input[name="ano"]:checked');
             if (!anoSelecionado) { aviso.innerText = "Selecione o seu Ano escolar."; return; }
 
@@ -618,9 +623,9 @@
             
             if (modoAtual === 'intro') {
                 btnIntro.className = 'top-item bg-verde-ativo';
-                btnComp.className = 'top-item bg-laranja'; // Agora fica laranja
+                btnComp.className = 'top-item bg-cinza-claro'; 
             } else {
-                btnIntro.className = 'top-item bg-cinza-padrao';
+                btnIntro.className = 'top-item bg-cinza-claro'; // Quando inativo, fica cinza claro
                 btnComp.className = 'top-item bg-verde-ativo';
             }
         }
