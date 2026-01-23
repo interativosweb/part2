@@ -99,7 +99,6 @@
         }
 
         /* --- FRAÇÕES E MATEMÁTICA --- */
-        /* Estilo para deixar numerador em cima e denominador em baixo */
         .fracao {
             display: inline-flex;
             flex-direction: column;
@@ -140,7 +139,7 @@
 
         .img-atividade {
             max-width: 100%;
-            max-height: 550px; /* Imagens Grandes */
+            max-height: 550px; 
             object-fit: contain;
             border-radius: var(--radius);
         }
@@ -260,7 +259,7 @@
             color: white;
             border: none;
             padding: 12px 30px; 
-            border-radius: 50px; /* Botões Arredondados */
+            border-radius: 50px;
             font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
@@ -303,6 +302,22 @@
             position: relative;
         }
 
+        /* Estilo específico para o popup da fase (com animação) */
+        .modal-box-fase {
+            margin-top: 40px; /* Espaço extra para o fogo que sai pra fora */
+        }
+
+        .animacao-foguinho {
+            position: absolute;
+            top: -100px; /* Puxa para cima (metade fora) */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: auto;
+            pointer-events: none; /* Para não atrapalhar cliques */
+            z-index: 10;
+        }
+
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .modal-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
@@ -335,6 +350,16 @@
         }
         .btn-cancelar { background-color: #f2f2f7; color: var(--text-main); }
         .btn-confirmar { background-color: var(--accent); color: white; }
+        
+        /* Botão Destaque da Fase */
+        .btn-fase {
+            background-color: var(--success);
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 199, 89, 0.4);
+            font-size: 1.1rem;
+            padding: 15px;
+        }
+        .btn-fase:hover { background-color: #2da84e; transform: scale(1.02); }
 
         .historico-row {
             display: flex;
@@ -382,7 +407,7 @@
             .secao-pergunta { flex-direction: column; }
             .grid-opcoes { grid-template-columns: repeat(4, 1fr); }
             .barra-progresso-container { max-width: 80%; }
-            .img-atividade { max-height: 350px; } /* Mobile */
+            .img-atividade { max-height: 350px; }
         }
         @media (max-width: 600px) {
             .grid-opcoes { grid-template-columns: repeat(2, 1fr); }
@@ -391,6 +416,7 @@
             .grupo-selecao label { padding: 8px 10px; font-size: 0.8rem; }
             .header-unificado { gap: 10px; }
             .top-item { padding: 10px 15px; font-size: 0.8rem; }
+            .animacao-foguinho { width: 150px; top: -80px; }
         }
     </style>
 </head>
@@ -420,6 +446,19 @@
 
             <div id="erroNome" class="aviso-erro"></div>
             <button class="btn-modal btn-confirmar" style="width:100%; margin-top:10px" onclick="realizarLogin()">Entrar</button>
+        </div>
+    </div>
+
+    <div id="modalFase" class="modal-overlay">
+        <div class="modal-box modal-box-fase">
+            <video class="animacao-foguinho" autoplay loop muted playsinline>
+                <source src="https://interativosweb.github.io/part2/animacao/foguinho.webm" type="video/webm">
+            </video>
+            
+            <div class="modal-titulo" style="margin-top: 30px;">Parabéns, <span id="nomeAlunoFase" style="color:var(--accent)">Aluno</span>!</div>
+            <div class="modal-desc">Você concluiu a Introdução com sucesso! Está preparado para o próximo desafio?</div>
+            
+            <button class="btn-modal btn-fase" onclick="avancarFase()">Iniciar Nova Fase</button>
         </div>
     </div>
 
@@ -530,53 +569,53 @@
         const pathIntro = "https://interativosweb.github.io/part2/introducao/";
         const pathComp = "https://interativosweb.github.io/part2/complementar/";
 
-        // LISTA 1: INTRODUÇÃO - ATUALIZADA
+        // LISTA 1: INTRODUÇÃO
         const questoesIntro = [
             {
                 pergunta: "Uma fração é uma forma de representar uma parte de um todo, quando esse todo é dividido em partes iguais. Comer um pedaço dessa pizza representa em fração:",
                 img: pathIntro + "img01intro.png",
                 opcoes: [f(1,4), f(1,6), f(7,1), f(1,7)],
-                correta: 3, // Considerei 1/7 pelo contexto anterior, mas verifique se a pizza tem 6 ou 7 pedaços.
+                correta: 3, 
                 resolucao: "A fração representa 1 parte de um total de partes da pizza."
             },
             {
                 pergunta: "Pedi uma pizza e comi apenas a parte pintada em verde, represente em fração quantos pedaços eu comi:",
                 img: pathIntro + "img02intro.png",
                 opcoes: [f(3,7), f(5,6), f(7,3), f(7,2)],
-                correta: 0, // 3/7
+                correta: 0, 
                 resolucao: "O numerador (cima) indica quantas partes foram comidas (verde) e o denominador (baixo) o total."
             },
             {
                 pergunta: "Um copo cheio de suco é dividido em 2 partes iguais. Se alguém bebe uma dessas partes, temos:",
                 img: pathIntro + "img03intro.png",
                 opcoes: [f(2,5), f(2,1), f(1,4), f(1,2)],
-                correta: 3, // 1/2
+                correta: 3, 
                 resolucao: "Se dividiu em 2 e bebeu 1, a fração é um meio (1/2)."
             },
             {
                 pergunta: "Qual fração representa o círculo vermelho?",
                 img: pathIntro + "img04intro.png",
                 opcoes: [f(1,4), f(4,1), f(2,5), f(1,8)],
-                correta: 0, // 1/4
+                correta: 0, 
                 resolucao: "O círculo vermelho representa uma parte de um total de partes."
             },
             {
                 pergunta: "Uma barra de chocolate tem 5 pedaços iguais, se eu comer 1/5, quantos ainda me restam?",
                 img: pathIntro + "img05intro.png",
                 opcoes: ["1", f(2,5), f(4,5), f(3,5)],
-                correta: 2, // 4/5
+                correta: 2, 
                 resolucao: "O todo é 5/5. Se você comeu 1/5, subtraímos: 5/5 - 1/5 = 4/5."
             },
             {
                 pergunta: "Ganhei de presente um celular dos meus pais. No primeiro dia gastei 1/4 da bateria, no segundo dia 3/4, no terceiro dia eu não usei. Quanto eu gastei de bateria no quarto dia?",
                 img: pathIntro + "img06intro.png",
                 opcoes: [f(3,4), f(1,4), f(5,4), f(1,5)],
-                correta: 0, // Defini a primeira como correta provisoriamente. Verifique seu gabarito.
+                correta: 0, 
                 resolucao: "Verifique o cálculo ou a imagem correspondente para esta resposta."
             }
         ];
 
-        // LISTA 2: ATIVIDADE COMPLEMENTAR (Mantida a estrutura para não quebrar o site)
+        // LISTA 2: ATIVIDADE COMPLEMENTAR
         const questoesComp = [
             {
                 pergunta: "Complementar 1: Analise a figura.",
@@ -720,6 +759,8 @@
         function aplicarDadosUsuario(nome, serie) {
             document.getElementById('badgeNome').innerText = nome;
             document.getElementById('badgeSerie').innerText = serie;
+            // Atualiza também o nome no Modal de Parabéns
+            document.getElementById('nomeAlunoFase').innerText = nome;
         }
 
         function mostrarApp() {
@@ -754,6 +795,23 @@
             document.getElementById('modalHistorico').classList.add('visivel');
         }
         function fecharModalHistorico() { document.getElementById('modalHistorico').classList.remove('visivel'); }
+
+        // --- NOVA FUNÇÃO PARA ABRIR MODAL DE FASE ---
+        function abrirModalFase() {
+            // Garante que o nome esteja atualizado
+            const nome = localStorage.getItem('alunoNome') || 'Aluno';
+            document.getElementById('nomeAlunoFase').innerText = nome;
+            document.getElementById('modalFase').classList.add('visivel');
+        }
+
+        // --- NOVA FUNÇÃO PARA AVANÇAR DE FASE ---
+        function avancarFase() {
+            modoAtual = 'complementar';
+            indice = 0; 
+            salvarProgresso();
+            document.getElementById('modalFase').classList.remove('visivel');
+            carregar(); // Recarrega o app no novo modo
+        }
 
         // ATUALIZAÇÃO DOS BOTÕES E CADEADOS
         function atualizarBotoesHeader() {
@@ -814,11 +872,8 @@
             // Se acabou a lista atual
             if (indice >= listaQuestao.length) {
                 if (modoAtual === 'intro') {
-                    // Fim da Introdução -> Passa para Complementar
-                    modoAtual = 'complementar';
-                    indice = 0; 
-                    salvarProgresso();
-                    carregar(); 
+                    // FIM DA INTRODUÇÃO: MOSTRA MODAL EM VEZ DE MUDAR DIRETO
+                    abrirModalFase();
                 } else {
                     // Fim de tudo
                     document.querySelector('.secao-pergunta').innerHTML = "<div style='text-align:center; width:100%; padding:50px'><h2>Atividade Complementar Concluída!</h2><p>Parabéns por finalizar todo o percurso.</p></div>";
