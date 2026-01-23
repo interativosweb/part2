@@ -35,35 +35,11 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            /* Oculto até login ser confirmado para evitar glitch visual */
             opacity: 0; 
             transition: opacity 0.5s;
         }
 
-        /* --- HEADER USUÁRIO (NOVO) --- */
-        .header-usuario {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        .badge-user {
-            padding: 8px 20px;
-            border-radius: 50px;
-            color: white;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .bg-roxo { background-color: var(--purple); }
-        .bg-cinza { background-color: var(--btn-gray); }
-
-
-        /* --- HEADER NAVEGAÇÃO --- */
+        /* --- HEADER NAVEGAÇÃO (Agora fica no topo) --- */
         .header-navegacao {
             display: flex;
             justify-content: center;
@@ -90,6 +66,28 @@
         .nav-btn.ativo { background-color: var(--success); }
         .nav-btn.inativo { background-color: var(--btn-gray); opacity: 0.7; }
 
+        /* --- HEADER USUÁRIO (Agora fica abaixo da navegação) --- */
+        .header-usuario {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 5px; /* Espaço antes da barra */
+        }
+
+        .badge-user {
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .bg-roxo { background-color: var(--purple); }
+        .bg-cinza { background-color: var(--btn-gray); }
+
         /* --- BARRA DE PROGRESSO --- */
         .barra-progresso-container {
             width: 100%;
@@ -98,7 +96,7 @@
             background-color: #e5e5ea;
             border-radius: 6px;
             overflow: hidden;
-            margin: 15px auto 40px auto;
+            margin: 10px auto 40px auto;
         }
 
         .barra-progresso-fill {
@@ -275,7 +273,7 @@
             animation: fadeInModal 0.3s ease;
         }
         
-        .modal-overlay.visivel { display: flex; } /* Classe para forçar display flex */
+        .modal-overlay.visivel { display: flex; }
 
         @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
 
@@ -284,7 +282,7 @@
             padding: 30px;
             border-radius: 16px;
             width: 90%;
-            max-width: 400px;
+            max-width: 450px; /* Um pouco mais largo para caber as opções */
             text-align: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -294,6 +292,7 @@
 
         .modal-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
         .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 20px; }
+        .modal-subtitulo { margin-bottom:10px; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; color: var(--text-light); font-weight: 600; margin-top: 15px;}
 
         .input-generico {
             width: 100%;
@@ -301,7 +300,7 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 1rem;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
             outline: none;
             text-align: center;
             transition: border 0.2s;
@@ -322,41 +321,53 @@
         .btn-cancelar { background-color: #f2f2f7; color: var(--text-main); }
         .btn-confirmar { background-color: var(--accent); color: white; }
 
-        /* ESTILOS ESPECÍFICOS DO LOGIN */
-        .grupo-radio {
+        /* ESTILOS DE SELEÇÃO (LOGIN) */
+        .grupo-selecao {
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
         }
         
-        /* Esconde o radio button nativo e estiliza o label */
-        .grupo-radio input[type="radio"] { display: none; }
+        .grupo-selecao input[type="radio"] { display: none; }
         
-        .grupo-radio label {
-            padding: 10px 20px;
+        .grupo-selecao label {
+            padding: 10px 15px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animação suave */
             color: var(--text-light);
             font-weight: 600;
+            font-size: 0.9rem;
+            background: white;
         }
 
-        .grupo-radio input[type="radio"]:checked + label {
+        /* Efeito ao passar o mouse: Fica azul e "pula" */
+        .grupo-selecao label:hover {
             background-color: var(--accent);
             color: white;
             border-color: var(--accent);
-            transform: translateY(-2px);
+            transform: scale(1.1); /* Pulo */
             box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3);
+        }
+
+        /* Efeito Selecionado */
+        .grupo-selecao input[type="radio"]:checked + label {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: scale(1.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .aviso-erro {
             color: var(--error);
             font-size: 0.8rem;
-            margin-top: -15px;
-            margin-bottom: 15px;
+            margin-top: 5px;
             min-height: 1.2em;
+            font-weight: 600;
         }
         
         @media (max-width: 900px) {
@@ -367,6 +378,8 @@
         @media (max-width: 600px) {
             .grid-opcoes { grid-template-columns: repeat(2, 1fr); }
             .img-atividade { max-height: 200px; }
+            .grupo-selecao { gap: 5px; }
+            .grupo-selecao label { padding: 8px 10px; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -377,32 +390,41 @@
             <div class="modal-titulo">Identificação</div>
             <div class="modal-desc">Insira seus dados para começar.</div>
             
-            <input type="text" id="inputNomeAluno" class="input-generico" placeholder="Primeiro Nome" maxlength="15">
-            <div id="erroNome" class="aviso-erro"></div>
-
-            <div class="modal-desc" style="margin-bottom:10px; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px;">Selecione sua turma</div>
+            <input type="text" id="inputNomeAluno" class="input-generico" placeholder="Qual o seu nome?" maxlength="15">
             
-            <div class="grupo-radio">
-                <input type="radio" id="serieA" name="serie" value="9º A">
+            <div class="modal-subtitulo">Qual seu ano?</div>
+            <div class="grupo-selecao">
+                <input type="radio" id="ano6" name="ano" value="6º Ano">
+                <label for="ano6">6º Ano</label>
+                
+                <input type="radio" id="ano7" name="ano" value="7º Ano">
+                <label for="ano7">7º Ano</label>
+                
+                <input type="radio" id="ano8" name="ano" value="8º Ano">
+                <label for="ano8">8º Ano</label>
+
+                <input type="radio" id="ano9" name="ano" value="9º Ano">
+                <label for="ano9">9º Ano</label>
+            </div>
+
+            <div class="modal-subtitulo">Qual sua turma?</div>
+            <div class="grupo-selecao">
+                <input type="radio" id="serieA" name="serie" value="A">
                 <label for="serieA">A</label>
                 
-                <input type="radio" id="serieB" name="serie" value="9º B">
+                <input type="radio" id="serieB" name="serie" value="B">
                 <label for="serieB">B</label>
                 
-                <input type="radio" id="serieC" name="serie" value="9º C">
+                <input type="radio" id="serieC" name="serie" value="C">
                 <label for="serieC">C</label>
             </div>
 
-            <button class="btn-modal btn-confirmar" style="width:100%" onclick="realizarLogin()">Entrar</button>
+            <div id="erroNome" class="aviso-erro"></div>
+            <button class="btn-modal btn-confirmar" style="width:100%; margin-top:10px" onclick="realizarLogin()">Entrar</button>
         </div>
     </div>
 
     <div id="appContainer" class="app-container">
-
-        <div class="header-usuario">
-            <div id="badgeNome" class="badge-user bg-roxo"></div>
-            <div id="badgeSerie" class="badge-user bg-cinza"></div>
-        </div>
 
         <div>
             <div class="header-navegacao">
@@ -414,6 +436,11 @@
                     <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>
                     Atividade complementar
                 </div>
+            </div>
+
+            <div class="header-usuario">
+                <div id="badgeNome" class="badge-user bg-roxo"></div>
+                <div id="badgeSerie" class="badge-user bg-cinza"></div>
             </div>
 
             <div class="barra-progresso-container">
@@ -472,7 +499,6 @@
     </div>
 
     <script>
-        // --- DADOS E VARIÁVEIS ---
         const f = (n, d) => `<div class='fracao'><span class='num'>${n}</span><span class='den'>${d}</span></div>`;
 
         const imagens = [
@@ -524,12 +550,10 @@
             const serieSalva = localStorage.getItem('alunoSerie');
 
             if (nomeSalvo && serieSalva) {
-                // Já está logado
                 aplicarDadosUsuario(nomeSalvo, serieSalva);
-                document.getElementById('modalLogin').classList.remove('visivel'); // Garante fechamento
+                document.getElementById('modalLogin').classList.remove('visivel');
                 mostrarApp();
             } else {
-                // Precisa logar
                 document.getElementById('modalLogin').classList.add('visivel');
             }
         }
@@ -539,13 +563,15 @@
             const aviso = document.getElementById('erroNome');
             let nome = inputNome.value.trim();
             
-            // Validações
+            aviso.innerText = ""; // Limpa erros anteriores
+
+            // Valida Nome
             if (!nome) {
                 aviso.innerText = "Por favor, digite seu nome.";
                 return;
             }
             if (nome.includes(" ")) {
-                aviso.innerText = "Digite apenas o primeiro nome (uma palavra).";
+                aviso.innerText = "Digite apenas o primeiro nome.";
                 return;
             }
             if (nome.length > 15) {
@@ -553,22 +579,29 @@
                 return;
             }
 
-            // Verifica Série
-            const radioSelecionado = document.querySelector('input[name="serie"]:checked');
-            if (!radioSelecionado) {
-                aviso.innerText = "Selecione uma turma (A, B ou C).";
+            // Valida Ano
+            const anoSelecionado = document.querySelector('input[name="ano"]:checked');
+            if (!anoSelecionado) {
+                aviso.innerText = "Selecione o seu Ano escolar.";
                 return;
             }
 
-            const serie = radioSelecionado.value;
+            // Valida Turma
+            const turmaSelecionada = document.querySelector('input[name="serie"]:checked');
+            if (!turmaSelecionada) {
+                aviso.innerText = "Selecione a sua Turma.";
+                return;
+            }
 
-            // Salva e entra
+            const ano = anoSelecionado.value;
+            const turma = turmaSelecionada.value;
+            const serieCompleta = `${ano} ${turma}`; // Ex: 9º Ano A
+
             localStorage.setItem('alunoNome', nome);
-            localStorage.setItem('alunoSerie', serie);
+            localStorage.setItem('alunoSerie', serieCompleta);
             
-            aplicarDadosUsuario(nome, serie);
+            aplicarDadosUsuario(nome, serieCompleta);
             
-            // Efeito visual de saída
             document.getElementById('modalLogin').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('modalLogin').classList.remove('visivel');
@@ -593,7 +626,6 @@
             localStorage.setItem('erros', erros);
         }
 
-        // Modais de Reset
         function abrirModalReset() {
             document.getElementById('modalReset').classList.add('visivel');
             document.getElementById('inputSenha').value = '';
@@ -607,7 +639,7 @@
         function confirmarReset() {
             const senha = document.getElementById('inputSenha').value;
             if (senha === "4241") {
-                localStorage.clear(); // Limpa tudo, inclusive login
+                localStorage.clear(); 
                 location.reload();
             } else {
                 alert("Senha incorreta.");
@@ -636,9 +668,7 @@
         }
 
         function carregar() {
-            // Verifica Login antes de carregar conteúdo
             checkLogin();
-
             atualizarBotoesHeader();
             atualizarBarraProgresso();
             document.getElementById('scoreC').innerText = acertos;
