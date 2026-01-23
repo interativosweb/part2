@@ -510,145 +510,146 @@
         const iconCadeadoAberto = `<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>`;
         const iconCadeadoFechado = `<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>`;
 
-        // CONFIGURAÇÃO DAS IMAGENS DO GITHUB
-        // Aponta para a pasta 'arquivos'
-        const repoBase = "https://raw.githubusercontent.com/interativosweb/part2/main/arquivos/";
+        // CONFIGURAÇÃO DAS IMAGENS
+        // Baseado na estrutura de pastas que você me mostrou no print e nos links que enviou
+        const pathIntro = "https://interativosweb.github.io/part2/introducao/";
+        const pathComp = "https://interativosweb.github.io/part2/complementar/";
 
-        // LISTA 1: INTRODUÇÃO (6 Questões - img01intro.png até img06intro.png)
+        // LISTA 1: INTRODUÇÃO (6 Questões - Pasta: introducao)
         const questoesIntro = [
             {
                 pergunta: "Questão 1: Observe a imagem.",
-                img: repoBase + "img01intro.png",
+                img: pathIntro + "img01intro.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 0,
                 resolucao: "Resolução detalhada da questão 1 da introdução."
             },
             {
                 pergunta: "Questão 2: Observe a imagem.",
-                img: repoBase + "img02intro.png",
+                img: pathIntro + "img02intro.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 1,
                 resolucao: "Resolução detalhada da questão 2 da introdução."
             },
             {
                 pergunta: "Questão 3: Observe a imagem.",
-                img: repoBase + "img03intro.png",
+                img: pathIntro + "img03intro.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 2,
                 resolucao: "Resolução detalhada da questão 3 da introdução."
             },
             {
                 pergunta: "Questão 4: Observe a imagem.",
-                img: repoBase + "img04intro.png",
+                img: pathIntro + "img04intro.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 3,
                 resolucao: "Resolução detalhada da questão 4 da introdução."
             },
             {
                 pergunta: "Questão 5: Observe a imagem.",
-                img: repoBase + "img05intro.png",
+                img: pathIntro + "img05intro.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 0,
                 resolucao: "Resolução detalhada da questão 5 da introdução."
             },
             {
                 pergunta: "Questão 6: Observe a imagem.",
-                img: repoBase + "img06intro.png",
+                img: pathIntro + "img06intro.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 1,
                 resolucao: "Resolução detalhada da questão 6 da introdução."
             }
         ];
 
-        // LISTA 2: ATIVIDADE COMPLEMENTAR (13 Questões - comp01.png até comp13.png)
+        // LISTA 2: ATIVIDADE COMPLEMENTAR (13 Questões - Pasta: complementar)
         const questoesComp = [
             {
                 pergunta: "Complementar 1: Analise a figura.",
-                img: repoBase + "comp01.png",
+                img: pathComp + "comp01.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 0,
                 resolucao: "Explicação da questão complementar 1."
             },
             {
                 pergunta: "Complementar 2: Analise a figura.",
-                img: repoBase + "comp02.png",
+                img: pathComp + "comp02.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 1,
                 resolucao: "Explicação da questão complementar 2."
             },
             {
                 pergunta: "Complementar 3: Analise a figura.",
-                img: repoBase + "comp03.png",
+                img: pathComp + "comp03.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 2,
                 resolucao: "Explicação da questão complementar 3."
             },
             {
                 pergunta: "Complementar 4: Analise a figura.",
-                img: repoBase + "comp04.png",
+                img: pathComp + "comp04.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 3,
                 resolucao: "Explicação da questão complementar 4."
             },
             {
                 pergunta: "Complementar 5: Analise a figura.",
-                img: repoBase + "comp05.png",
+                img: pathComp + "comp05.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 0,
                 resolucao: "Explicação da questão complementar 5."
             },
             {
                 pergunta: "Complementar 6: Analise a figura.",
-                img: repoBase + "comp06.png",
+                img: pathComp + "comp06.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 1,
                 resolucao: "Explicação da questão complementar 6."
             },
             {
                 pergunta: "Complementar 7: Analise a figura.",
-                img: repoBase + "comp07.png",
+                img: pathComp + "comp07.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 2,
                 resolucao: "Explicação da questão complementar 7."
             },
             {
                 pergunta: "Complementar 8: Analise a figura.",
-                img: repoBase + "comp08.png",
+                img: pathComp + "comp08.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 3,
                 resolucao: "Explicação da questão complementar 8."
             },
             {
                 pergunta: "Complementar 9: Analise a figura.",
-                img: repoBase + "comp09.png",
+                img: pathComp + "comp09.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 0,
                 resolucao: "Explicação da questão complementar 9."
             },
             {
                 pergunta: "Complementar 10: Analise a figura.",
-                img: repoBase + "comp10.png",
+                img: pathComp + "comp10.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 1,
                 resolucao: "Explicação da questão complementar 10."
             },
             {
                 pergunta: "Complementar 11: Analise a figura.",
-                img: repoBase + "comp11.png",
+                img: pathComp + "comp11.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 2,
                 resolucao: "Explicação da questão complementar 11."
             },
             {
                 pergunta: "Complementar 12: Analise a figura.",
-                img: repoBase + "comp12.png",
+                img: pathComp + "comp12.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 3,
                 resolucao: "Explicação da questão complementar 12."
             },
             {
                 pergunta: "Complementar 13: Analise a figura.",
-                img: repoBase + "comp13.png",
+                img: pathComp + "comp13.png",
                 opcoes: ["A", "B", "C", "D"],
                 correta: 0,
                 resolucao: "Explicação da questão complementar 13."
