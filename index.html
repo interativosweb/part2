@@ -31,7 +31,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1100px; /* Aumentei um pouco para caber tudo na linha */
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -39,54 +39,46 @@
             transition: opacity 0.5s;
         }
 
-        /* --- HEADER NAVEGAÇÃO (Agora fica no topo) --- */
-        .header-navegacao {
+        /* --- HEADER UNIFICADO (Tudo na mesma linha) --- */
+        .header-unificado {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            align-items: center;
+            gap: 15px; /* Espaço entre os botões */
+            flex-wrap: wrap; /* Permite quebrar linha em celular muito pequeno */
             margin-bottom: 5px;
         }
 
-        .nav-btn {
+        /* Estilo base para todos os botões do topo */
+        .top-item {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 12px 30px;
+            padding: 10px 25px;
             border-radius: 50px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             color: white;
             user-select: none;
-            pointer-events: none;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
+            height: 44px; /* Altura fixa para todos ficarem iguais */
+            white-space: nowrap; /* Impede quebra de texto dentro do botão */
         }
 
-        .nav-btn svg { width: 24px; height: 24px; fill: white; }
-        .nav-btn.ativo { background-color: var(--success); }
-        .nav-btn.inativo { background-color: var(--btn-gray); opacity: 0.7; }
+        /* Ícones */
+        .top-item svg { width: 20px; height: 20px; fill: white; }
 
-        /* --- HEADER USUÁRIO (Agora fica abaixo da navegação) --- */
-        .header-usuario {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 5px; /* Espaço antes da barra */
-        }
-
-        .badge-user {
-            padding: 8px 20px;
-            border-radius: 50px;
-            color: white;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        /* Cores e Estados */
+        .bg-verde-ativo { background-color: var(--success); }
+        
+        /* Cor Cinza (Usada para Inativo e para Série) */
+        .bg-cinza-padrao { 
+            background-color: var(--btn-gray); 
+            opacity: 0.7; /* Mesma transparência para ambos */
         }
 
         .bg-roxo { background-color: var(--purple); }
-        .bg-cinza { background-color: var(--btn-gray); }
 
         /* --- BARRA DE PROGRESSO --- */
         .barra-progresso-container {
@@ -282,7 +274,7 @@
             padding: 30px;
             border-radius: 16px;
             width: 90%;
-            max-width: 450px; /* Um pouco mais largo para caber as opções */
+            max-width: 450px;
             text-align: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -337,23 +329,21 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animação suave */
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             color: var(--text-light);
             font-weight: 600;
             font-size: 0.9rem;
             background: white;
         }
 
-        /* Efeito ao passar o mouse: Fica azul e "pula" */
         .grupo-selecao label:hover {
             background-color: var(--accent);
             color: white;
             border-color: var(--accent);
-            transform: scale(1.1); /* Pulo */
+            transform: scale(1.1);
             box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3);
         }
 
-        /* Efeito Selecionado */
         .grupo-selecao input[type="radio"]:checked + label {
             background-color: var(--accent);
             color: white;
@@ -380,6 +370,8 @@
             .img-atividade { max-height: 200px; }
             .grupo-selecao { gap: 5px; }
             .grupo-selecao label { padding: 8px 10px; font-size: 0.8rem; }
+            .header-unificado { gap: 10px; }
+            .top-item { padding: 10px 15px; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -426,26 +418,29 @@
 
     <div id="appContainer" class="app-container">
 
-        <div>
-            <div class="header-navegacao">
-                <div class="nav-btn ativo" id="btnIntro">
-                    <svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>
-                    Introdução
-                </div>
-                <div class="nav-btn inativo" id="btnComplementar">
-                    <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>
-                    Atividade complementar
-                </div>
+        <div class="header-unificado">
+            
+            <div class="top-item bg-verde-ativo" id="btnIntro">
+                <svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>
+                Introdução
             </div>
 
-            <div class="header-usuario">
-                <div id="badgeNome" class="badge-user bg-roxo"></div>
-                <div id="badgeSerie" class="badge-user bg-cinza"></div>
+            <div class="top-item bg-cinza-padrao" id="btnComplementar">
+                <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>
+                Atividade complementar
             </div>
 
-            <div class="barra-progresso-container">
-                <div id="barraFill" class="barra-progresso-fill"></div>
+            <div id="badgeNome" class="top-item bg-roxo">
+                Aluno
             </div>
+
+            <div id="badgeSerie" class="top-item bg-cinza-padrao">
+                Série
+            </div>
+        </div>
+
+        <div class="barra-progresso-container">
+            <div id="barraFill" class="barra-progresso-fill"></div>
         </div>
 
         <section class="secao-pergunta">
@@ -543,8 +538,6 @@
         let acertos = parseInt(localStorage.getItem('acertos')) || 0;
         let erros = parseInt(localStorage.getItem('erros')) || 0;
 
-        // --- SISTEMA DE LOGIN ---
-        
         function checkLogin() {
             const nomeSalvo = localStorage.getItem('alunoNome');
             const serieSalva = localStorage.getItem('alunoSerie');
@@ -563,39 +556,19 @@
             const aviso = document.getElementById('erroNome');
             let nome = inputNome.value.trim();
             
-            aviso.innerText = ""; // Limpa erros anteriores
+            aviso.innerText = ""; 
 
-            // Valida Nome
-            if (!nome) {
-                aviso.innerText = "Por favor, digite seu nome.";
-                return;
-            }
-            if (nome.includes(" ")) {
-                aviso.innerText = "Digite apenas o primeiro nome.";
-                return;
-            }
-            if (nome.length > 15) {
-                aviso.innerText = "O nome deve ter no máximo 15 letras.";
-                return;
-            }
+            if (!nome) { aviso.innerText = "Por favor, digite seu nome."; return; }
+            if (nome.includes(" ")) { aviso.innerText = "Digite apenas o primeiro nome."; return; }
+            if (nome.length > 15) { aviso.innerText = "O nome deve ter no máximo 15 letras."; return; }
 
-            // Valida Ano
             const anoSelecionado = document.querySelector('input[name="ano"]:checked');
-            if (!anoSelecionado) {
-                aviso.innerText = "Selecione o seu Ano escolar.";
-                return;
-            }
+            if (!anoSelecionado) { aviso.innerText = "Selecione o seu Ano escolar."; return; }
 
-            // Valida Turma
             const turmaSelecionada = document.querySelector('input[name="serie"]:checked');
-            if (!turmaSelecionada) {
-                aviso.innerText = "Selecione a sua Turma.";
-                return;
-            }
+            if (!turmaSelecionada) { aviso.innerText = "Selecione a sua Turma."; return; }
 
-            const ano = anoSelecionado.value;
-            const turma = turmaSelecionada.value;
-            const serieCompleta = `${ano} ${turma}`; // Ex: 9º Ano A
+            const serieCompleta = `${anoSelecionado.value} ${turmaSelecionada.value}`; 
 
             localStorage.setItem('alunoNome', nome);
             localStorage.setItem('alunoSerie', serieCompleta);
@@ -617,8 +590,6 @@
         function mostrarApp() {
             document.getElementById('appContainer').style.opacity = '1';
         }
-
-        // --- LÓGICA DO JOGO ---
 
         function salvarProgresso() {
             localStorage.setItem('indice', indice);
@@ -651,12 +622,13 @@
         function atualizarBotoesHeader() {
             const btnIntro = document.getElementById('btnIntro');
             const btnComp = document.getElementById('btnComplementar');
+            
             if (modoAtual === 'intro') {
-                btnIntro.className = 'nav-btn ativo';
-                btnComp.className = 'nav-btn inativo';
+                btnIntro.className = 'top-item bg-verde-ativo';
+                btnComp.className = 'top-item bg-cinza-padrao';
             } else {
-                btnIntro.className = 'nav-btn inativo';
-                btnComp.className = 'nav-btn ativo';
+                btnIntro.className = 'top-item bg-cinza-padrao';
+                btnComp.className = 'top-item bg-verde-ativo'; // Se o modo mudar, verde ativa
             }
         }
 
