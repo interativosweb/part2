@@ -47,8 +47,8 @@
         .nav-btn {
             display: flex;
             align-items: center;
-            gap: 10px; /* Mais espaço entre ícone e texto */
-            padding: 12px 30px; /* Botão um pouco maior */
+            gap: 10px;
+            padding: 12px 30px;
             border-radius: 50px;
             font-size: 1rem;
             font-weight: 600;
@@ -59,7 +59,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Aumentando o tamanho dos ícones (Cadeados) */
         .nav-btn svg {
             width: 24px;
             height: 24px;
@@ -72,12 +71,12 @@
         /* --- BARRA DE PROGRESSO --- */
         .barra-progresso-container {
             width: 100%;
-            max-width: 50%; /* Barra menor horizontalmente */
+            max-width: 50%;
             height: 10px;
             background-color: #e5e5ea;
             border-radius: 6px;
             overflow: hidden;
-            margin: 15px auto 40px auto; /* Centralizada e jogada para baixo */
+            margin: 15px auto 40px auto;
         }
 
         .barra-progresso-fill {
@@ -103,8 +102,8 @@
             display: flex;
             gap: 50px;
             align-items: flex-start;
-            /* Removi o border-bottom grande para ficar mais limpo */
-            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color); /* Linha divisória voltou */
+            padding-bottom: 50px;
         }
 
         .coluna-imagem {
@@ -150,7 +149,7 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 20px; /* Margem para o botão próximo */
         }
 
         .btn-opcao {
@@ -178,33 +177,14 @@
         .btn-opcao.errado { border-color: var(--error); color: var(--error); background-color: rgba(255, 59, 48, 0.1); }
         .btn-opcao:disabled { cursor: default; }
 
-        /* --- FEEDBACK E BOTÃO PRÓXIMO --- */
-        .secao-resposta {
-            display: none; /* Aparece via JS */
+        /* BOTÃO PRÓXIMO (Agora logo abaixo das opções) */
+        .area-botao-proximo {
             margin-top: 10px;
-            animation: fadeIn 0.4s ease;
-            border-top: 1px solid var(--border-color);
-            padding-top: 20px;
+            height: 50px; /* Reserva espaço para evitar pulos layout */
         }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        .titulo-feedback {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .texto-resolucao {
-            font-size: 1rem;
-            line-height: 1.5;
-            color: var(--text-main);
-            margin-bottom: 25px;
-        }
-
+        
         .btn-proximo {
-            background-color: var(--accent); /* Azul destaque */
+            background-color: var(--accent);
             color: white;
             border: none;
             padding: 12px 25px;
@@ -213,9 +193,33 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
-            width: 100%; /* Botão largo para facilitar clique */
+            width: 100%;
+            display: none; /* Começa invisível */
         }
         .btn-proximo:hover { background-color: #005bb5; }
+
+        /* --- SEÇÃO RESPOSTA (Separada no final) --- */
+        .secao-resposta {
+            display: none; /* Aparece via JS */
+            padding-top: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .titulo-feedback {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .texto-resolucao {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin-bottom: 20px;
+        }
 
         .rodape {
             margin-top: 40px;
@@ -295,13 +299,15 @@
 
                 <div id="containerOpcoes" class="grid-opcoes"></div>
 
-                <div class="secao-resposta" id="areaResposta">
-                    <span id="tituloFeedback" class="titulo-feedback"></span>
-                    <div id="textoResolucao" class="texto-resolucao"></div>
-                    <button class="btn-proximo" onclick="proximaQuestao()">Próxima Questão</button>
+                <div class="area-botao-proximo">
+                    <button id="btnProximo" class="btn-proximo" onclick="proximaQuestao()">Próxima Questão</button>
                 </div>
-
             </div>
+        </section>
+
+        <section class="secao-resposta" id="areaResposta">
+            <span id="tituloFeedback" class="titulo-feedback"></span>
+            <div id="textoResolucao" class="texto-resolucao"></div>
         </section>
 
         <div class="rodape">
@@ -398,13 +404,14 @@
 
             if (indice >= questoes.length) {
                 document.querySelector('.secao-pergunta').innerHTML = "<div style='text-align:center; width:100%; padding:50px'><h2>Atividade Concluída!</h2><p>Você respondeu todas as questões.</p></div>";
+                document.getElementById('areaResposta').style.display = 'none';
                 document.querySelector('.rodape').style.display = 'block';
                 return;
             }
 
             const q = questoes[indice];
             document.getElementById('areaResposta').style.display = 'none';
-            // Removido o scroll para o topo, para não pular a tela se o usuário já estiver posicionado
+            document.getElementById('btnProximo').style.display = 'none'; // Esconde botão próximo
             
             document.getElementById('contadorQ').innerText = `Questão ${indice + 1} de ${questoes.length}`;
             document.getElementById('imgQuestao').src = q.img;
@@ -427,7 +434,8 @@
             const todos = document.querySelectorAll('.btn-opcao');
             todos.forEach(b => b.disabled = true);
             
-            // Exibe a área de resposta logo abaixo das opções
+            // Exibe o botão próximo e a resposta
+            document.getElementById('btnProximo').style.display = 'block';
             document.getElementById('areaResposta').style.display = 'block';
 
             const titulo = document.getElementById('tituloFeedback');
@@ -452,7 +460,7 @@
 
             document.getElementById('textoResolucao').innerHTML = q.resolucao;
             
-            // REMOVIDO: Código que rolava a tela automaticamente (scrollIntoView)
+            // Nenhuma rolagem automática é feita
         }
 
         function proximaQuestao() {
@@ -460,7 +468,7 @@
                 indice++;
                 salvarProgresso();
                 carregar();
-                window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola suavemente pro topo SÓ na troca de questão
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 alert(`Fim da Atividade.\nAcertos: ${acertos}\nErros: ${erros}`);
                 indice++; 
