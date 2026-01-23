@@ -13,6 +13,7 @@
             --accent: #0071e3;
             --success: #34c759;
             --error: #ff3b30;
+            --purple: #af52de;
             --radius: 12px;
             --btn-gray: #8e8e93;
         }
@@ -34,9 +35,35 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            /* Oculto até login ser confirmado para evitar glitch visual */
+            opacity: 0; 
+            transition: opacity 0.5s;
         }
 
-        /* --- HEADER COM BOTÕES --- */
+        /* --- HEADER USUÁRIO (NOVO) --- */
+        .header-usuario {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .badge-user {
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .bg-roxo { background-color: var(--purple); }
+        .bg-cinza { background-color: var(--btn-gray); }
+
+
+        /* --- HEADER NAVEGAÇÃO --- */
         .header-navegacao {
             display: flex;
             justify-content: center;
@@ -123,7 +150,7 @@
 
         .topo-info {
             display: flex;
-            justify-content: flex-end; /* Alinha placar à direita já que removemos o contador */
+            justify-content: flex-end;
             margin-bottom: 20px;
             font-size: 0.85rem;
             color: var(--text-light);
@@ -234,19 +261,21 @@
             transform: scale(1.02);
         }
 
-        /* --- MODAL (POPUP) --- */
+        /* --- MODAL (GERAL) --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(5px);
-            display: none; /* Oculto por padrão */
+            display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
             animation: fadeInModal 0.3s ease;
         }
+        
+        .modal-overlay.visivel { display: flex; } /* Classe para forçar display flex */
 
         @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
 
@@ -258,7 +287,6 @@
             max-width: 400px;
             text-align: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            transform: scale(1);
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
@@ -267,7 +295,7 @@
         .modal-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
         .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 20px; }
 
-        .input-senha {
+        .input-generico {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border-color);
@@ -278,7 +306,7 @@
             text-align: center;
             transition: border 0.2s;
         }
-        .input-senha:focus { border-color: var(--accent); }
+        .input-generico:focus { border-color: var(--accent); }
 
         .modal-botoes { display: flex; gap: 10px; justify-content: center; }
 
@@ -293,6 +321,43 @@
         }
         .btn-cancelar { background-color: #f2f2f7; color: var(--text-main); }
         .btn-confirmar { background-color: var(--accent); color: white; }
+
+        /* ESTILOS ESPECÍFICOS DO LOGIN */
+        .grupo-radio {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
+        /* Esconde o radio button nativo e estiliza o label */
+        .grupo-radio input[type="radio"] { display: none; }
+        
+        .grupo-radio label {
+            padding: 10px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .grupo-radio input[type="radio"]:checked + label {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3);
+        }
+
+        .aviso-erro {
+            color: var(--error);
+            font-size: 0.8rem;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            min-height: 1.2em;
+        }
         
         @media (max-width: 900px) {
             .secao-pergunta { flex-direction: column; }
@@ -307,7 +372,37 @@
 </head>
 <body>
 
-    <div class="app-container">
+    <div id="modalLogin" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-titulo">Identificação</div>
+            <div class="modal-desc">Insira seus dados para começar.</div>
+            
+            <input type="text" id="inputNomeAluno" class="input-generico" placeholder="Primeiro Nome" maxlength="15">
+            <div id="erroNome" class="aviso-erro"></div>
+
+            <div class="modal-desc" style="margin-bottom:10px; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px;">Selecione sua turma</div>
+            
+            <div class="grupo-radio">
+                <input type="radio" id="serieA" name="serie" value="9º A">
+                <label for="serieA">A</label>
+                
+                <input type="radio" id="serieB" name="serie" value="9º B">
+                <label for="serieB">B</label>
+                
+                <input type="radio" id="serieC" name="serie" value="9º C">
+                <label for="serieC">C</label>
+            </div>
+
+            <button class="btn-modal btn-confirmar" style="width:100%" onclick="realizarLogin()">Entrar</button>
+        </div>
+    </div>
+
+    <div id="appContainer" class="app-container">
+
+        <div class="header-usuario">
+            <div id="badgeNome" class="badge-user bg-roxo"></div>
+            <div id="badgeSerie" class="badge-user bg-cinza"></div>
+        </div>
 
         <div>
             <div class="header-navegacao">
@@ -367,7 +462,7 @@
             <div class="modal-titulo">Resetar Histórico</div>
             <div class="modal-desc">Digite a senha do professor para apagar todo o progresso.</div>
             
-            <input type="password" id="inputSenha" class="input-senha" placeholder="Senha" inputmode="numeric">
+            <input type="password" id="inputSenha" class="input-generico" placeholder="Senha" inputmode="numeric">
             
             <div class="modal-botoes">
                 <button class="btn-modal btn-cancelar" onclick="fecharModalReset()">Cancelar</button>
@@ -377,6 +472,7 @@
     </div>
 
     <script>
+        // --- DADOS E VARIÁVEIS ---
         const f = (n, d) => `<div class='fracao'><span class='num'>${n}</span><span class='den'>${d}</span></div>`;
 
         const imagens = [
@@ -421,27 +517,97 @@
         let acertos = parseInt(localStorage.getItem('acertos')) || 0;
         let erros = parseInt(localStorage.getItem('erros')) || 0;
 
+        // --- SISTEMA DE LOGIN ---
+        
+        function checkLogin() {
+            const nomeSalvo = localStorage.getItem('alunoNome');
+            const serieSalva = localStorage.getItem('alunoSerie');
+
+            if (nomeSalvo && serieSalva) {
+                // Já está logado
+                aplicarDadosUsuario(nomeSalvo, serieSalva);
+                document.getElementById('modalLogin').classList.remove('visivel'); // Garante fechamento
+                mostrarApp();
+            } else {
+                // Precisa logar
+                document.getElementById('modalLogin').classList.add('visivel');
+            }
+        }
+
+        function realizarLogin() {
+            const inputNome = document.getElementById('inputNomeAluno');
+            const aviso = document.getElementById('erroNome');
+            let nome = inputNome.value.trim();
+            
+            // Validações
+            if (!nome) {
+                aviso.innerText = "Por favor, digite seu nome.";
+                return;
+            }
+            if (nome.includes(" ")) {
+                aviso.innerText = "Digite apenas o primeiro nome (uma palavra).";
+                return;
+            }
+            if (nome.length > 15) {
+                aviso.innerText = "O nome deve ter no máximo 15 letras.";
+                return;
+            }
+
+            // Verifica Série
+            const radioSelecionado = document.querySelector('input[name="serie"]:checked');
+            if (!radioSelecionado) {
+                aviso.innerText = "Selecione uma turma (A, B ou C).";
+                return;
+            }
+
+            const serie = radioSelecionado.value;
+
+            // Salva e entra
+            localStorage.setItem('alunoNome', nome);
+            localStorage.setItem('alunoSerie', serie);
+            
+            aplicarDadosUsuario(nome, serie);
+            
+            // Efeito visual de saída
+            document.getElementById('modalLogin').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('modalLogin').classList.remove('visivel');
+                mostrarApp();
+            }, 300);
+        }
+
+        function aplicarDadosUsuario(nome, serie) {
+            document.getElementById('badgeNome').innerText = nome;
+            document.getElementById('badgeSerie').innerText = serie;
+        }
+
+        function mostrarApp() {
+            document.getElementById('appContainer').style.opacity = '1';
+        }
+
+        // --- LÓGICA DO JOGO ---
+
         function salvarProgresso() {
             localStorage.setItem('indice', indice);
             localStorage.setItem('acertos', acertos);
             localStorage.setItem('erros', erros);
         }
 
-        // --- FUNÇÕES DO MODAL ---
+        // Modais de Reset
         function abrirModalReset() {
-            document.getElementById('modalReset').style.display = 'flex';
+            document.getElementById('modalReset').classList.add('visivel');
             document.getElementById('inputSenha').value = '';
             document.getElementById('inputSenha').focus();
         }
 
         function fecharModalReset() {
-            document.getElementById('modalReset').style.display = 'none';
+            document.getElementById('modalReset').classList.remove('visivel');
         }
 
         function confirmarReset() {
             const senha = document.getElementById('inputSenha').value;
             if (senha === "4241") {
-                localStorage.clear();
+                localStorage.clear(); // Limpa tudo, inclusive login
                 location.reload();
             } else {
                 alert("Senha incorreta.");
@@ -449,7 +615,6 @@
                 document.getElementById('inputSenha').focus();
             }
         }
-        // ------------------------
 
         function atualizarBotoesHeader() {
             const btnIntro = document.getElementById('btnIntro');
@@ -464,17 +629,16 @@
         }
 
         function atualizarBarraProgresso() {
-            // A barra aumenta baseada na QUANTIDADE de respostas dadas (Acertos + Erros)
             const respondidas = acertos + erros;
-            // Se preferir que a barra seja baseada em "quantas etapas passaram" (índice atual), use: 
-            // const respondidas = indice;
-            
             const porcentagem = (respondidas / questoes.length) * 100;
             const largura = porcentagem > 100 ? 100 : porcentagem;
             document.getElementById('barraFill').style.width = largura + '%';
         }
 
         function carregar() {
+            // Verifica Login antes de carregar conteúdo
+            checkLogin();
+
             atualizarBotoesHeader();
             atualizarBarraProgresso();
             document.getElementById('scoreC').innerText = acertos;
@@ -483,7 +647,7 @@
             if (indice >= questoes.length) {
                 document.querySelector('.secao-pergunta').innerHTML = "<div style='text-align:center; width:100%; padding:50px'><h2>Atividade Concluída!</h2><p>Você respondeu todas as questões.</p></div>";
                 document.getElementById('areaResposta').style.display = 'none';
-                document.querySelector('.rodape').style.display = 'flex'; // Mantém rodapé visível
+                document.querySelector('.rodape').style.display = 'flex';
                 return;
             }
 
@@ -532,7 +696,7 @@
             salvarProgresso();
             document.getElementById('scoreC').innerText = acertos;
             document.getElementById('scoreE').innerText = erros;
-            atualizarBarraProgresso(); // Atualiza a barra assim que responde
+            atualizarBarraProgresso(); 
 
             document.getElementById('textoResolucao').innerHTML = q.resolucao;
         }
