@@ -74,7 +74,6 @@
         .bg-cinza-claro { background-color: var(--btn-gray-light); } 
 
         /* INTERAÇÃO VERMELHA (HOVER) */
-        /* Aplica o efeito vermelho e pulo nos botões informativos */
         .hover-red:hover {
             background-color: var(--error) !important;
             transform: scale(1.05);
@@ -243,7 +242,7 @@
 
         /* BOTÕES DE AÇÃO (RESET E HISTÓRICO) */
         .btn-acao-rodape {
-            background-color: var(--btn-gray-dark); /* Cinza do Reset */
+            background-color: var(--btn-gray-dark);
             color: white;
             border: none;
             padding: 10px 20px;
@@ -255,7 +254,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         
-        /* Hover Vermelho para ambos */
         .btn-acao-rodape:hover {
             background-color: var(--error);
             transform: scale(1.02);
@@ -508,44 +506,152 @@
     <script>
         const f = (n, d) => `<div class='fracao'><span class='num'>${n}</span><span class='den'>${d}</span></div>`;
 
-        // Ícones SVG como Strings
+        // Ícones SVG
         const iconCadeadoAberto = `<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>`;
         const iconCadeadoFechado = `<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>`;
 
-        const imagens = [
-            "https://raw.githubusercontent.com/interativosweb/fra02/main/Site_Fracoes/img1.png",
-            "https://raw.githubusercontent.com/interativosweb/fra02/main/Site_Fracoes/img2.png",
-            "https://raw.githubusercontent.com/interativosweb/fra02/main/Site_Fracoes/img3.png"
+        // CONFIGURAÇÃO DAS IMAGENS DO GITHUB
+        // Aponta para a pasta 'arquivos'
+        const repoBase = "https://raw.githubusercontent.com/interativosweb/part2/main/arquivos/";
+
+        // LISTA 1: INTRODUÇÃO (6 Questões - img01intro.png até img06intro.png)
+        const questoesIntro = [
+            {
+                pergunta: "Questão 1: Observe a imagem.",
+                img: repoBase + "img01intro.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 0,
+                resolucao: "Resolução detalhada da questão 1 da introdução."
+            },
+            {
+                pergunta: "Questão 2: Observe a imagem.",
+                img: repoBase + "img02intro.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 1,
+                resolucao: "Resolução detalhada da questão 2 da introdução."
+            },
+            {
+                pergunta: "Questão 3: Observe a imagem.",
+                img: repoBase + "img03intro.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 2,
+                resolucao: "Resolução detalhada da questão 3 da introdução."
+            },
+            {
+                pergunta: "Questão 4: Observe a imagem.",
+                img: repoBase + "img04intro.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 3,
+                resolucao: "Resolução detalhada da questão 4 da introdução."
+            },
+            {
+                pergunta: "Questão 5: Observe a imagem.",
+                img: repoBase + "img05intro.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 0,
+                resolucao: "Resolução detalhada da questão 5 da introdução."
+            },
+            {
+                pergunta: "Questão 6: Observe a imagem.",
+                img: repoBase + "img06intro.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 1,
+                resolucao: "Resolução detalhada da questão 6 da introdução."
+            }
         ];
 
-        const questoes = [
+        // LISTA 2: ATIVIDADE COMPLEMENTAR (13 Questões - comp01.png até comp13.png)
+        const questoesComp = [
             {
-                pergunta: "Uma pizza foi dividida em <b>8 fatias</b>. Se comemos <b>3 pedaços</b>, qual fração representa a parte comida?",
-                img: imagens[0],
-                opcoes: [f(1,3), f(3,8), f(5,8), f(8,3)],
-                correta: 1,
-                resolucao: `Para escrever a fração, colocamos o total de pedaços em baixo (8) e os pedaços comidos em cima (3). Resposta: ${f(3,8)}.`
-            },
-            {
-                pergunta: "Quanto é " + f(1,2) + " + " + f(1,3) + "?",
-                img: imagens[1],
-                opcoes: [f(2,5), f(1,5), f(5,6), f(1,6)],
-                correta: 2,
-                resolucao: `Multiplicamos cruzado (borboleta) e depois os de baixo. (3+2)/6 = ${f(5,6)}.`
-            },
-            {
-                pergunta: "Qual o resultado de " + f(3,4) + " - " + f(1,2) + "?",
-                img: imagens[2],
-                opcoes: [f(1,4), f(2,4), f(3,2), f(1,2)],
+                pergunta: "Complementar 1: Analise a figura.",
+                img: repoBase + "comp01.png",
+                opcoes: ["A", "B", "C", "D"],
                 correta: 0,
-                resolucao: `${f(1,2)} é igual a ${f(2,4)}. Subtraindo: ${f(3,4)} - ${f(2,4)} = ${f(1,4)}.`
+                resolucao: "Explicação da questão complementar 1."
             },
             {
-                pergunta: "Soma simples: " + f(2,7) + " + " + f(3,7) + ". Quanto dá?",
-                img: imagens[0],
-                opcoes: [f(5,14), f(6,7), f(5,7), f(1,7)],
+                pergunta: "Complementar 2: Analise a figura.",
+                img: repoBase + "comp02.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 1,
+                resolucao: "Explicação da questão complementar 2."
+            },
+            {
+                pergunta: "Complementar 3: Analise a figura.",
+                img: repoBase + "comp03.png",
+                opcoes: ["A", "B", "C", "D"],
                 correta: 2,
-                resolucao: `Denominadores iguais, repete o de baixo e soma os de cima: 2+3=5. Resposta: ${f(5,7)}.`
+                resolucao: "Explicação da questão complementar 3."
+            },
+            {
+                pergunta: "Complementar 4: Analise a figura.",
+                img: repoBase + "comp04.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 3,
+                resolucao: "Explicação da questão complementar 4."
+            },
+            {
+                pergunta: "Complementar 5: Analise a figura.",
+                img: repoBase + "comp05.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 0,
+                resolucao: "Explicação da questão complementar 5."
+            },
+            {
+                pergunta: "Complementar 6: Analise a figura.",
+                img: repoBase + "comp06.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 1,
+                resolucao: "Explicação da questão complementar 6."
+            },
+            {
+                pergunta: "Complementar 7: Analise a figura.",
+                img: repoBase + "comp07.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 2,
+                resolucao: "Explicação da questão complementar 7."
+            },
+            {
+                pergunta: "Complementar 8: Analise a figura.",
+                img: repoBase + "comp08.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 3,
+                resolucao: "Explicação da questão complementar 8."
+            },
+            {
+                pergunta: "Complementar 9: Analise a figura.",
+                img: repoBase + "comp09.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 0,
+                resolucao: "Explicação da questão complementar 9."
+            },
+            {
+                pergunta: "Complementar 10: Analise a figura.",
+                img: repoBase + "comp10.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 1,
+                resolucao: "Explicação da questão complementar 10."
+            },
+            {
+                pergunta: "Complementar 11: Analise a figura.",
+                img: repoBase + "comp11.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 2,
+                resolucao: "Explicação da questão complementar 11."
+            },
+            {
+                pergunta: "Complementar 12: Analise a figura.",
+                img: repoBase + "comp12.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 3,
+                resolucao: "Explicação da questão complementar 12."
+            },
+            {
+                pergunta: "Complementar 13: Analise a figura.",
+                img: repoBase + "comp13.png",
+                opcoes: ["A", "B", "C", "D"],
+                correta: 0,
+                resolucao: "Explicação da questão complementar 13."
             }
         ];
 
@@ -653,10 +759,10 @@
             } else {
                 // COMPLEMENTAR: INTRO vira Cinza/Fechado. ATIV vira Verde/Aberto.
                 btnIntro.classList.add('bg-cinza-claro', 'hover-red');
-                btnIntro.innerHTML = `${iconCadeadoFechado} Introdução`; // Cadeado fechado conforme pedido
+                btnIntro.innerHTML = `${iconCadeadoFechado} Introdução`; 
                 
                 btnComp.classList.add('bg-verde-ativo');
-                btnComp.innerHTML = `${iconCadeadoAberto} Atividade complementar`; // Cadeado abre
+                btnComp.innerHTML = `${iconCadeadoAberto} Atividade complementar`; 
             }
         }
 
@@ -671,9 +777,12 @@
         }
 
         function atualizarBarraProgresso() {
+            // Define qual lista estamos usando para calcular o total
+            const listaAtual = modoAtual === 'intro' ? questoesIntro : questoesComp;
             const placarAtual = modoAtual === 'intro' ? placarIntro : placarComp;
+            
             const respondidas = placarAtual.acertos + placarAtual.erros;
-            const porcentagem = (respondidas / questoes.length) * 100;
+            const porcentagem = (respondidas / listaAtual.length) * 100;
             const largura = porcentagem > 100 ? 100 : porcentagem;
             document.getElementById('barraFill').style.width = largura + '%';
         }
@@ -682,25 +791,33 @@
             checkLogin();
             atualizarBotoesHeader();
             atualizarPlacarVisual();
-            atualizarBarraProgresso();
+            
+            // SELEÇÃO DA LISTA DE QUESTÕES
+            const listaQuestao = modoAtual === 'intro' ? questoesIntro : questoesComp;
 
-            if (indice >= questoes.length) {
+            // Se acabou a lista atual
+            if (indice >= listaQuestao.length) {
                 if (modoAtual === 'intro') {
-                    // TRANSIÇÃO SILENCIOSA E AUTOMÁTICA
+                    // Fim da Introdução -> Passa para Complementar
                     modoAtual = 'complementar';
                     indice = 0; 
                     salvarProgresso();
-                    carregar(); // Recarrega estado novo
+                    carregar(); 
                 } else {
-                    // Fim total
+                    // Fim de tudo
                     document.querySelector('.secao-pergunta').innerHTML = "<div style='text-align:center; width:100%; padding:50px'><h2>Atividade Complementar Concluída!</h2><p>Parabéns por finalizar todo o percurso.</p></div>";
                     document.getElementById('areaResposta').style.display = 'none';
                     document.querySelector('.rodape').style.display = 'flex';
+                    // Força a barra em 100% no final
+                    document.getElementById('barraFill').style.width = '100%';
                 }
                 return;
             }
+            
+            // Atualiza barra de progresso normalmente
+            atualizarBarraProgresso();
 
-            const q = questoes[indice];
+            const q = listaQuestao[indice];
             document.getElementById('areaResposta').style.display = 'none';
             document.getElementById('btnProximo').style.display = 'none';
             
@@ -720,7 +837,8 @@
         }
 
         function responder(i, btn) {
-            const q = questoes[indice];
+            const listaQuestao = modoAtual === 'intro' ? questoesIntro : questoesComp;
+            const q = listaQuestao[indice];
             const todos = document.querySelectorAll('.btn-opcao');
             todos.forEach(b => b.disabled = true);
             
