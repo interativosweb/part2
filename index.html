@@ -277,9 +277,8 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            /* Fundo mais escuro e blur maior conforme pedido */
             background-color: rgba(0, 0, 0, 0.6); 
-            backdrop-filter: blur(15px); /* AUMENTADO O BLUR */
+            backdrop-filter: blur(15px); 
             display: none;
             justify-content: center;
             align-items: center;
@@ -303,19 +302,21 @@
             position: relative;
         }
 
-        /* Estilo específico para o popup da fase (com animação) */
+        /* --- ESTILOS DO POPUP DA FASE (AJUSTADO) --- */
         .modal-box-fase {
-            margin-top: 60px; /* Margem para não cortar o topo do fogo */
-            padding-top: 40px;
-            overflow: visible; /* Garante que o fogo possa sair da caixa */
+            margin-top: 100px; /* Margem superior para não cortar o fogo */
+            padding-top: 80px; /* Empurra o texto para baixo, longe do fogo */
+            padding-bottom: 50px;
+            overflow: visible; 
+            max-width: 550px; /* Caixa mais larga */
         }
 
         .animacao-foguinho {
             position: absolute;
-            top: -190px; /* MUITO MAIS PRA CIMA */
+            top: -280px; /* JOGUEI MUITO PRA CIMA */
             left: 50%;
             transform: translateX(-50%);
-            width: 220px;
+            width: 250px; /* Fogo maior */
             height: auto;
             pointer-events: none; 
             z-index: 20;
@@ -329,20 +330,27 @@
 
         /* ESTILO DO TÍTULO DE FASE MAIOR */
         .titulo-fase {
-            font-size: 1.8rem; /* Bem maior */
+            font-size: 2.2rem; /* Aumentado */
             font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             line-height: 1.2;
         }
         
-        /* ESTILO DO NOME EM DESTAQUE */
+        /* ESTILO DO NOME EM DESTAQUE GIGANTE */
         .nome-destaque {
             color: var(--accent);
-            font-size: 2.2rem; /* Gigante */
+            font-size: 3rem; /* Gigante */
             text-transform: uppercase;
-            display: block; /* Pula linha para destacar mais */
-            margin-top: 5px;
+            display: block; 
+            margin-top: 10px;
+        }
+        
+        .desc-fase {
+            font-size: 1.3rem; /* Texto descritivo maior */
+            color: var(--text-light);
+            margin-bottom: 30px;
+            line-height: 1.5;
         }
 
         .input-generico {
@@ -377,10 +385,15 @@
             background-color: var(--success);
             color: white;
             box-shadow: 0 4px 15px rgba(52, 199, 89, 0.4);
-            font-size: 1.2rem;
-            padding: 15px;
+            font-size: 1.4rem; /* Botão maior */
+            padding: 18px;
+            border-radius: 50px;
             margin-top: 10px;
             width: 100%;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: none;
+            font-weight: 700;
         }
         .btn-fase:hover { background-color: #2da84e; transform: scale(1.02); }
 
@@ -439,7 +452,13 @@
             .grupo-selecao label { padding: 8px 10px; font-size: 0.8rem; }
             .header-unificado { gap: 10px; }
             .top-item { padding: 10px 15px; font-size: 0.8rem; }
-            .animacao-foguinho { width: 180px; top: -140px; } /* Ajuste mobile */
+            
+            /* Ajustes Mobile para o Popup */
+            .modal-box-fase { margin-top: 60px; padding-top: 50px; width: 95%; }
+            .animacao-foguinho { width: 180px; top: -160px; }
+            .titulo-fase { font-size: 1.5rem; }
+            .nome-destaque { font-size: 2rem; }
+            .desc-fase { font-size: 1rem; }
         }
     </style>
 </head>
@@ -483,12 +502,12 @@
                 <span id="nomeAlunoFase" class="nome-destaque">Aluno</span>
             </div>
             
-            <div class="modal-desc" style="font-size: 1.1rem;">
+            <div class="desc-fase">
                 Você concluiu a Introdução com sucesso!
                 <br>Está preparado para o próximo desafio?
             </div>
             
-            <button class="btn-modal btn-fase" onclick="avancarFase()">Iniciar Nova Fase</button>
+            <button class="btn-fase" onclick="avancarFase()">Fazer atividade</button>
         </div>
     </div>
 
