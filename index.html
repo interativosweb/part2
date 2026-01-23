@@ -9,15 +9,16 @@
             --bg-page: #f5f5f7;
             --text-main: #1d1d1f;
             --text-light: #86868b;
-            --border-color: transparent; /* LINHAS INVISÍVEIS */
-            --accent: #0071e3;
+            --border-color: transparent;
+            --accent: #0071e3; /* Azul */
             --success: #34c759; /* Verde */
             --error: #ff3b30;
+            --orange: #ff9500;
             --radius: 12px;
             
             /* Cores dos Botões */
             --btn-reset-gray: #8e8e93; /* Cinza Escuro (Resetar) */
-            --btn-top-gray: #b3b3b8;   /* Cinza Mais Claro (Topos) */
+            --btn-top-gray: #aeb0b5;   /* Cinza Mais Claro (Topos) */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -71,8 +72,7 @@
 
         /* CORES DO HEADER */
         .bg-verde-ativo { background-color: var(--success); }
-        
-        /* Cor para Atividade, Nome e Série (Cinza mais claro que o reset) */
+        .bg-azul-ativo { background-color: var(--accent); } /* Novo Azul para Intro completada */
         .bg-cinza-claro { background-color: var(--btn-top-gray); } 
 
         /* --- BARRA DE PROGRESSO --- */
@@ -109,7 +109,7 @@
             display: flex;
             gap: 50px;
             align-items: flex-start;
-            border-bottom: 1px solid var(--border-color); /* Agora é transparente */
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 50px;
         }
 
@@ -161,7 +161,7 @@
 
         .btn-opcao {
             background-color: transparent;
-            border: 1px solid #d2d2d7; /* Borda dos botões mantém visível */
+            border: 1px solid #d2d2d7;
             border-radius: var(--radius);
             aspect-ratio: 1 / 1;
             font-size: 1.6rem;
@@ -173,10 +173,11 @@
             justify-content: center;
         }
 
+        /* HOVER AGORA É VERDE */
         .btn-opcao:hover:not(:disabled) {
-            background-color: var(--accent);
-            color: var(--bg-page);
-            border-color: var(--accent);
+            background-color: var(--success); /* Verde */
+            color: white; /* Texto branco para contraste */
+            border-color: var(--success);
             transform: translateY(-2px);
         }
 
@@ -187,7 +188,7 @@
         /* BOTÃO PRÓXIMO */
         .area-botao-proximo { margin-top: 10px; height: 50px; }
         .btn-proximo {
-            background-color: var(--success);
+            background-color: var(--success); /* Verde */
             color: white;
             border: none;
             padding: 12px 25px;
@@ -212,16 +213,22 @@
         .titulo-feedback { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; display: block; }
         .texto-resolucao { font-size: 1.1rem; line-height: 1.6; color: var(--text-main); margin-bottom: 20px; }
 
-        /* --- RODAPÉ E BOTÃO RESET --- */
+        /* --- RODAPÉ E BOTÕES INFERIORES --- */
         .rodape {
             margin-top: 40px;
             text-align: center;
-            border-top: 1px solid var(--border-color); /* Agora é transparente */
+            border-top: 1px solid var(--border-color);
             padding-top: 30px;
             display: flex;
             flex-direction: column;
             gap: 15px;
             align-items: center;
+        }
+        
+        .botoes-rodape-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
         }
 
         .texto-creditos {
@@ -229,7 +236,7 @@
             color: var(--text-light);
         }
 
-        /* BOTÃO RESETAR (CINZA MAIS ESCURO) */
+        /* BOTÃO RESETAR (CINZA ESCURO) */
         .btn-reset {
             background-color: var(--btn-reset-gray);
             color: white;
@@ -242,12 +249,27 @@
             transition: transform 0.2s, background-color 0.2s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .btn-reset:hover {
-            background-color: #7a7a7e;
+        .btn-reset:hover { background-color: #7a7a7e; transform: scale(1.02); }
+
+        /* BOTÃO VER HISTÓRICO (CINZA CLARO, HOVER COR) */
+        .btn-historico {
+            background-color: var(--btn-top-gray); /* Cinza Claro */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .btn-historico:hover {
+            background-color: var(--accent); /* Azul ao passar o mouse */
             transform: scale(1.02);
         }
 
-        /* --- MODAL --- */
+        /* --- MODAIS --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -274,6 +296,7 @@
             text-align: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
         }
 
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -309,52 +332,49 @@
         .btn-cancelar { background-color: #f2f2f7; color: var(--text-main); }
         .btn-confirmar { background-color: var(--accent); color: white; }
 
-        .grupo-selecao {
+        /* Estilos específicos para o Modal de Histórico */
+        .historico-row {
             display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #e5e5ea;
         }
-        
+        .historico-row:last-child { border-bottom: none; }
+        .hist-label { font-weight: 600; color: var(--text-main); text-align: left; }
+        .hist-val { font-family: monospace; font-size: 1.1rem; }
+        .val-verde { color: var(--success); }
+        .val-vermelho { color: var(--error); }
+
+        /* SELEÇÃO LOGIN */
+        .grupo-selecao { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .grupo-selecao input[type="radio"] { display: none; }
-        
         .grupo-selecao label {
             padding: 10px 15px;
             border: 1px solid #d2d2d7;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s;
             color: var(--text-light);
             font-weight: 600;
             font-size: 0.9rem;
             background: white;
         }
-
         .grupo-selecao label:hover {
-            background-color: var(--accent);
-            color: white;
-            border-color: var(--accent);
-            transform: scale(1.1);
-            box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3);
+            background-color: var(--accent); color: white; border-color: var(--accent);
+            transform: scale(1.1); box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3);
         }
-
         .grupo-selecao input[type="radio"]:checked + label {
-            background-color: var(--accent);
-            color: white;
-            border-color: var(--accent);
-            transform: scale(1.05);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: var(--accent); color: white; border-color: var(--accent);
+            transform: scale(1.05); box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .aviso-erro {
-            color: var(--error);
-            font-size: 0.8rem;
-            margin-top: 5px;
-            min-height: 1.2em;
-            font-weight: 600;
-        }
+        .aviso-erro { color: var(--error); font-size: 0.8rem; margin-top: 5px; min-height: 1.2em; font-weight: 600; }
         
+        .btn-fechar-modal {
+            position: absolute; top: 10px; right: 15px;
+            background: none; border: none; font-size: 1.5rem; color: var(--text-light); cursor: pointer;
+        }
+
         @media (max-width: 900px) {
             .secao-pergunta { flex-direction: column; }
             .grid-opcoes { grid-template-columns: repeat(4, 1fr); }
@@ -381,29 +401,17 @@
             
             <div class="modal-subtitulo">Qual seu ano?</div>
             <div class="grupo-selecao">
-                <input type="radio" id="ano6" name="ano" value="6º Ano">
-                <label for="ano6">6º Ano</label>
-                
-                <input type="radio" id="ano7" name="ano" value="7º Ano">
-                <label for="ano7">7º Ano</label>
-                
-                <input type="radio" id="ano8" name="ano" value="8º Ano">
-                <label for="ano8">8º Ano</label>
-
-                <input type="radio" id="ano9" name="ano" value="9º Ano">
-                <label for="ano9">9º Ano</label>
+                <input type="radio" id="ano6" name="ano" value="6º Ano"><label for="ano6">6º Ano</label>
+                <input type="radio" id="ano7" name="ano" value="7º Ano"><label for="ano7">7º Ano</label>
+                <input type="radio" id="ano8" name="ano" value="8º Ano"><label for="ano8">8º Ano</label>
+                <input type="radio" id="ano9" name="ano" value="9º Ano"><label for="ano9">9º Ano</label>
             </div>
 
             <div class="modal-subtitulo">Qual sua turma?</div>
             <div class="grupo-selecao">
-                <input type="radio" id="serieA" name="serie" value="A">
-                <label for="serieA">A</label>
-                
-                <input type="radio" id="serieB" name="serie" value="B">
-                <label for="serieB">B</label>
-                
-                <input type="radio" id="serieC" name="serie" value="C">
-                <label for="serieC">C</label>
+                <input type="radio" id="serieA" name="serie" value="A"><label for="serieA">A</label>
+                <input type="radio" id="serieB" name="serie" value="B"><label for="serieB">B</label>
+                <input type="radio" id="serieC" name="serie" value="C"><label for="serieC">C</label>
             </div>
 
             <div id="erroNome" class="aviso-erro"></div>
@@ -411,27 +419,46 @@
         </div>
     </div>
 
+    <div id="modalHistorico" class="modal-overlay">
+        <div class="modal-box">
+            <button class="btn-fechar-modal" onclick="fecharModalHistorico()">&times;</button>
+            <div class="modal-titulo">Histórico de Desempenho</div>
+            
+            <div class="modal-subtitulo" style="text-align:left; color:var(--success)">INTRODUÇÃO</div>
+            <div class="historico-row">
+                <span class="hist-label">Acertos</span>
+                <span class="hist-val val-verde" id="histIntroAcertos">0</span>
+            </div>
+            <div class="historico-row">
+                <span class="hist-label">Erros</span>
+                <span class="hist-val val-vermelho" id="histIntroErros">0</span>
+            </div>
+
+            <div class="modal-subtitulo" style="text-align:left; color:var(--accent); margin-top:20px;">ATIVIDADE COMPLEMENTAR</div>
+            <div class="historico-row">
+                <span class="hist-label">Acertos</span>
+                <span class="hist-val val-verde" id="histCompAcertos">0</span>
+            </div>
+            <div class="historico-row">
+                <span class="hist-label">Erros</span>
+                <span class="hist-val val-vermelho" id="histCompErros">0</span>
+            </div>
+        </div>
+    </div>
+
     <div id="appContainer" class="app-container">
 
         <div class="header-unificado">
-            
             <div class="top-item bg-verde-ativo" id="btnIntro">
                 <svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>
                 Introdução
             </div>
-
             <div class="top-item bg-cinza-claro" id="btnComplementar">
                 <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>
                 Atividade complementar
             </div>
-
-            <div id="badgeNome" class="top-item bg-cinza-claro">
-                Aluno
-            </div>
-
-            <div id="badgeSerie" class="top-item bg-cinza-claro">
-                Série
-            </div>
+            <div id="badgeNome" class="top-item bg-cinza-claro">Aluno</div>
+            <div id="badgeSerie" class="top-item bg-cinza-claro">Série</div>
         </div>
 
         <div class="barra-progresso-container">
@@ -468,7 +495,10 @@
         </section>
 
         <div class="rodape">
-            <button class="btn-reset" onclick="abrirModalReset()">Resetar Histórico</button>
+            <div class="botoes-rodape-container">
+                <button class="btn-reset" onclick="abrirModalReset()">Resetar Histórico</button>
+                <button class="btn-historico" onclick="abrirModalHistorico()">Ver Histórico</button>
+            </div>
             <span class="texto-creditos">Desenvolvido por Gilberto Fernandes - Matemática [Atividade Professora Simone Vieira]</span>
         </div>
 
@@ -478,9 +508,7 @@
         <div class="modal-box">
             <div class="modal-titulo">Resetar Histórico</div>
             <div class="modal-desc">Digite a senha do professor para apagar todo o progresso.</div>
-            
             <input type="password" id="inputSenha" class="input-generico" placeholder="Senha" inputmode="numeric">
-            
             <div class="modal-botoes">
                 <button class="btn-modal btn-cancelar" onclick="fecharModalReset()">Cancelar</button>
                 <button class="btn-modal btn-confirmar" onclick="confirmarReset()">Confirmar</button>
@@ -497,6 +525,7 @@
             "https://raw.githubusercontent.com/interativosweb/fra02/main/Site_Fracoes/img3.png"
         ];
 
+        // ATENÇÃO: Substituído "mais" por "+" e "menos" por "-"
         const questoes = [
             {
                 pergunta: "Uma pizza foi dividida em <b>8 fatias</b>. Se comemos <b>3 pedaços</b>, qual fração representa a parte comida?",
@@ -506,14 +535,14 @@
                 resolucao: `Para escrever a fração, colocamos o total de pedaços em baixo (8) e os pedaços comidos em cima (3). Resposta: ${f(3,8)}.`
             },
             {
-                pergunta: "Quanto é " + f(1,2) + " mais " + f(1,3) + "?",
+                pergunta: "Quanto é " + f(1,2) + " + " + f(1,3) + "?",
                 img: imagens[1],
                 opcoes: [f(2,5), f(1,5), f(5,6), f(1,6)],
                 correta: 2,
                 resolucao: `Multiplicamos cruzado (borboleta) e depois os de baixo. (3+2)/6 = ${f(5,6)}.`
             },
             {
-                pergunta: "Qual o resultado de " + f(3,4) + " menos " + f(1,2) + "?",
+                pergunta: "Qual o resultado de " + f(3,4) + " - " + f(1,2) + "?",
                 img: imagens[2],
                 opcoes: [f(1,4), f(2,4), f(3,2), f(1,2)],
                 correta: 0,
@@ -528,10 +557,13 @@
             }
         ];
 
-        let modoAtual = 'intro';
+        // DADOS
+        let modoAtual = localStorage.getItem('modoAtual') || 'intro'; // 'intro' ou 'complementar'
         let indice = parseInt(localStorage.getItem('indice')) || 0;
-        let acertos = parseInt(localStorage.getItem('acertos')) || 0;
-        let erros = parseInt(localStorage.getItem('erros')) || 0;
+        
+        // Placar Individual para cada Modo
+        let placarIntro = JSON.parse(localStorage.getItem('placarIntro')) || { acertos: 0, erros: 0 };
+        let placarComp = JSON.parse(localStorage.getItem('placarComp')) || { acertos: 0, erros: 0 };
 
         function checkLogin() {
             const nomeSalvo = localStorage.getItem('alunoNome');
@@ -550,27 +582,23 @@
             const inputNome = document.getElementById('inputNomeAluno');
             const aviso = document.getElementById('erroNome');
             let nome = inputNome.value.trim();
-            
             aviso.innerText = ""; 
 
             if (!nome) { aviso.innerText = "Por favor, digite seu nome."; return; }
             if (nome.includes(" ")) { aviso.innerText = "Digite apenas o primeiro nome."; return; }
             if (nome.length > 15) { aviso.innerText = "O nome deve ter no máximo 15 letras."; return; }
 
-            // Lógica de Maiúscula na primeira letra
+            // Nome: Primeira Maiúscula
             nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
 
             const anoSelecionado = document.querySelector('input[name="ano"]:checked');
             if (!anoSelecionado) { aviso.innerText = "Selecione o seu Ano escolar."; return; }
-
             const turmaSelecionada = document.querySelector('input[name="serie"]:checked');
             if (!turmaSelecionada) { aviso.innerText = "Selecione a sua Turma."; return; }
 
             const serieCompleta = `${anoSelecionado.value} ${turmaSelecionada.value}`; 
-
             localStorage.setItem('alunoNome', nome);
             localStorage.setItem('alunoSerie', serieCompleta);
-            
             aplicarDadosUsuario(nome, serieCompleta);
             
             document.getElementById('modalLogin').style.opacity = '0';
@@ -590,48 +618,72 @@
         }
 
         function salvarProgresso() {
+            localStorage.setItem('modoAtual', modoAtual);
             localStorage.setItem('indice', indice);
-            localStorage.setItem('acertos', acertos);
-            localStorage.setItem('erros', erros);
+            localStorage.setItem('placarIntro', JSON.stringify(placarIntro));
+            localStorage.setItem('placarComp', JSON.stringify(placarComp));
         }
 
+        // Modais Reset e Histórico
         function abrirModalReset() {
             document.getElementById('modalReset').classList.add('visivel');
             document.getElementById('inputSenha').value = '';
             document.getElementById('inputSenha').focus();
         }
-
-        function fecharModalReset() {
-            document.getElementById('modalReset').classList.remove('visivel');
-        }
-
+        function fecharModalReset() { document.getElementById('modalReset').classList.remove('visivel'); }
+        
         function confirmarReset() {
-            const senha = document.getElementById('inputSenha').value;
-            if (senha === "4241") {
-                localStorage.clear(); 
-                location.reload();
-            } else {
-                alert("Senha incorreta.");
-                document.getElementById('inputSenha').value = '';
-                document.getElementById('inputSenha').focus();
-            }
+            if (document.getElementById('inputSenha').value === "4241") {
+                localStorage.clear(); location.reload();
+            } else { alert("Senha incorreta."); }
         }
 
+        function abrirModalHistorico() {
+            document.getElementById('histIntroAcertos').innerText = placarIntro.acertos;
+            document.getElementById('histIntroErros').innerText = placarIntro.erros;
+            document.getElementById('histCompAcertos').innerText = placarComp.acertos;
+            document.getElementById('histCompErros').innerText = placarComp.erros;
+            document.getElementById('modalHistorico').classList.add('visivel');
+        }
+        function fecharModalHistorico() { document.getElementById('modalHistorico').classList.remove('visivel'); }
+
+        // Atualização Visual
         function atualizarBotoesHeader() {
             const btnIntro = document.getElementById('btnIntro');
             const btnComp = document.getElementById('btnComplementar');
             
+            // Remove todas as cores primeiro
+            btnIntro.className = 'top-item';
+            btnComp.className = 'top-item';
+
             if (modoAtual === 'intro') {
-                btnIntro.className = 'top-item bg-verde-ativo';
-                btnComp.className = 'top-item bg-cinza-claro'; 
+                btnIntro.classList.add('bg-verde-ativo'); // Verde
+                btnComp.classList.add('bg-cinza-claro');  // Cinza
             } else {
-                btnIntro.className = 'top-item bg-cinza-claro'; // Quando inativo, fica cinza claro
-                btnComp.className = 'top-item bg-verde-ativo';
+                // Modo Complementar
+                btnIntro.classList.add('bg-azul-ativo');  // AZUL (conforme pedido)
+                btnComp.classList.add('bg-verde-ativo');  // VERDE (ativo)
+            }
+            
+            // Outros botões sempre cinza claro
+            document.getElementById('badgeNome').className = 'top-item bg-cinza-claro';
+            document.getElementById('badgeSerie').className = 'top-item bg-cinza-claro';
+        }
+
+        function atualizarPlacarVisual() {
+            // Mostra o placar da etapa atual
+            if (modoAtual === 'intro') {
+                document.getElementById('scoreC').innerText = placarIntro.acertos;
+                document.getElementById('scoreE').innerText = placarIntro.erros;
+            } else {
+                document.getElementById('scoreC').innerText = placarComp.acertos;
+                document.getElementById('scoreE').innerText = placarComp.erros;
             }
         }
 
         function atualizarBarraProgresso() {
-            const respondidas = acertos + erros;
+            const placarAtual = modoAtual === 'intro' ? placarIntro : placarComp;
+            const respondidas = placarAtual.acertos + placarAtual.erros;
             const porcentagem = (respondidas / questoes.length) * 100;
             const largura = porcentagem > 100 ? 100 : porcentagem;
             document.getElementById('barraFill').style.width = largura + '%';
@@ -640,14 +692,24 @@
         function carregar() {
             checkLogin();
             atualizarBotoesHeader();
+            atualizarPlacarVisual();
             atualizarBarraProgresso();
-            document.getElementById('scoreC').innerText = acertos;
-            document.getElementById('scoreE').innerText = erros;
 
             if (indice >= questoes.length) {
-                document.querySelector('.secao-pergunta').innerHTML = "<div style='text-align:center; width:100%; padding:50px'><h2>Atividade Concluída!</h2><p>Você respondeu todas as questões.</p></div>";
-                document.getElementById('areaResposta').style.display = 'none';
-                document.querySelector('.rodape').style.display = 'flex';
+                // Se acabou as questões
+                if (modoAtual === 'intro') {
+                    // Transição Automática para Atividade Complementar
+                    alert("Introdução Concluída! Iniciando Atividade Complementar.");
+                    modoAtual = 'complementar';
+                    indice = 0; // Reinicia índice para as novas questões (usando as mesmas por enquanto)
+                    salvarProgresso();
+                    carregar(); // Recarrega com novo estado
+                } else {
+                    // Fim total
+                    document.querySelector('.secao-pergunta').innerHTML = "<div style='text-align:center; width:100%; padding:50px'><h2>Atividade Complementar Concluída!</h2><p>Parabéns por finalizar todo o percurso.</p></div>";
+                    document.getElementById('areaResposta').style.display = 'none';
+                    document.querySelector('.rodape').style.display = 'flex';
+                }
                 return;
             }
 
@@ -677,16 +739,18 @@
             
             document.getElementById('btnProximo').style.display = 'block';
             document.getElementById('areaResposta').style.display = 'block';
-
             const titulo = document.getElementById('tituloFeedback');
 
+            // Define qual placar atualizar
+            let placarAtual = modoAtual === 'intro' ? placarIntro : placarComp;
+
             if (i === q.correta) {
-                acertos++;
+                placarAtual.acertos++;
                 btn.classList.add('certo');
                 titulo.innerText = "Resposta Correta!";
                 titulo.style.color = "var(--success)";
             } else {
-                erros++;
+                placarAtual.erros++;
                 btn.classList.add('errado');
                 todos[q.correta].classList.add('certo'); 
                 titulo.innerText = "Resposta Incorreta";
@@ -694,25 +758,16 @@
             }
 
             salvarProgresso();
-            document.getElementById('scoreC').innerText = acertos;
-            document.getElementById('scoreE').innerText = erros;
+            atualizarPlacarVisual();
             atualizarBarraProgresso(); 
-
             document.getElementById('textoResolucao').innerHTML = q.resolucao;
         }
 
         function proximaQuestao() {
-            if (indice < questoes.length - 1) {
-                indice++;
-                salvarProgresso();
-                carregar();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                alert(`Fim da Atividade.\nAcertos: ${acertos}\nErros: ${erros}`);
-                indice++; 
-                salvarProgresso();
-                carregar(); 
-            }
+            indice++;
+            salvarProgresso();
+            carregar();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         window.onload = carregar;
