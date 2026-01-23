@@ -302,21 +302,21 @@
             position: relative;
         }
 
-        /* --- ESTILOS DO POPUP DA FASE (AJUSTADO) --- */
+        /* --- ESTILOS DO POPUP DA FASE --- */
         .modal-box-fase {
-            margin-top: 100px; /* Margem superior para não cortar o fogo */
-            padding-top: 80px; /* Empurra o texto para baixo, longe do fogo */
+            margin-top: 100px;
+            padding-top: 80px; 
             padding-bottom: 50px;
             overflow: visible; 
-            max-width: 550px; /* Caixa mais larga */
+            max-width: 550px; 
         }
 
         .animacao-foguinho {
             position: absolute;
-            top: -280px; /* JOGUEI MUITO PRA CIMA */
+            top: -240px; /* AJUSTADO: Pouco mais pra baixo que antes */
             left: 50%;
             transform: translateX(-50%);
-            width: 250px; /* Fogo maior */
+            width: 250px; 
             height: auto;
             pointer-events: none; 
             z-index: 20;
@@ -330,7 +330,7 @@
 
         /* ESTILO DO TÍTULO DE FASE MAIOR */
         .titulo-fase {
-            font-size: 2.2rem; /* Aumentado */
+            font-size: 2.2rem;
             font-weight: 700;
             color: var(--text-main);
             margin-bottom: 20px;
@@ -340,14 +340,14 @@
         /* ESTILO DO NOME EM DESTAQUE GIGANTE */
         .nome-destaque {
             color: var(--accent);
-            font-size: 3rem; /* Gigante */
-            text-transform: uppercase;
+            font-size: 3rem;
+            text-transform: uppercase; /* Garante visual maiúsculo no destaque */
             display: block; 
             margin-top: 10px;
         }
         
         .desc-fase {
-            font-size: 1.3rem; /* Texto descritivo maior */
+            font-size: 1.3rem;
             color: var(--text-light);
             margin-bottom: 30px;
             line-height: 1.5;
@@ -385,7 +385,7 @@
             background-color: var(--success);
             color: white;
             box-shadow: 0 4px 15px rgba(52, 199, 89, 0.4);
-            font-size: 1.4rem; /* Botão maior */
+            font-size: 1.4rem; 
             padding: 18px;
             border-radius: 50px;
             margin-top: 10px;
@@ -455,7 +455,7 @@
             
             /* Ajustes Mobile para o Popup */
             .modal-box-fase { margin-top: 60px; padding-top: 50px; width: 95%; }
-            .animacao-foguinho { width: 180px; top: -160px; }
+            .animacao-foguinho { width: 180px; top: -140px; }
             .titulo-fase { font-size: 1.5rem; }
             .nome-destaque { font-size: 2rem; }
             .desc-fase { font-size: 1rem; }
@@ -503,11 +503,11 @@
             </div>
             
             <div class="desc-fase">
-                Você concluiu a Introdução com sucesso!
-                <br>Está preparado para o próximo desafio?
+                Você concluiu a <b>Introdução</b> com sucesso!
+                <br>Agora vamos para a parte da atividade.
             </div>
             
-            <button class="btn-fase" onclick="avancarFase()">Fazer atividade</button>
+            <button class="btn-fase" onclick="avancarFase()">Parte 2</button>
         </div>
     </div>
 
@@ -786,6 +786,7 @@
             if (nome.includes(" ")) { aviso.innerText = "Digite apenas o primeiro nome."; return; }
             if (nome.length > 15) { aviso.innerText = "O nome deve ter no máximo 15 letras."; return; }
 
+            // Lógica para Primeira Maiúscula e resto minúscula
             nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
 
             const anoSelecionado = document.querySelector('input[name="ano"]:checked');
