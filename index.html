@@ -16,8 +16,21 @@
             --radius: 12px;
             
             /* Cores dos Botões */
-            --btn-gray-dark: #8e8e93;  /* Cinza Escuro (Resetar/Histórico) */
-            --btn-gray-light: #aeb0b5; /* Cinza Claro (Topos) */
+            --btn-gray-dark: #8e8e93;  /* Cinza Escuro */
+            --btn-gray-light: #aeb0b5; /* Cinza Claro */
+        }
+
+        /* --- PROTEÇÃO ANTI-CÓPIA --- */
+        body {
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and IE 11 */
+            user-select: none; /* Standard syntax */
+            -webkit-touch-callout: none; /* iOS Safari */
+        }
+        
+        /* Esconde tudo se tentar imprimir (Ctrl+P) */
+        @media print {
+            html, body { display: none !important; }
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -68,16 +81,13 @@
         }
 
         .top-item svg { width: 20px; height: 20px; fill: white; }
-
-        /* ESTADOS DE COR */
         .bg-verde-ativo { background-color: var(--success); }
         .bg-cinza-claro { background-color: var(--btn-gray-light); } 
 
-        /* INTERAÇÃO VERMELHA (HOVER) */
         .hover-red:hover {
             background-color: var(--error) !important;
             transform: scale(1.05);
-            cursor: pointer; /* Indica interatividade */
+            cursor: pointer;
         }
 
         /* --- BARRA DE PROGRESSO --- */
@@ -98,7 +108,7 @@
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* --- FRAÇÕES E MATEMÁTICA --- */
+        /* --- FRAÇÕES --- */
         .fracao {
             display: inline-flex;
             flex-direction: column;
@@ -106,20 +116,10 @@
             vertical-align: middle;
             margin: 0 4px;
             font-size: 1.1em;
+            pointer-events: none; /* Impede arrastar imagem da fração */
         }
-        .fracao .num { 
-            border-bottom: 2px solid currentColor; 
-            padding: 0 5px; 
-            display: block; 
-            line-height: 1.2; 
-            font-weight: 700; 
-        }
-        .fracao .den { 
-            padding: 2px 5px 0 5px; 
-            display: block; 
-            line-height: 1.2; 
-            font-weight: 700; 
-        }
+        .fracao .num { border-bottom: 2px solid currentColor; padding: 0 5px; display: block; line-height: 1.2; font-weight: 700; }
+        .fracao .den { padding: 2px 5px 0 5px; display: block; line-height: 1.2; font-weight: 700; }
 
         /* --- LAYOUT QUESTÃO --- */
         .secao-pergunta {
@@ -142,14 +142,10 @@
             max-height: 550px; 
             object-fit: contain;
             border-radius: var(--radius);
+            pointer-events: none; /* Impede arrastar imagem */
         }
 
-        .coluna-conteudo {
-            flex: 1; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center; 
-        }
+        .coluna-conteudo { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 
         .topo-info {
             display: flex;
@@ -202,7 +198,6 @@
         .btn-opcao.errado { border-color: var(--error); color: var(--error); background-color: rgba(255, 59, 48, 0.1); }
         .btn-opcao:disabled { cursor: default; }
 
-        /* BOTÃO PRÓXIMO */
         .area-botao-proximo { margin-top: 10px; height: 50px; }
         .btn-proximo {
             background-color: var(--success);
@@ -219,7 +214,6 @@
         }
         .btn-proximo:hover { background-color: #2da84e; }
 
-        /* --- SEÇÃO RESPOSTA --- */
         .secao-resposta {
             display: none;
             padding-top: 20px;
@@ -230,7 +224,6 @@
         .titulo-feedback { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; display: block; }
         .texto-resolucao { font-size: 1.1rem; line-height: 1.6; color: var(--text-main); margin-bottom: 20px; }
 
-        /* --- RODAPÉ --- */
         .rodape {
             margin-top: 40px;
             text-align: center;
@@ -242,18 +235,9 @@
             align-items: center;
         }
         
-        .botoes-rodape-container {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
+        .botoes-rodape-container { display: flex; gap: 15px; justify-content: center; }
+        .texto-creditos { font-size: 0.8rem; color: var(--text-light); }
 
-        .texto-creditos {
-            font-size: 0.8rem;
-            color: var(--text-light);
-        }
-
-        /* BOTÕES DE AÇÃO (RESET E HISTÓRICO) */
         .btn-acao-rodape {
             background-color: var(--btn-gray-dark);
             color: white;
@@ -266,11 +250,7 @@
             transition: transform 0.2s, background-color 0.2s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        
-        .btn-acao-rodape:hover {
-            background-color: var(--error);
-            transform: scale(1.02);
-        }
+        .btn-acao-rodape:hover { background-color: var(--error); transform: scale(1.02); }
 
         /* --- MODAIS --- */
         .modal-overlay {
@@ -287,7 +267,6 @@
         }
         
         .modal-overlay.visivel { display: flex; }
-
         @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
 
         .modal-box {
@@ -302,7 +281,6 @@
             position: relative;
         }
 
-        /* --- ESTILOS DO POPUP DA FASE --- */
         .modal-box-fase {
             margin-top: 100px;
             padding-top: 80px; 
@@ -328,100 +306,61 @@
         .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 20px; }
         .modal-subtitulo { margin-bottom:10px; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; color: var(--text-light); font-weight: 600; margin-top: 15px;}
 
-        /* ESTILO DO TÍTULO DE FASE MAIOR */
-        .titulo-fase {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
+        .titulo-fase { font-size: 2.2rem; font-weight: 700; color: var(--text-main); margin-bottom: 20px; line-height: 1.2; }
         
-        /* ESTILO DO NOME EM DESTAQUE GIGANTE */
         .nome-destaque {
             color: var(--accent);
             font-size: 3rem;
-            text-transform: uppercase; /* Garante visual maiúsculo no destaque */
+            text-transform: uppercase;
             display: block; 
             margin-top: 10px;
         }
-        
-        .desc-fase {
-            font-size: 1.3rem;
-            color: var(--text-light);
-            margin-bottom: 30px;
-            line-height: 1.5;
+
+        /* NOME GIGANTE PARA O FINAL */
+        .nome-gigante-final {
+            color: var(--success);
+            font-size: 4rem; /* Bem grande */
+            text-transform: uppercase;
+            font-weight: 800;
+            display: block;
+            margin: 20px 0;
+            line-height: 1.1;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
         }
+        
+        .desc-fase { font-size: 1.3rem; color: var(--text-light); margin-bottom: 30px; line-height: 1.5; }
 
         .input-generico {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #d2d2d7;
-            border-radius: 8px;
-            font-size: 1rem;
-            margin-bottom: 5px;
-            outline: none;
-            text-align: center;
-            transition: border 0.2s;
+            width: 100%; padding: 12px; border: 1px solid #d2d2d7; border-radius: 8px;
+            font-size: 1rem; margin-bottom: 5px; outline: none; text-align: center; transition: border 0.2s;
         }
         .input-generico:focus { border-color: var(--accent); }
 
         .modal-botoes { display: flex; gap: 10px; justify-content: center; }
 
-        .btn-modal {
-            flex: 1;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
+        .btn-modal { flex: 1; padding: 12px; border-radius: 8px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; }
         .btn-cancelar { background-color: #f2f2f7; color: var(--text-main); }
         .btn-confirmar { background-color: var(--accent); color: white; }
         
-        /* Botão Destaque da Fase */
         .btn-fase {
-            background-color: var(--success);
-            color: white;
-            box-shadow: 0 4px 15px rgba(52, 199, 89, 0.4);
-            font-size: 1.4rem; 
-            padding: 18px;
-            border-radius: 50px;
-            margin-top: 10px;
-            width: 100%;
-            cursor: pointer;
-            transition: transform 0.2s;
-            border: none;
-            font-weight: 700;
+            background-color: var(--success); color: white; box-shadow: 0 4px 15px rgba(52, 199, 89, 0.4);
+            font-size: 1.4rem; padding: 18px; border-radius: 50px; margin-top: 10px; width: 100%;
+            cursor: pointer; transition: transform 0.2s; border: none; font-weight: 700;
         }
         .btn-fase:hover { background-color: #2da84e; transform: scale(1.02); }
 
-        .historico-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #e5e5ea;
-        }
+        .historico-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #e5e5ea; }
         .historico-row:last-child { border-bottom: none; }
         .hist-label { font-weight: 600; color: var(--text-main); text-align: left; }
         .hist-val { font-family: monospace; font-size: 1.1rem; }
         .val-verde { color: var(--success); }
         .val-vermelho { color: var(--error); }
 
-        /* SELEÇÃO LOGIN */
         .grupo-selecao { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .grupo-selecao input[type="radio"] { display: none; }
         .grupo-selecao label {
-            padding: 10px 15px;
-            border: 1px solid #d2d2d7;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: var(--text-light);
-            font-weight: 600;
-            font-size: 0.9rem;
-            background: white;
+            padding: 10px 15px; border: 1px solid #d2d2d7; border-radius: 8px; cursor: pointer;
+            transition: all 0.3s; color: var(--text-light); font-weight: 600; font-size: 0.9rem; background: white;
         }
         .grupo-selecao label:hover {
             background-color: var(--accent); color: white; border-color: var(--accent);
@@ -452,17 +391,37 @@
             .grupo-selecao label { padding: 8px 10px; font-size: 0.8rem; }
             .header-unificado { gap: 10px; }
             .top-item { padding: 10px 15px; font-size: 0.8rem; }
-            
-            /* Ajustes Mobile para o Popup */
             .modal-box-fase { margin-top: 60px; padding-top: 50px; width: 95%; }
             .animacao-foguinho { width: 180px; top: -140px; }
             .titulo-fase { font-size: 1.5rem; }
             .nome-destaque { font-size: 2rem; }
             .desc-fase { font-size: 1rem; }
+            .nome-gigante-final { font-size: 2.5rem; } /* Ajuste mobile para o nome gigante */
         }
     </style>
 </head>
 <body>
+
+    <script>
+        // Bloqueia Botão Direito
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Bloqueia alguns atalhos de teclado (Ctrl+C, Ctrl+U, Ctrl+P, F12)
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123) { return false; } // F12
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; } // Ctrl+Shift+I
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; } // Ctrl+Shift+C
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; } // Ctrl+Shift+J
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; } // Ctrl+U
+            if (e.ctrlKey && e.keyCode == 'C'.charCodeAt(0)) { return false; } // Ctrl+C
+            if (e.ctrlKey && e.keyCode == 'P'.charCodeAt(0)) { return false; } // Ctrl+P
+        };
+
+        // Bloqueia arrastar imagens
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+        });
+    </script>
 
     <div id="modalLogin" class="modal-overlay">
         <div class="modal-box">
@@ -508,6 +467,38 @@
             </div>
             
             <button class="btn-fase" onclick="avancarFase()">Parte 2</button>
+        </div>
+    </div>
+
+    <div id="modalFinal" class="modal-overlay">
+        <div class="modal-box modal-box-fase">
+            <video class="animacao-foguinho" autoplay loop muted playsinline>
+                <source src="https://interativosweb.github.io/part2/animacao/foguinho.webm" type="video/webm">
+            </video>
+            
+            <div class="titulo-fase" style="margin-bottom:10px;">
+                ATIVIDADE CONCLUÍDA!
+            </div>
+            
+            <span id="nomeAlunoFinal" class="nome-gigante-final">ALUNO</span>
+            
+            <div class="desc-fase">
+                Você finalizou todo o percurso.<br>
+                Seu desempenho na etapa final:
+            </div>
+            
+            <div style="display:flex; justify-content:center; gap:30px; margin-bottom:30px;">
+                <div style="text-align:center">
+                    <div style="font-size:2rem; font-weight:700; color:var(--success)" id="finalAcertos">0</div>
+                    <div style="font-size:0.9rem; color:var(--text-light)">Acertos</div>
+                </div>
+                <div style="text-align:center">
+                    <div style="font-size:2rem; font-weight:700; color:var(--error)" id="finalErros">0</div>
+                    <div style="font-size:0.9rem; color:var(--text-light)">Erros</div>
+                </div>
+            </div>
+
+            <button class="btn-fase" onclick="location.reload()" style="background-color: var(--accent);">Reiniciar</button>
         </div>
     </div>
 
@@ -607,18 +598,14 @@
     </div>
 
     <script>
-        // Função para gerar o HTML da fração (Numerador em cima, Denominador em baixo)
         const f = (n, d) => `<div class='fracao'><span class='num'>${n}</span><span class='den'>${d}</span></div>`;
 
-        // Ícones SVG
         const iconCadeadoAberto = `<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>`;
         const iconCadeadoFechado = `<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>`;
 
-        // CONFIGURAÇÃO DAS IMAGENS
         const pathIntro = "https://interativosweb.github.io/part2/introducao/";
         const pathComp = "https://interativosweb.github.io/part2/complementar/";
 
-        // LISTA 1: INTRODUÇÃO
         const questoesIntro = [
             {
                 pergunta: "Uma fração é uma forma de representar uma parte de um todo, quando esse todo é dividido em partes iguais. Comer um pedaço dessa pizza representa em fração:",
@@ -664,7 +651,6 @@
             }
         ];
 
-        // LISTA 2: ATIVIDADE COMPLEMENTAR (ATUALIZADA COM EXPLICAÇÕES FORMATADAS)
         const questoesComp = [
             {
                 pergunta: `Um bolo foi dividido em 4 partes iguais. João comeu ${f(1,4)} e Maria comeu ${f(2,4)}. Que fração do bolo foi comida ao todo?`,
@@ -800,7 +786,6 @@
             if (nome.includes(" ")) { aviso.innerText = "Digite apenas o primeiro nome."; return; }
             if (nome.length > 15) { aviso.innerText = "O nome deve ter no máximo 15 letras."; return; }
 
-            // Lógica para Primeira Maiúscula e resto minúscula
             nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
 
             const anoSelecionado = document.querySelector('input[name="ano"]:checked');
@@ -823,8 +808,9 @@
         function aplicarDadosUsuario(nome, serie) {
             document.getElementById('badgeNome').innerText = nome;
             document.getElementById('badgeSerie').innerText = serie;
-            // Atualiza também o nome no Modal de Parabéns
             document.getElementById('nomeAlunoFase').innerText = nome;
+            // Atualiza o nome no modal final também
+            document.getElementById('nomeAlunoFinal').innerText = nome;
         }
 
         function mostrarApp() {
@@ -860,34 +846,40 @@
         }
         function fecharModalHistorico() { document.getElementById('modalHistorico').classList.remove('visivel'); }
 
-        // --- NOVA FUNÇÃO PARA ABRIR MODAL DE FASE ---
         function abrirModalFase() {
-            // Garante que o nome esteja atualizado
             const nome = localStorage.getItem('alunoNome') || 'Aluno';
             document.getElementById('nomeAlunoFase').innerText = nome;
             document.getElementById('modalFase').classList.add('visivel');
         }
 
-        // --- NOVA FUNÇÃO PARA AVANÇAR DE FASE ---
+        // --- NOVA FUNÇÃO PARA ABRIR O MODAL FINAL ---
+        function abrirModalFinal() {
+            const nome = localStorage.getItem('alunoNome') || 'Aluno';
+            document.getElementById('nomeAlunoFinal').innerText = nome;
+            
+            // Exibe o resultado final da etapa complementar
+            document.getElementById('finalAcertos').innerText = placarComp.acertos;
+            document.getElementById('finalErros').innerText = placarComp.erros;
+            
+            document.getElementById('modalFinal').classList.add('visivel');
+        }
+
         function avancarFase() {
             modoAtual = 'complementar';
             indice = 0; 
             salvarProgresso();
             document.getElementById('modalFase').classList.remove('visivel');
-            carregar(); // Recarrega o app no novo modo
+            carregar(); 
         }
 
-        // ATUALIZAÇÃO DOS BOTÕES E CADEADOS
         function atualizarBotoesHeader() {
             const btnIntro = document.getElementById('btnIntro');
             const btnComp = document.getElementById('btnComplementar');
             
-            // Reseta classes e eventos
             btnIntro.className = 'top-item';
             btnComp.className = 'top-item';
 
             if (modoAtual === 'intro') {
-                // INTRO: Verde, Cadeado Aberto. COMP: Cinza, Cadeado Fechado.
                 btnIntro.classList.add('bg-verde-ativo'); 
                 btnIntro.innerHTML = `${iconCadeadoAberto} Introdução`;
                 
@@ -895,7 +887,6 @@
                 btnComp.innerHTML = `${iconCadeadoFechado} Atividade complementar`;
             
             } else {
-                // COMPLEMENTAR: INTRO vira Cinza/Fechado. ATIV vira Verde/Aberto.
                 btnIntro.classList.add('bg-cinza-claro', 'hover-red');
                 btnIntro.innerHTML = `${iconCadeadoFechado} Introdução`; 
                 
@@ -915,7 +906,6 @@
         }
 
         function atualizarBarraProgresso() {
-            // Define qual lista estamos usando para calcular o total
             const listaAtual = modoAtual === 'intro' ? questoesIntro : questoesComp;
             const placarAtual = modoAtual === 'intro' ? placarIntro : placarComp;
             
@@ -930,26 +920,19 @@
             atualizarBotoesHeader();
             atualizarPlacarVisual();
             
-            // SELEÇÃO DA LISTA DE QUESTÕES
             const listaQuestao = modoAtual === 'intro' ? questoesIntro : questoesComp;
 
-            // Se acabou a lista atual
             if (indice >= listaQuestao.length) {
                 if (modoAtual === 'intro') {
-                    // FIM DA INTRODUÇÃO: MOSTRA MODAL EM VEZ DE MUDAR DIRETO
                     abrirModalFase();
                 } else {
-                    // Fim de tudo
-                    document.querySelector('.secao-pergunta').innerHTML = "<div style='text-align:center; width:100%; padding:50px'><h2>Atividade Complementar Concluída!</h2><p>Parabéns por finalizar todo o percurso.</p></div>";
-                    document.getElementById('areaResposta').style.display = 'none';
-                    document.querySelector('.rodape').style.display = 'flex';
-                    // Força a barra em 100% no final
+                    // FIM DE TUDO: MOSTRA O MODAL FINAL
                     document.getElementById('barraFill').style.width = '100%';
+                    abrirModalFinal();
                 }
                 return;
             }
             
-            // Atualiza barra de progresso normalmente
             atualizarBarraProgresso();
 
             const q = listaQuestao[indice];
