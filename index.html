@@ -311,9 +311,10 @@
         .nome-destaque {
             color: var(--accent);
             font-size: 3rem;
-            text-transform: uppercase;
+            /* text-transform: uppercase; REMOVIDO PARA RESPEITAR O INPUT */
             display: block; 
             margin-top: 10px;
+            text-shadow: none; /* GARANTINDO SEM SOMBRA */
         }
 
         /* NOME GIGANTE PARA O FINAL */
@@ -326,6 +327,7 @@
             margin: 20px 0;
             line-height: 1.1;
             /* text-shadow: 2px 2px 0px rgba(0,0,0,0.1); REMOVIDO */
+            text-shadow: none;
         }
         
         .desc-fase { font-size: 1.3rem; color: var(--text-light); margin-bottom: 30px; line-height: 1.5; }
@@ -498,8 +500,7 @@
                 </div>
             </div>
 
-            <button class="btn-fase" onclick="location.reload()" style="background-color: var(--accent);">Reiniciar</button>
-        </div>
+            </div>
     </div>
 
     <div id="modalHistorico" class="modal-overlay">
