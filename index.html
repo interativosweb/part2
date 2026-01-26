@@ -299,6 +299,18 @@
             pointer-events: none; 
             z-index: 20;
         }
+        
+        /* Ajuste específico para o troféu no final caso precise ser diferente */
+        .animacao-trofeu {
+            position: absolute;
+            top: -240px; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px; 
+            height: auto;
+            pointer-events: none; 
+            z-index: 20;
+        }
 
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
@@ -311,22 +323,19 @@
         .nome-destaque {
             color: var(--accent);
             font-size: 3rem;
-            /* text-transform: uppercase; REMOVIDO PARA RESPEITAR O INPUT */
             display: block; 
             margin-top: 10px;
-            text-shadow: none; /* GARANTINDO SEM SOMBRA */
+            text-shadow: none; 
         }
 
         /* NOME GIGANTE PARA O FINAL */
         .nome-gigante-final {
             color: var(--success);
-            font-size: 4rem; /* Bem grande */
-            /* text-transform: uppercase; REMOVIDO */
+            font-size: 4rem; 
             font-weight: 800;
             display: block;
             margin: 20px 0;
             line-height: 1.1;
-            /* text-shadow: 2px 2px 0px rgba(0,0,0,0.1); REMOVIDO */
             text-shadow: none;
         }
         
@@ -394,11 +403,11 @@
             .header-unificado { gap: 10px; }
             .top-item { padding: 10px 15px; font-size: 0.8rem; }
             .modal-box-fase { margin-top: 60px; padding-top: 50px; width: 95%; }
-            .animacao-foguinho { width: 180px; top: -140px; }
+            .animacao-foguinho, .animacao-trofeu { width: 180px; top: -140px; }
             .titulo-fase { font-size: 1.5rem; }
             .nome-destaque { font-size: 2rem; }
             .desc-fase { font-size: 1rem; }
-            .nome-gigante-final { font-size: 2.5rem; } /* Ajuste mobile para o nome gigante */
+            .nome-gigante-final { font-size: 2.5rem; } 
         }
     </style>
 </head>
@@ -474,8 +483,8 @@
 
     <div id="modalFinal" class="modal-overlay">
         <div class="modal-box modal-box-fase">
-            <video class="animacao-foguinho" autoplay loop muted playsinline>
-                <source src="https://interativosweb.github.io/part2/animacao/foguinho.webm" type="video/webm">
+            <video class="animacao-trofeu" autoplay loop muted playsinline>
+                <source src="https://interativosweb.github.io/part2/animacao/trofeuu.webm" type="video/webm">
             </video>
             
             <div class="titulo-fase" style="margin-bottom:10px;">
@@ -637,14 +646,14 @@
                 resolucao: `Olhe para o desenho e conte o total de bolinhas: são 4 bolinhas no total. Agora, veja quantas são vermelhas: apenas 1. Por isso, a fração é ${f(1,4)}.`
             },
             {
-                pergunta: "Uma barra de chocolate tem 5 pedaços iguais, se eu comer 1/5, quantos ainda me restam?",
+                pergunta: `Uma barra de chocolate tem 5 pedaços iguais, se eu comer ${f(1,5)}, quantos ainda me restam?`,
                 img: pathIntro + "img05intro.png",
                 opcoes: ["1", f(2,5), f(4,5), f(3,5)],
                 correta: 2, 
                 resolucao: `A barra inteira tem 5 pedaços, ou seja, é ${f(5,5)}. Se você comeu ${f(1,5)}, fazemos uma conta de menos: ${f(5,5)} - ${f(1,5)} = ${f(4,5)}. Sobraram 4 pedaços.`
             },
             {
-                pergunta: "Ganhei de presente um celular dos meus pais. No primeiro dia gastei 1/4 da bateria, no segundo dia 3/4, no terceiro dia eu não usei. O celular da minha mãe tem uma bateria maior, quanto ela gastou de bateria?",
+                pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)}, no terceiro dia eu não usei. O celular da minha mãe tem uma bateria maior, quanto ela gastou de bateria?`,
                 img: pathIntro + "img06intro.png",
                 opcoes: [f(3,4), f(1,4), f(5,4), f(1,5)],
                 correta: 0, 
@@ -679,21 +688,21 @@
                 img: pathComp + "comp04.png",
                 opcoes: [f(1,6), f(3,12), f(3,6), f(2,6)],
                 correta: 2,
-                resolucao: `Basta juntar as partes usadas. Se usamos 2 partes para um trabalho e 1 para o outro: <br> ${f(2,6)} + ${f(1,6)} = ${f(3,6)}. <br><br><b>Curiosidade:</b> A fração 3/6 representa a metade da fita, ou seja, poderia ser simplificada para 1/2.`
+                resolucao: `Basta juntar as partes usadas. Se usamos 2 partes para um trabalho e 1 para o outro: <br> ${f(2,6)} + ${f(1,6)} = ${f(3,6)}. <br><br><b>Curiosidade:</b> A fração ${f(3,6)} representa a metade da fita, ou seja, poderia ser simplificada para ${f(1,2)}.`
             },
             {
                 pergunta: `Um bolo foi dividido em 10 partes iguais. Foram comidas ${f(4,10)} depois do almoço. Que fração do bolo ainda resta?`,
                 img: pathComp + "comp05.png",
                 opcoes: [f(5,10), f(6,14), f(4,10), f(6,10)],
                 correta: 3,
-                resolucao: `Imagine o bolo inteiro como ${f(10,10)}. Se comeram 4 fatias, fazemos a conta de menos: <br> ${f(10,10)} - ${f(4,10)} = ${f(6,10)}. <br><br><b>Simplificação:</b> A fração 6/10 pode ser simplificada dividindo em cima e embaixo por 2, resultando em 3/5.`
+                resolucao: `Imagine o bolo inteiro como ${f(10,10)}. Se comeram 4 fatias, fazemos a conta de menos: <br> ${f(10,10)} - ${f(4,10)} = ${f(6,10)}. <br><br><b>Simplificação:</b> A fração ${f(6,10)} pode ser simplificada dividindo em cima e embaixo por 2, resultando em ${f(3,5)}.`
             },
             {
                 pergunta: `Uma forma tinha 8 cubos de gelo. Durante o dia, foram usados ${f(4,8)} dos cubos. Que fração dos cubos de gelo ainda restou?`,
                 img: pathComp + "comp06.png",
                 opcoes: [f(1,8), f(4,8), f(8,8), f(2,8)],
                 correta: 1,
-                resolucao: `A forma completa tem 8 cubos, ou seja, ${f(8,8)}. Tiramos os 4 que foram usados: <br> ${f(8,8)} - ${f(4,8)} = ${f(4,8)}. <br><br><b>Nota:</b> Como 4 é a metade de 8, a fração 4/8 é igual a 1/2 (metade).`
+                resolucao: `A forma completa tem 8 cubos, ou seja, ${f(8,8)}. Tiramos os 4 que foram usados: <br> ${f(8,8)} - ${f(4,8)} = ${f(4,8)}. <br><br><b>Nota:</b> Como 4 é a metade de 8, a fração ${f(4,8)} é igual a ${f(1,2)} (metade).`
             },
             {
                 pergunta: `Em uma caixa de lápis, ${f(1,4)} foi usado na aula de Matemática e ${f(1,6)} na aula de Artes. Que fração da caixa de lápis foi usada ao todo?`,
@@ -714,14 +723,14 @@
                 img: pathComp + "comp09.png",
                 opcoes: [f(3,10), f(5,10), f(2,15), f(3,5)],
                 correta: 1,
-                resolucao: `Precisamos igualar os denominadores. Sabemos que ${f(2,5)} é a mesma coisa que ${f(4,10)} (basta multiplicar em cima e em baixo por 2). <br> Agora podemos somar com a tarde: ${f(4,10)} + ${f(1,10)} = ${f(5,10)}. <br><br><b>Simplificação:</b> O resultado é 5/10. Note que 5 é a metade de 10, então poderíamos simplificar essa fração para 1/2, dividindo ambos os números por 5.`
+                resolucao: `Precisamos igualar os denominadores. Sabemos que ${f(2,5)} é a mesma coisa que ${f(4,10)} (basta multiplicar em cima e em baixo por 2). <br> Agora podemos somar com a tarde: ${f(4,10)} + ${f(1,10)} = ${f(5,10)}. <br><br><b>Simplificação:</b> O resultado é ${f(5,10)}. Note que 5 é a metade de 10, então poderíamos simplificar essa fração para ${f(1,2)}, dividindo ambos os números por 5.`
             },
             {
                 pergunta: `Um pacote tinha 15 bolachas. Durante o lanche, foram comidas ${f(6,15)} das bolachas. Que fração das bolachas ainda restou?`,
                 img: pathComp + "comp10.png",
                 opcoes: [f(6,15), f(15,9), f(1,15), f(9,15)],
                 correta: 3,
-                resolucao: `O pacote fechado tem 15 bolachas: ${f(15,15)}. Se comeram 6, sobraram 9. <br> Conta: ${f(15,15)} - ${f(6,15)} = ${f(9,15)}. <br><br><b>Simplificação:</b> A fração 9/15 pode ser simplificada dividindo numerador e denominador por 3, resultando em 3/5.`
+                resolucao: `O pacote fechado tem 15 bolachas: ${f(15,15)}. Se comeram 6, sobraram 9. <br> Conta: ${f(15,15)} - ${f(6,15)} = ${f(9,15)}. <br><br><b>Simplificação:</b> A fração ${f(9,15)} pode ser simplificada dividindo numerador e denominador por 3, resultando em ${f(3,5)}.`
             },
             {
                 pergunta: `Um tanque de água teve ${f(1,3)} de sua capacidade usada pela manhã e ${f(1,4)} à tarde. Que fração da água foi utilizada no total?`,
