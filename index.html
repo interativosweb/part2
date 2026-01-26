@@ -320,12 +320,12 @@
         .nome-gigante-final {
             color: var(--success);
             font-size: 4rem; /* Bem grande */
-            text-transform: uppercase;
+            /* text-transform: uppercase; REMOVIDO */
             font-weight: 800;
             display: block;
             margin: 20px 0;
             line-height: 1.1;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            /* text-shadow: 2px 2px 0px rgba(0,0,0,0.1); REMOVIDO */
         }
         
         .desc-fase { font-size: 1.3rem; color: var(--text-light); margin-bottom: 30px; line-height: 1.5; }
@@ -643,7 +643,7 @@
                 resolucao: `A barra inteira tem 5 pedaços, ou seja, é ${f(5,5)}. Se você comeu ${f(1,5)}, fazemos uma conta de menos: ${f(5,5)} - ${f(1,5)} = ${f(4,5)}. Sobraram 4 pedaços.`
             },
             {
-                pergunta: "Ganhei de presente um celular dos meus pais. No primeiro dia gastei 1/4 da bateria, no segundo dia 3/4, no terceiro dia eu não usei. Quanto eu gastei de bateria no quarto dia?",
+                pergunta: "Ganhei de presente um celular dos meus pais. No primeiro dia gastei 1/4 da bateria, no segundo dia 3/4, no terceiro dia eu não usei. O celular da minha mãe tem uma bateria maior, quanto ela gastou de bateria?",
                 img: pathIntro + "img06intro.png",
                 opcoes: [f(3,4), f(1,4), f(5,4), f(1,5)],
                 correta: 0, 
