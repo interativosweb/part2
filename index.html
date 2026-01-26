@@ -406,15 +406,15 @@
         // Bloqueia Botão Direito
         document.addEventListener('contextmenu', event => event.preventDefault());
 
-        // Bloqueia alguns atalhos de teclado
+        // Bloqueia alguns atalhos de teclado (Ctrl+C, Ctrl+U, Ctrl+P, F12)
         document.onkeydown = function(e) {
             if (e.keyCode == 123) { return false; } // F12
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; } 
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; } 
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; } 
-            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; } 
-            if (e.ctrlKey && e.keyCode == 'C'.charCodeAt(0)) { return false; } 
-            if (e.ctrlKey && e.keyCode == 'P'.charCodeAt(0)) { return false; } 
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; } // Ctrl+Shift+I
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; } // Ctrl+Shift+C
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; } // Ctrl+Shift+J
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; } // Ctrl+U
+            if (e.ctrlKey && e.keyCode == 'C'.charCodeAt(0)) { return false; } // Ctrl+C
+            if (e.ctrlKey && e.keyCode == 'P'.charCodeAt(0)) { return false; } // Ctrl+P
         };
 
         // Bloqueia arrastar imagens
@@ -529,53 +529,50 @@
         </div>
     </div>
 
-    <div class="app-container" id="appContainer">
-        
-        <header class="header-unificado">
-            <div class="top-item bg-verde-ativo">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                <span id="placarAcertos">0</span>
-            </div>
-            <div class="top-item bg-cinza-claro hover-red">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                <span id="placarErros">0</span>
-            </div>
-            <div class="top-item bg-cinza-claro" style="margin-left:auto;">
-                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                <span id="displayNomeAluno">Aluno</span>
-            </div>
-        </header>
+    <div id="appContainer" class="app-container">
 
-        <div class="barra-progresso-container">
-            <div class="barra-progresso-fill" id="barraProgresso"></div>
+        <div class="header-unificado">
+            <div class="top-item" id="btnIntro">
+                Introdução
+            </div>
+            <div class="top-item" id="btnComplementar">
+                Atividade complementar
+            </div>
+            <div id="badgeNome" class="top-item bg-cinza-claro hover-red">Aluno</div>
+            <div id="badgeSerie" class="top-item bg-cinza-claro hover-red">Série</div>
         </div>
 
-        <section class="secao-pergunta" id="secaoPergunta">
+        <div class="barra-progresso-container">
+            <div id="barraFill" class="barra-progresso-fill"></div>
+        </div>
+
+        <section class="secao-pergunta">
             <div class="coluna-imagem">
-                <img id="imgAtividade" class="img-atividade" src="" alt="Ilustração da Questão">
+                <img id="imgQuestao" class="img-atividade" src="" alt="Atividade">
             </div>
 
             <div class="coluna-conteudo">
                 <div class="topo-info">
-                    <span id="indicadorFase">Fase 1: Introdução</span>
-                </div>
-
-                <div id="textoEnunciado" class="enunciado">
-                    Carregando...
-                </div>
-
-                <div id="areaOpcoes" class="grid-opcoes">
+                    <div>
+                        <span style="color:var(--success)">Acertos: <span id="scoreC">0</span></span>
+                        <span style="margin:0 10px; color:#ddd">|</span>
+                        <span style="color:var(--error)">Erros: <span id="scoreE">0</span></span>
                     </div>
+                </div>
+
+                <div id="textoPergunta" class="enunciado">Carregando...</div>
+
+                <div id="containerOpcoes" class="grid-opcoes"></div>
 
                 <div class="area-botao-proximo">
-                    <button id="btnProximo" class="btn-proximo" onclick="proximaQuestao()">Continuar</button>
-                </div>
-
-                <div id="areaResposta" class="secao-resposta">
-                    <span id="tituloFeedback" class="titulo-feedback"></span>
-                    <div id="textoResolucao" class="texto-resolucao"></div>
+                    <button id="btnProximo" class="btn-proximo" onclick="proximaQuestao()">Próxima Questão</button>
                 </div>
             </div>
+        </section>
+
+        <section class="secao-resposta" id="areaResposta">
+            <span id="tituloFeedback" class="titulo-feedback"></span>
+            <div id="textoResolucao" class="texto-resolucao"></div>
         </section>
 
         <div class="rodape">
@@ -583,390 +580,419 @@
                 <button class="btn-acao-rodape" onclick="abrirModalReset()">Resetar Histórico</button>
                 <button class="btn-acao-rodape" onclick="abrirModalHistorico()">Ver Histórico</button>
             </div>
-            <span class="texto-creditos">Matemática Fundamental © 2024</span>
+            <span class="texto-creditos">Desenvolvido por Gilberto Fernandes - Matemática [Atividade Professora Simone Vieira]</span>
         </div>
 
     </div>
 
+    <div id="modalReset" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-titulo">Resetar Histórico</div>
+            <div class="modal-desc">Digite a senha do professor para apagar todo o progresso.</div>
+            <input type="password" id="inputSenha" class="input-generico" placeholder="Senha" inputmode="numeric">
+            <div class="modal-botoes">
+                <button class="btn-modal btn-cancelar" onclick="fecharModalReset()">Cancelar</button>
+                <button class="btn-modal btn-confirmar" onclick="confirmarReset()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // --- FUNÇÕES AUXILIARES ---
-        // Cria string HTML de fração: f(numerador, denominador)
-        const f = (n, d) => `<div class="fracao"><span class="num">${n}</span><span class="den">${d}</span></div>`;
+        const f = (n, d) => `<div class='fracao'><span class='num'>${n}</span><span class='den'>${d}</span></div>`;
 
-        // Caminhos das imagens
-        const pathIntro = "https://interativosweb.github.io/part2/intro/";
-        const pathComp = "https://interativosweb.github.io/part2/comp/";
+        const iconCadeadoAberto = `<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>`;
+        const iconCadeadoFechado = `<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>`;
 
-        // --- DADOS DAS QUESTÕES ---
-        
-        // Fase 1: Introdução
+        const pathIntro = "https://interativosweb.github.io/part2/introducao/";
+        const pathComp = "https://interativosweb.github.io/part2/complementar/";
+
         const questoesIntro = [
             {
-                pergunta: `Observe a imagem. O círculo foi dividido em duas partes iguais. A parte azul representa "uma parte de duas", ou seja, metade. Representamos isso como 1 sobre 2, ou seja, ${f(1,2)}.`,
-                img: pathIntro + "img01.png",
-                opcoes: [f(1,2), f(1,3), f(2,1), f(2,2)],
-                correta: 0,
-                resolucao: `Exato! O número de baixo (denominador) mostra o total de divisões (2), e o de cima (numerador) mostra quantas partes pegamos (1).`
+                pergunta: "Uma fração é uma forma de representar uma parte de um todo, quando esse todo é dividido em partes iguais. Comer um pedaço dessa pizza representa em fração:",
+                img: pathIntro + "img01intro.png",
+                opcoes: [f(1,4), f(1,6), f(7,1), f(1,7)],
+                correta: 3, 
+                resolucao: `A pizza inteira foi dividida em 7 partes iguais (basta contar as fatias). Como comemos apenas 1 dessas partes, colocamos o 1 em cima (numerador) e o 7 em baixo (denominador). A resposta é ${f(1,7)}.`
+            },
+            {
+                pergunta: "Pedi uma pizza e comi apenas a parte pintada em verde, represente em fração quantos pedaços eu comi:",
+                img: pathIntro + "img02intro.png",
+                opcoes: [f(3,7), f(5,6), f(7,3), f(7,2)],
+                correta: 0, 
+                resolucao: `Primeiro contamos o total de pedaços da pizza, que são 7. Esse número vai em baixo. Depois contamos quantos estão pintados de verde, que são 3. Esse número vai em cima. A fração é ${f(3,7)}.`
+            },
+            {
+                pergunta: "Um copo cheio de suco é dividido em 2 partes iguais. Se alguém bebe uma dessas partes, temos:",
+                img: pathIntro + "img03intro.png",
+                opcoes: [f(2,5), f(2,1), f(1,4), f(1,2)],
+                correta: 3, 
+                resolucao: `Se dividimos algo em 2 partes e pegamos 1, estamos pegando a metade. Em fração, isso é representado como 1 sobre 2, ou seja, ${f(1,2)}.`
             },
             {
                 pergunta: "Qual fração representa o círculo vermelho?",
-                img: pathIntro + "img02.png",
-                opcoes: [f(1,2), f(1,4), f(3,4), f(4,4)],
-                correta: 3,
-                resolucao: "O círculo está inteiro pintado, ou seja, 4 partes de 4. Isso é igual a 1 inteiro."
+                img: pathIntro + "img04intro.png",
+                opcoes: [f(1,4), f(4,1), f(2,5), f(1,8)],
+                correta: 0, 
+                resolucao: `Olhe para o desenho e conte o total de bolinhas: são 4 bolinhas no total. Agora, veja quantas são vermelhas: apenas 1. Por isso, a fração é ${f(1,4)}.`
             },
             {
-                pergunta: `Se dividirmos um retângulo em 4 partes e pintarmos 1, temos ${f(1,4)}. Se pintarmos 3, que fração teremos?`,
-                img: pathIntro + "img03.png",
-                opcoes: [f(1,4), f(2,4), f(3,4), f(4,3)],
-                correta: 2,
-                resolucao: `Correto! O denominador continua 4 (total de partes) e o numerador vira 3 (partes pintadas).`
+                pergunta: "Uma barra de chocolate tem 5 pedaços iguais, se eu comer 1/5, quantos ainda me restam?",
+                img: pathIntro + "img05intro.png",
+                opcoes: ["1", f(2,5), f(4,5), f(3,5)],
+                correta: 2, 
+                resolucao: `A barra inteira tem 5 pedaços, ou seja, é ${f(5,5)}. Se você comeu ${f(1,5)}, fazemos uma conta de menos: ${f(5,5)} - ${f(1,5)} = ${f(4,5)}. Sobraram 4 pedaços.`
+            },
+            {
+                pergunta: "Ganhei de presente um celular dos meus pais. No primeiro dia gastei 1/4 da bateria, no segundo dia 3/4, no terceiro dia eu não usei. Quanto eu gastei de bateria no quarto dia?",
+                img: pathIntro + "img06intro.png",
+                opcoes: [f(3,4), f(1,4), f(5,4), f(1,5)],
+                correta: 0, 
+                resolucao: `A resposta correta para essa sequência lógica é ${f(3,4)}. Observe bem a imagem para entender como o consumo da bateria foi representado.`
             }
         ];
 
-        // Fase 2: Atividades Complementares
-        // ATENÇÃO: As questões foram atualizadas conforme sua solicitação.
         const questoesComp = [
-            // 1. Celular
             {
-                pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)}, no terceiro dia eu não usei. O celular da minha mãe tem uma bateria maior, quanto ela gastou de bateria?`,
+                pergunta: `Um bolo foi dividido em 4 partes iguais. João comeu ${f(1,4)} e Maria comeu ${f(2,4)}. Que fração do bolo foi comida ao todo?`,
                 img: pathComp + "comp01.png",
-                opcoes: [f(3,4), f(1,4), f(5,4), f(1,5)],
-                correta: 3,
-                resolucao: `Resposta Gabarito: ${f(1,5)}.`
+                opcoes: [f(3,8), f(2,4), f(3,4), f(1,4)],
+                correta: 2,
+                resolucao: `Como o bolo foi dividido em partes iguais (denominador 4), podemos somar direto o que cada um comeu. João comeu 1 parte e Maria comeu 2 partes. <br> Conta: ${f(1,4)} + ${f(2,4)} = ${f(3,4)}.`
             },
-            // 2. Ana Suco
             {
                 pergunta: `Ana bebeu ${f(1,5)} de uma garrafa de suco pela manhã e ${f(2,5)} à tarde. Quantas partes da garrafa ela bebeu no total?`,
                 img: pathComp + "comp02.png",
                 opcoes: [f(2,5), f(1,5), f(3,10), f(3,5)],
                 correta: 3,
-                resolucao: `Como os denominadores são iguais, mantemos o denominador e somamos os numeradores: ${f(1,5)} + ${f(2,5)} = ${f(3,5)}.`
+                resolucao: `O denominador (número de baixo) é igual a 5 para os dois. Então, mantemos o 5 em baixo e somamos os números de cima: 1 + 2 = 3. <br> Resultado: ${f(1,5)} + ${f(2,5)} = ${f(3,5)}.`
             },
-            // 3. (Complemento Lógico)
             {
-                pergunta: `João comeu ${f(2,7)} de um chocolate e Maria comeu ${f(3,7)}. Quanto eles comeram juntos?`,
+                pergunta: `Um chocolate foi dividido em 8 pedaços iguais. Pedro comeu ${f(3,8)}. Que fração do chocolate sobrou?`,
                 img: pathComp + "comp03.png",
-                opcoes: [f(5,14), f(5,7), f(6,7), f(1,7)],
+                opcoes: [f(1,8), f(5,8), f(3,8), f(8,5)],
                 correta: 1,
-                resolucao: `Denominadores iguais (7). Somamos apenas os numeradores: 2 + 3 = 5. Resultado: ${f(5,7)}.`
+                resolucao: `O chocolate inteiro tem 8 pedaços, então ele cheio é ${f(8,8)}. Se Pedro comeu 3 pedaços, subtraímos: <br> ${f(8,8)} - ${f(3,8)} = ${f(5,8)}. Sobraram 5 pedaços.`
             },
-            // 4. (Complemento Lógico)
             {
-                pergunta: `Qual o resultado da soma ${f(1,8)} + ${f(4,8)}?`,
+                pergunta: `Em uma fita dividida em 6 partes iguais, foram usadas ${f(2,6)} para um trabalho e ${f(1,6)} para outro. Qual fração da fita foi usada ao todo?`,
                 img: pathComp + "comp04.png",
-                opcoes: [f(5,16), f(3,8), f(5,8), f(4,8)],
+                opcoes: [f(1,6), f(3,12), f(3,6), f(2,6)],
                 correta: 2,
-                resolucao: `${f(1,8)} + ${f(4,8)} = ${f(5,8)}.`
+                resolucao: `Basta juntar as partes usadas. Se usamos 2 partes para um trabalho e 1 para o outro: <br> ${f(2,6)} + ${f(1,6)} = ${f(3,6)}.`
             },
-            // 5. Bolo
             {
                 pergunta: `Um bolo foi dividido em 10 partes iguais. Foram comidas ${f(4,10)} depois do almoço. Que fração do bolo ainda resta?`,
                 img: pathComp + "comp05.png",
                 opcoes: [f(5,10), f(6,14), f(4,10), f(6,10)],
                 correta: 3,
-                resolucao: `O bolo inteiro é ${f(10,10)}. Se comeram ${f(4,10)}, fazemos a subtração: ${f(10,10)} - ${f(4,10)} = ${f(6,10)}.`
+                resolucao: `Imagine o bolo inteiro como ${f(10,10)}. Se comeram 4 fatias, fazemos a conta de menos: <br> ${f(10,10)} - ${f(4,10)} = ${f(6,10)}.`
             },
-            // 6. Gelo
             {
-                pergunta: `Uma forma tinha 8 cubos de gelo. Durante o dia, foram usados ${f(4,8)} dos cubos. Que fração dos cubos de gelo ainda restou?`,
+                pergunta: `Uma forma tinha 12 cubos de gelo. Durante o dia, foram usados ${f(4,12)} dos cubos. Que fração dos cubos de gelo ainda restou?`,
                 img: pathComp + "comp06.png",
-                opcoes: [f(2,8), f(4,8), f(6,8), f(1,8)],
-                correta: 1,
-                resolucao: `A forma cheia tinha ${f(8,8)}. Foram usados ${f(4,8)}. Cálculo: ${f(8,8)} - ${f(4,8)} = ${f(4,8)}.`
+                opcoes: [f(4,12), f(1,12), f(8,12), f(12,8)],
+                correta: 2,
+                resolucao: `A forma completa tem 12 cubos, ou seja, ${f(12,12)}. Tiramos os 4 que foram usados: <br> ${f(12,12)} - ${f(4,12)} = ${f(8,12)}.`
             },
-            // 7. Lápis
             {
                 pergunta: `Em uma caixa de lápis, ${f(1,4)} foi usado na aula de Matemática e ${f(1,6)} na aula de Artes. Que fração da caixa de lápis foi usada ao todo?`,
                 img: pathComp + "comp07.png",
                 opcoes: [f(7,12), f(2,10), f(5,12), f(1,10)],
                 correta: 2,
-                resolucao: `Precisamos somar ${f(1,4)} + ${f(1,6)}. O menor múltiplo em comum entre os dois (4 e 6) é o 12. Transformando as frações: ${f(3,12)} + ${f(2,12)} = ${f(5,12)}.`
+                resolucao: `Aqui os denominadores são diferentes (4 e 6). Precisamos igualar as bases para somar. O número que serve para os dois é o 12. <br> Transformando: ${f(1,4)} vira ${f(3,12)} e ${f(1,6)} vira ${f(2,12)}. <br> Agora somamos: ${f(3,12)} + ${f(2,12)} = ${f(5,12)}.`
             },
-            // 8. (Complemento Lógico)
             {
-                pergunta: `Pedro leu ${f(1,3)} do livro no sábado e ${f(1,9)} no domingo. Quanto ele leu ao todo?`,
+                pergunta: `Uma caixa estava cheia de suco. Após o almoço, foram consumidos ${f(2,3)} da caixa. Que fração do suco restou?`,
                 img: pathComp + "comp08.png",
-                opcoes: [f(2,12), f(4,9), f(2,9), f(3,9)],
-                correta: 1,
-                resolucao: `MMC entre 3 e 9 é 9. ${f(1,3)} equivale a ${f(3,9)}. Então ${f(3,9)} + ${f(1,9)} = ${f(4,9)}.`
+                opcoes: [f(2,3), f(1,6), f(3,2), f(1,3)],
+                correta: 3,
+                resolucao: `A caixa cheia representa o todo, ou seja, ${f(3,3)}. Se beberam duas partes, fazemos: <br> ${f(3,3)} - ${f(2,3)} = ${f(1,3)}.`
             },
-            // 9. Carlo
             {
-                pergunta: `Carlo caminhou ${f(2,5)} de sua meta diária pela manhã e ${f(1,10)} à tarde. Que fração do percurso ele caminhou ao todo?`,
+                pergunta: `Carlo caminhou ${f(2,5)} de um percurso pela manhã e ${f(1,10)} à tarde. Que fração do percurso ele caminhou ao todo?`,
                 img: pathComp + "comp09.png",
-                opcoes: [f(3,10), f(5,10), f(2,15), f(3,5)],
+                opcoes: [f(3,10), f(1,2), f(2,15), f(3,5)],
                 correta: 1,
-                resolucao: `Somamos ${f(2,5)} + ${f(1,10)}. O MMC é 10. A fração ${f(2,5)} equivale a ${f(4,10)}. <br>${f(4,10)} + ${f(1,10)} = ${f(5,10)}. <br><br><b>Nota:</b> Podemos simplificar essa resolução dividindo numerador e denominador por 5, o que resultaria em ${f(1,2)}.`
+                resolucao: `Note que ${f(2,5)} é a mesma coisa que ${f(4,10)} (basta multiplicar em cima e em baixo por 2). <br> Agora podemos somar com a tarde: ${f(4,10)} + ${f(1,10)} = ${f(5,10)}. <br> Simplificando a fração ${f(5,10)}, temos a metade, ou seja, ${f(1,2)}.`
             },
-            // 10. (Complemento Lógico)
             {
-                pergunta: `Em uma jarra havia ${f(7,10)} de suco. Alguém bebeu ${f(2,10)}. Quanto sobrou?`,
+                pergunta: `Um pacote tinha 15 bolachas. Durante o lanche, foram comidas ${f(6,15)} das bolachas. Que fração das bolachas ainda restou?`,
                 img: pathComp + "comp10.png",
-                opcoes: [f(5,10), f(9,10), f(5,20), f(1,10)],
-                correta: 0,
-                resolucao: `Subtração simples com denominadores iguais: ${f(7,10)} - ${f(2,10)} = ${f(5,10)}.`
+                opcoes: [f(6,15), f(15,9), f(1,15), f(9,15)],
+                correta: 3,
+                resolucao: `O pacote fechado tem 15 bolachas: ${f(15,15)}. Se comeram 6, sobraram 9. <br> Conta: ${f(15,15)} - ${f(6,15)} = ${f(9,15)}.`
             },
-            // 11. Tanque
             {
-                pergunta: `Um tanque já continha ${f(1,3)} de sua capacidade de água e foi abastecido com mais ${f(1,4)}. Qual a fração total de água no tanque agora?`,
+                pergunta: `Um tanque de água teve ${f(1,3)} de sua capacidade usada pela manhã e ${f(1,4)} à tarde. Que fração da água foi utilizada no total?`,
                 img: pathComp + "comp11.png",
-                opcoes: [f(2,7), f(7,12), f(2,12), f(5,7)],
+                opcoes: [f(2,7), f(7,12), f(1,12), f(7,7)],
                 correta: 1,
-                resolucao: `Temos denominadores diferentes (3 e 4). Para somar, precisamos encontrar o <b>denominador em comum</b> (que é 12). <br>${f(1,3)} equivale a ${f(4,12)}. <br>${f(1,4)} equivale a ${f(3,12)}. <br>Somando: ${f(4,12)} + ${f(3,12)} = ${f(7,12)}.`
+                resolucao: `Para somar terços e quartos, usamos o denominador 12. <br> ${f(1,3)} vira ${f(4,12)} e ${f(1,4)} vira ${f(3,12)}. <br> Somando tudo: ${f(4,12)} + ${f(3,12)} = ${f(7,12)}.`
             },
-            // 12. (Complemento Lógico)
             {
-                pergunta: `Qual a soma de ${f(1,2)} + ${f(1,4)}?`,
+                pergunta: `Uma criança tinha R$ 10,00, divididos em 10 partes iguais. Ela gastou ${f(3,10)} desse dinheiro comprando um lanche. Que fração do dinheiro ainda restou?`,
                 img: pathComp + "comp12.png",
-                opcoes: [f(2,6), f(3,4), f(2,4), f(1,6)],
+                opcoes: [f(10,3), f(7,10), f(1,10), f(3,10)],
                 correta: 1,
-                resolucao: `MMC é 4. ${f(1,2)} equivale a ${f(2,4)}. <br>${f(2,4)} + ${f(1,4)} = ${f(3,4)}.`
+                resolucao: `O dinheiro todo são 10 partes de 10, ou seja, ${f(10,10)}. Ela gastou 3 partes. <br> Restou: ${f(10,10)} - ${f(3,10)} = ${f(7,10)}.`
             },
-            // 13. Maria Prova
             {
-                pergunta: `Em uma prova, Maria acertou ${f(3,5)} das questões na primeira parte e ${f(1,10)} na segunda parte. Ao juntar as duas provas, utilizando de frações, quantas questões Maria acertou no total?`,
+                pergunta: `Em uma prova, Maria acertou ${f(3,5)} das questões na primeira parte e ${f(1,10)} na segunda parte. Que fração da prova ela acertou no total?`,
                 img: pathComp + "comp13.png",
                 opcoes: [f(3,10), f(4,15), f(7,10), f(2,5)],
                 correta: 2,
-                resolucao: `MMC entre 5 e 10 é 10. A fração ${f(3,5)} equivale a ${f(6,10)}. <br>Somando: ${f(6,10)} + ${f(1,10)} = ${f(7,10)}.`
+                resolucao: `Vamos transformar ${f(3,5)} para base 10. Multiplicando por 2, vira ${f(6,10)}. <br> Agora somamos com a segunda parte: ${f(6,10)} + ${f(1,10)} = ${f(7,10)}.`
             },
-            // 14. (Complemento Lógico Final)
             {
-                pergunta: `Luiza gastou ${f(2,6)} do seu dinheiro com lanche e ${f(1,6)} com transporte. Quanto gastou ao todo?`,
+                pergunta: `Uma caminhada foi dividida em etapas. Ana percorreu ${f(1,4)} do caminho pela manhã e ${f(1,2)} à tarde. Que fração do caminho ela percorreu ao todo?`,
                 img: pathComp + "comp14.png",
-                opcoes: [f(3,6), f(3,12), f(1,6), f(2,6)],
-                correta: 0,
-                resolucao: `${f(2,6)} + ${f(1,6)} = ${f(3,6)}. (Isso representa metade do dinheiro).`
+                opcoes: [f(2,4), f(1,6), f(3,4), f(1,2)],
+                correta: 2,
+                resolucao: `Sabemos que metade ${f(1,2)} é o mesmo que dois quartos ${f(2,4)}. <br> Somando com a manhã: ${f(1,4)} + ${f(2,4)} = ${f(3,4)}.`
+            },
+            {
+                pergunta: `Um terreno foi dividido em partes iguais. ${f(1,2)} do terreno foi usado para uma construção e ${f(1,4)} para um jardim. Que fração do terreno ainda não foi utilizada?`,
+                img: pathComp + "comp15.png",
+                opcoes: [f(3,4), f(1,4), f(2,4), f(1,2)],
+                correta: 1,
+                resolucao: `Primeiro somamos o que já foi usado: ${f(1,2)} (que é ${f(2,4)}) mais ${f(1,4)}. Total usado = ${f(3,4)}. <br> O terreno inteiro é ${f(4,4)}. Então o que sobrou é ${f(4,4)} - ${f(3,4)} = ${f(1,4)}.`
             }
         ];
 
-        // --- ESTADO DA APLICAÇÃO ---
-        let indiceAtual = 0;
-        let modoFase = 'intro'; // 'intro' ou 'comp'
-        
-        let placar = {
-            intro: { acertos: 0, erros: 0 },
-            comp: { acertos: 0, erros: 0 }
-        };
+        let modoAtual = localStorage.getItem('modoAtual') || 'intro'; 
+        let indice = parseInt(localStorage.getItem('indice')) || 0;
+        let placarIntro = JSON.parse(localStorage.getItem('placarIntro')) || { acertos: 0, erros: 0 };
+        let placarComp = JSON.parse(localStorage.getItem('placarComp')) || { acertos: 0, erros: 0 };
 
-        // --- INICIALIZAÇÃO ---
-        window.onload = function() {
-            carregarHistoricoLocal();
-            
-            // Verifica se já fez login
+        function checkLogin() {
             const nomeSalvo = localStorage.getItem('alunoNome');
-            if (!nomeSalvo) {
+            const serieSalva = localStorage.getItem('alunoSerie');
+            if (nomeSalvo && serieSalva) {
+                aplicarDadosUsuario(nomeSalvo, serieSalva);
+                document.getElementById('modalLogin').classList.remove('visivel');
+                mostrarApp();
+            } else {
                 document.getElementById('modalLogin').classList.add('visivel');
-            } else {
-                document.getElementById('displayNomeAluno').innerText = nomeSalvo;
-                document.querySelector('.app-container').style.opacity = '1';
-                carregarQuestao();
             }
-        };
+        }
 
-        // --- LÓGICA DE LOGIN ---
         function realizarLogin() {
-            const nomeInput = document.getElementById('inputNomeAluno').value.trim();
+            const inputNome = document.getElementById('inputNomeAluno');
+            const aviso = document.getElementById('erroNome');
+            let nome = inputNome.value.trim();
+            aviso.innerText = ""; 
+
+            if (!nome) { aviso.innerText = "Por favor, digite seu nome."; return; }
+            if (nome.includes(" ")) { aviso.innerText = "Digite apenas o primeiro nome."; return; }
+            if (nome.length > 15) { aviso.innerText = "O nome deve ter no máximo 15 letras."; return; }
+
+            nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+
             const anoSelecionado = document.querySelector('input[name="ano"]:checked');
-            const serieSelecionada = document.querySelector('input[name="serie"]:checked');
-            const erroDiv = document.getElementById('erroNome');
+            if (!anoSelecionado) { aviso.innerText = "Selecione o seu Ano escolar."; return; }
+            const turmaSelecionada = document.querySelector('input[name="serie"]:checked');
+            if (!turmaSelecionada) { aviso.innerText = "Selecione a sua Turma."; return; }
 
-            if (!nomeInput) {
-                erroDiv.innerText = "Por favor, digite seu nome.";
-                return;
-            }
-            if (nomeInput.length < 3) {
-                erroDiv.innerText = "O nome deve ter pelo menos 3 letras.";
-                return;
-            }
-            if (!anoSelecionado || !serieSelecionada) {
-                erroDiv.innerText = "Selecione seu ano e turma.";
-                return;
-            }
-
-            // Salva dados
-            localStorage.setItem('alunoNome', nomeInput);
-            localStorage.setItem('alunoAno', anoSelecionado.value);
-            localStorage.setItem('alunoSerie', serieSelecionada.value);
-
-            // Fecha modal e inicia
-            document.getElementById('modalLogin').classList.remove('visivel');
-            document.getElementById('displayNomeAluno').innerText = nomeInput;
-            document.querySelector('.app-container').style.opacity = '1';
-            carregarQuestao();
+            const serieCompleta = `${anoSelecionado.value} ${turmaSelecionada.value}`; 
+            localStorage.setItem('alunoNome', nome);
+            localStorage.setItem('alunoSerie', serieCompleta);
+            aplicarDadosUsuario(nome, serieCompleta);
+            
+            document.getElementById('modalLogin').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('modalLogin').classList.remove('visivel');
+                mostrarApp();
+            }, 300);
         }
 
-        // --- CARREGAMENTO DE QUESTÃO ---
-        function carregarQuestao() {
-            const lista = modoFase === 'intro' ? questoesIntro : questoesComp;
-            
-            // Verifica fim da fase
-            if (indiceAtual >= lista.length) {
-                if (modoFase === 'intro') {
-                    abrirModalFase();
-                } else {
-                    abrirModalFinal();
-                }
-                return;
-            }
-
-            const q = lista[indiceAtual];
-            
-            // Atualiza UI
-            document.getElementById('imgAtividade').src = q.img;
-            document.getElementById('imgAtividade').onerror = function() { 
-                this.src = "https://placehold.co/400x300?text=Imagem+N%C3%A3o+Carregada"; 
-            };
-            
-            document.getElementById('indicadorFase').innerText = modoFase === 'intro' ? "Fase 1: Introdução" : "Fase 2: Atividades Complementares";
-            document.getElementById('textoEnunciado').innerHTML = `${indiceAtual + 1}. ${q.pergunta}`;
-            
-            // Reseta estado
-            document.getElementById('areaResposta').style.display = 'none';
-            document.getElementById('btnProximo').style.display = 'none';
-            
-            // Gera Opções
-            const divOpcoes = document.getElementById('areaOpcoes');
-            divOpcoes.innerHTML = '';
-            
-            q.opcoes.forEach((optHtml, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-opcao';
-                btn.innerHTML = optHtml;
-                btn.onclick = () => verificarResposta(i, btn);
-                divOpcoes.appendChild(btn);
-            });
-
-            atualizarBarraProgresso();
+        function aplicarDadosUsuario(nome, serie) {
+            document.getElementById('badgeNome').innerText = nome;
+            document.getElementById('badgeSerie').innerText = serie;
+            document.getElementById('nomeAlunoFase').innerText = nome;
+            // Atualiza o nome no modal final também
+            document.getElementById('nomeAlunoFinal').innerText = nome;
         }
 
-        // --- VERIFICAÇÃO ---
-        function verificarResposta(iSelecionado, btnClicado) {
-            const lista = modoFase === 'intro' ? questoesIntro : questoesComp;
-            const q = lista[indiceAtual];
-            const botoes = document.querySelectorAll('.btn-opcao');
-            
-            // Bloqueia todos
-            botoes.forEach(b => b.disabled = true);
-
-            const areaResp = document.getElementById('areaResposta');
-            const tituloResp = document.getElementById('tituloFeedback');
-            areaResp.style.display = 'block';
-            document.getElementById('btnProximo').style.display = 'block';
-
-            if (iSelecionado === q.correta) {
-                // ACERTO
-                placar[modoFase].acertos++;
-                btnClicado.classList.add('certo');
-                tituloResp.innerText = "Resposta Correta!";
-                tituloResp.style.color = "var(--success)";
-            } else {
-                // ERRO
-                placar[modoFase].erros++;
-                btnClicado.classList.add('errado');
-                botoes[q.correta].classList.add('certo'); // Mostra a certa
-                tituloResp.innerText = "Resposta Incorreta";
-                tituloResp.style.color = "var(--error)";
-            }
-
-            document.getElementById('textoResolucao').innerHTML = q.resolucao;
-            
-            salvarHistoricoLocal();
-            atualizarPlacarHeader();
+        function mostrarApp() {
+            document.getElementById('appContainer').style.opacity = '1';
         }
 
-        function proximaQuestao() {
-            indiceAtual++;
-            carregarQuestao();
-            // Scroll suave para o topo da área de questão
-            document.querySelector('.app-container').scrollIntoView({ behavior: 'smooth' });
+        function salvarProgresso() {
+            localStorage.setItem('modoAtual', modoAtual);
+            localStorage.setItem('indice', indice);
+            localStorage.setItem('placarIntro', JSON.stringify(placarIntro));
+            localStorage.setItem('placarComp', JSON.stringify(placarComp));
         }
 
-        function avancarFase() {
-            modoFase = 'comp';
-            indiceAtual = 0;
-            document.getElementById('modalFase').classList.remove('visivel');
-            carregarQuestao();
+        function abrirModalReset() {
+            document.getElementById('modalReset').classList.add('visivel');
+            document.getElementById('inputSenha').value = '';
+            document.getElementById('inputSenha').focus();
+        }
+        function fecharModalReset() { document.getElementById('modalReset').classList.remove('visivel'); }
+        
+        function confirmarReset() {
+            if (document.getElementById('inputSenha').value === "4241") {
+                localStorage.clear(); location.reload();
+            } else { alert("Senha incorreta."); }
         }
 
-        // --- MODAIS DE TRANSIÇÃO ---
+        function abrirModalHistorico() {
+            document.getElementById('histIntroAcertos').innerText = placarIntro.acertos;
+            document.getElementById('histIntroErros').innerText = placarIntro.erros;
+            document.getElementById('histCompAcertos').innerText = placarComp.acertos;
+            document.getElementById('histCompErros').innerText = placarComp.erros;
+            document.getElementById('modalHistorico').classList.add('visivel');
+        }
+        function fecharModalHistorico() { document.getElementById('modalHistorico').classList.remove('visivel'); }
+
         function abrirModalFase() {
             const nome = localStorage.getItem('alunoNome') || 'Aluno';
             document.getElementById('nomeAlunoFase').innerText = nome;
             document.getElementById('modalFase').classList.add('visivel');
         }
 
+        // --- NOVA FUNÇÃO PARA ABRIR O MODAL FINAL ---
         function abrirModalFinal() {
             const nome = localStorage.getItem('alunoNome') || 'Aluno';
             document.getElementById('nomeAlunoFinal').innerText = nome;
             
-            // Totais da fase COMPLEMENTAR (ou geral, se preferir somar tudo)
-            // Aqui vamos mostrar o desempenho geral
-            const totalAcertos = placar.intro.acertos + placar.comp.acertos;
-            const totalErros = placar.intro.erros + placar.comp.erros;
-
-            document.getElementById('finalAcertos').innerText = totalAcertos;
-            document.getElementById('finalErros').innerText = totalErros;
-
+            // Exibe o resultado final da etapa complementar
+            document.getElementById('finalAcertos').innerText = placarComp.acertos;
+            document.getElementById('finalErros').innerText = placarComp.erros;
+            
             document.getElementById('modalFinal').classList.add('visivel');
         }
 
-        // --- HISTÓRICO E UI ---
+        function avancarFase() {
+            modoAtual = 'complementar';
+            indice = 0; 
+            salvarProgresso();
+            document.getElementById('modalFase').classList.remove('visivel');
+            carregar(); 
+        }
+
+        function atualizarBotoesHeader() {
+            const btnIntro = document.getElementById('btnIntro');
+            const btnComp = document.getElementById('btnComplementar');
+            
+            btnIntro.className = 'top-item';
+            btnComp.className = 'top-item';
+
+            if (modoAtual === 'intro') {
+                btnIntro.classList.add('bg-verde-ativo'); 
+                btnIntro.innerHTML = `${iconCadeadoAberto} Introdução`;
+                
+                btnComp.classList.add('bg-cinza-claro', 'hover-red'); 
+                btnComp.innerHTML = `${iconCadeadoFechado} Atividade complementar`;
+            
+            } else {
+                btnIntro.classList.add('bg-cinza-claro', 'hover-red');
+                btnIntro.innerHTML = `${iconCadeadoFechado} Introdução`; 
+                
+                btnComp.classList.add('bg-verde-ativo');
+                btnComp.innerHTML = `${iconCadeadoAberto} Atividade complementar`; 
+            }
+        }
+
+        function atualizarPlacarVisual() {
+            if (modoAtual === 'intro') {
+                document.getElementById('scoreC').innerText = placarIntro.acertos;
+                document.getElementById('scoreE').innerText = placarIntro.erros;
+            } else {
+                document.getElementById('scoreC').innerText = placarComp.acertos;
+                document.getElementById('scoreE').innerText = placarComp.erros;
+            }
+        }
+
         function atualizarBarraProgresso() {
-            const totalF1 = questoesIntro.length;
-            const totalF2 = questoesComp.length;
-            const totalGeral = totalF1 + totalF2;
+            const listaAtual = modoAtual === 'intro' ? questoesIntro : questoesComp;
+            const placarAtual = modoAtual === 'intro' ? placarIntro : placarComp;
             
-            let jaPassou = indiceAtual;
-            if (modoFase === 'comp') jaPassou += totalF1;
+            const respondidas = placarAtual.acertos + placarAtual.erros;
+            const porcentagem = (respondidas / listaAtual.length) * 100;
+            const largura = porcentagem > 100 ? 100 : porcentagem;
+            document.getElementById('barraFill').style.width = largura + '%';
+        }
+
+        function carregar() {
+            checkLogin();
+            atualizarBotoesHeader();
+            atualizarPlacarVisual();
             
-            const pct = (jaPassou / totalGeral) * 100;
-            document.getElementById('barraProgresso').style.width = `${pct}%`;
-        }
+            const listaQuestao = modoAtual === 'intro' ? questoesIntro : questoesComp;
 
-        function atualizarPlacarHeader() {
-            const acertos = placar.intro.acertos + placar.comp.acertos;
-            const erros = placar.intro.erros + placar.comp.erros;
-            document.getElementById('placarAcertos').innerText = acertos;
-            document.getElementById('placarErros').innerText = erros;
-        }
-
-        function salvarHistoricoLocal() {
-            localStorage.setItem('placarMatematica', JSON.stringify(placar));
-        }
-
-        function carregarHistoricoLocal() {
-            const salvo = localStorage.getItem('placarMatematica');
-            if (salvo) {
-                placar = JSON.parse(salvo);
-                atualizarPlacarHeader();
+            if (indice >= listaQuestao.length) {
+                if (modoAtual === 'intro') {
+                    abrirModalFase();
+                } else {
+                    // FIM DE TUDO: MOSTRA O MODAL FINAL
+                    document.getElementById('barraFill').style.width = '100%';
+                    abrirModalFinal();
+                }
+                return;
             }
+            
+            atualizarBarraProgresso();
+
+            const q = listaQuestao[indice];
+            document.getElementById('areaResposta').style.display = 'none';
+            document.getElementById('btnProximo').style.display = 'none';
+            
+            document.getElementById('imgQuestao').src = q.img;
+            document.getElementById('textoPergunta').innerHTML = q.pergunta;
+
+            const divBotoes = document.getElementById('containerOpcoes');
+            divBotoes.innerHTML = '';
+            
+            q.opcoes.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-opcao';
+                btn.innerHTML = opt;
+                btn.onclick = () => responder(i, btn);
+                divBotoes.appendChild(btn);
+            });
         }
 
-        // Modais de Rodapé
-        function abrirModalHistorico() {
-            document.getElementById('histIntroAcertos').innerText = placar.intro.acertos;
-            document.getElementById('histIntroErros').innerText = placar.intro.erros;
-            document.getElementById('histCompAcertos').innerText = placar.comp.acertos;
-            document.getElementById('histCompErros').innerText = placar.comp.erros;
-            document.getElementById('modalHistorico').classList.add('visivel');
-        }
+        function responder(i, btn) {
+            const listaQuestao = modoAtual === 'intro' ? questoesIntro : questoesComp;
+            const q = listaQuestao[indice];
+            const todos = document.querySelectorAll('.btn-opcao');
+            todos.forEach(b => b.disabled = true);
+            
+            document.getElementById('btnProximo').style.display = 'block';
+            document.getElementById('areaResposta').style.display = 'block';
+            const titulo = document.getElementById('tituloFeedback');
 
-        function fecharModalHistorico() {
-            document.getElementById('modalHistorico').classList.remove('visivel');
-        }
+            let placarAtual = modoAtual === 'intro' ? placarIntro : placarComp;
 
-        function abrirModalReset() {
-            if(confirm("Tem certeza que deseja apagar todo o progresso e reiniciar?")) {
-                localStorage.removeItem('alunoNome');
-                localStorage.removeItem('alunoAno');
-                localStorage.removeItem('alunoSerie');
-                localStorage.removeItem('placarMatematica');
-                location.reload();
+            if (i === q.correta) {
+                placarAtual.acertos++;
+                btn.classList.add('certo');
+                titulo.innerText = "Resposta Correta!";
+                titulo.style.color = "var(--success)";
+            } else {
+                placarAtual.erros++;
+                btn.classList.add('errado');
+                todos[q.correta].classList.add('certo'); 
+                titulo.innerText = "Resposta Incorreta";
+                titulo.style.color = "var(--error)";
             }
+
+            salvarProgresso();
+            atualizarPlacarVisual();
+            atualizarBarraProgresso(); 
+            document.getElementById('textoResolucao').innerHTML = q.resolucao;
         }
 
+        function proximaQuestao() {
+            indice++;
+            salvarProgresso();
+            carregar();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onload = carregar;
     </script>
 </body>
 </html>
