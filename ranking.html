@@ -51,7 +51,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px; /* Reduzi um pouco para aproximar os botões */
+            margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 20px;
         }
@@ -70,7 +70,7 @@
         }
         .input-data { border: none; background: transparent; font-size: 1rem; color: var(--accent); font-weight: 600; cursor: pointer; outline: none; }
 
-        /* --- BOTÕES DE FILTRO E AÇÃO --- */
+        /* --- FILTROS E AÇÕES (ALINHADOS À ESQUERDA) --- */
         .area-filtros-topo {
             display: flex;
             justify-content: flex-start; /* ALINHADO À ESQUERDA */
@@ -160,7 +160,7 @@
         .opcao-item:hover { background-color: #f2f2f7; color: var(--accent); }
         .opcao-item.selecionado { background-color: var(--accent); color: white; }
 
-        /* --- DATA E RESUMO --- */
+        /* --- CARDS E TABELA --- */
         .grid-resumo {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px; margin-bottom: 30px;
@@ -172,7 +172,6 @@
         .card-titulo { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 5px; }
         .card-valor { font-size: 2rem; font-weight: 700; color: var(--text-main); }
         
-        /* --- TABELA DE RANKING --- */
         .painel-ranking {
             background: var(--card-bg); border-radius: var(--radius);
             box-shadow: var(--shadow); overflow: hidden; min-height: 300px;
@@ -212,7 +211,7 @@
             opacity: 1; transition: opacity 0.5s, transform 0.5s; max-width: 300px;
         }
         .toast.saindo { opacity: 0; transform: translateY(-20px); }
-        .toast.alerta { background-color: var(--error); } /* Estilo para alerta de fechamento */
+        .toast.alerta { background-color: var(--error); }
         
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
@@ -269,15 +268,14 @@
             .info-nota { grid-area: nota; text-align: right; }
             .info-serie { grid-area: serie; align-self: start; }
             .info-tempo { grid-area: tempo; text-align: right; font-size: 0.8rem; }
-            .area-filtros-topo { gap: 10px; justify-content: center; } /* Centraliza no mobile se ficar apertado */
+            .area-filtros-topo { gap: 10px; justify-content: center; }
             .btn-filtro-trigger, .btn-finalizar { width: 100%; min-width: auto; }
         }
     </style>
 </head>
 <body>
-
     <script>
-        // Segurança
+        // Segurança contra cópia e inspeção
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.onkeydown = function(e) {
             if (e.keyCode == 123) return false;
@@ -338,7 +336,6 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
                 Finalizar Atividade
             </button>
-
         </div>
 
         <div class="grid-resumo">
@@ -365,7 +362,8 @@
                 <div style="text-align: right;">Horário</div>
             </div>
             <ul id="listaRanking" class="lista-alunos">
-                </ul>
+                <li style="padding:40px; text-align:center; color:var(--text-light)">Carregando dados...</li>
+            </ul>
         </div>
 
         <div class="rodape-gestao">
@@ -406,96 +404,150 @@
         </div>
     </div>
 
-    <script>
-        // --- DADOS E LÓGICA ---
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, set, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // SUA CONFIGURAÇÃO DO FIREBASE
+        const firebaseConfig = {
+          apiKey: "AIzaSyCHfcVVxma4M1LbYO5M-oMX4fnlaNUPi24",
+          authDomain: "fracoesbanco.firebaseapp.com",
+          databaseURL: "https://fracoesbanco-default-rtdb.firebaseio.com",
+          projectId: "fracoesbanco",
+          storageBucket: "fracoesbanco.firebasestorage.app",
+          messagingSenderId: "873014790580",
+          appId: "1:873014790580:web:09b340386d10d7f88a4ae1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        // Estado local
         let todosRegistros = [];
         let filtroAnoAtual = "todas";
         let filtroTurmaAtual = "todas";
 
-        function initDados() {
-            const memoria = localStorage.getItem('simulacaoDB');
-            if (memoria) todosRegistros = JSON.parse(memoria);
-            else gerarDadosFicticiosIniciais();
-        }
-
-        function gerarDadosFicticiosIniciais() {
-            const nomes = ["Ana", "Pedro", "João", "Maria", "Lucas", "Carla", "Bruno", "Sofia", "Diego", "Lara"];
-            const series = ["6º Ano A", "6º Ano B", "7º Ano A", "8º Ano C", "9º Ano A", "7º Ano B"];
-            const hoje = new Date().toISOString().split('T')[0];
+        // --- RECEBER DADOS EM TEMPO REAL ---
+        const alunosRef = ref(db, 'alunos');
+        
+        onValue(alunosRef, (snapshot) => {
+            const dados = snapshot.val();
+            todosRegistros = [];
             
-            for (let i = 0; i < 15; i++) {
-                todosRegistros.push({
-                    nome: nomes[i % nomes.length],
-                    serie: series[i % series.length],
-                    acertos: Math.floor(Math.random() * 11) + 5,
-                    data: hoje,
-                    hora: `0${Math.floor(Math.random()*9)+8}:${Math.floor(Math.random()*59)}`
+            if (dados) {
+                Object.keys(dados).forEach(key => {
+                    const aluno = dados[key];
+                    
+                    // Formatação segura da hora
+                    let horaFormatada = "--:--";
+                    if(aluno.entrouEm) {
+                        const d = new Date(aluno.entrouEm);
+                        // Ajuste simples de fuso horário local
+                        horaFormatada = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    }
+                    
+                    todosRegistros.push({
+                        id: key,
+                        nome: aluno.nome,
+                        serie: aluno.serie,
+                        acertos: aluno.acertos || 0,
+                        data: aluno.entrouEm ? aluno.entrouEm.split('T')[0] : '', // YYYY-MM-DD
+                        hora: horaFormatada,
+                        timestamp: new Date(aluno.entrouEm).getTime(),
+                        notificado: false
+                    });
                 });
+                
+                // --- LÓGICA DE NOTIFICAÇÃO ---
+                // Mostra notificação se o aluno entrou nos últimos 20 segundos
+                const agora = new Date().getTime();
+                const ultimosNotificados = JSON.parse(sessionStorage.getItem('notificados')) || [];
+                
+                todosRegistros.forEach(a => {
+                    if (agora - a.timestamp < 20000 && !ultimosNotificados.includes(a.id)) {
+                        window.mostrarNotificacao(a.nome + " entrou na atividade");
+                        ultimosNotificados.push(a.id);
+                    }
+                });
+                sessionStorage.setItem('notificados', JSON.stringify(ultimosNotificados));
             }
-            salvarDadosSimulados();
-        }
+            
+            window.renderizarRanking();
+        });
 
-        function salvarDadosSimulados() {
-            localStorage.setItem('simulacaoDB', JSON.stringify(todosRegistros));
-        }
-
-        // --- NOTIFICAÇÕES E TOASTS ---
-        function mostrarNotificacao(texto, tipo = 'sucesso') {
+        // --- FUNÇÕES GLOBAIS (UI) ---
+        window.mostrarNotificacao = function(texto, tipo = 'sucesso') {
             const container = document.getElementById('containerNotificacoes');
             const toast = document.createElement('div');
             toast.className = 'toast';
             if(tipo === 'alerta') toast.classList.add('alerta');
 
-            // Ícone diferente se for alerta
             const icon = tipo === 'alerta' 
                 ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
                 : `<svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
             
             toast.innerHTML = `${icon} ${texto}`;
-            
             container.appendChild(toast);
+            
             setTimeout(() => {
                 toast.classList.add('saindo');
                 setTimeout(() => toast.remove(), 500);
             }, 3000);
-        }
+        };
 
-        // Simula entrada de alunos
-        setInterval(() => {
-            if(Math.random() > 0.8) { 
-                const nomesNovos = ["Felipe", "Júlia", "Roberto", "Amanda"];
-                const nome = nomesNovos[Math.floor(Math.random() * nomesNovos.length)];
-                mostrarNotificacao(`${nome} acabou de entrar`);
-            }
-        }, 8000);
-
-        // --- FINALIZAR ATIVIDADE ---
-        function abrirModalFinalizar() { document.getElementById('modalFinalizar').classList.add('visivel'); }
-        function fecharModalFinalizar() { document.getElementById('modalFinalizar').classList.remove('visivel'); }
+        // Modais de Finalizar
+        window.abrirModalFinalizar = () => document.getElementById('modalFinalizar').classList.add('visivel');
+        window.fecharModalFinalizar = () => document.getElementById('modalFinalizar').classList.remove('visivel');
         
-        function confirmarFinalizar() {
-            fecharModalFinalizar();
-            // Salva um status no navegador (simulação de envio para servidor)
-            localStorage.setItem('atividadeStatus', 'finalizada');
-            
-            // Exibe notificação de confirmação
-            mostrarNotificacao("Atividade encerrada! Notificação enviada para todos.", 'alerta');
-        }
+        window.confirmarFinalizar = function() {
+            window.fecharModalFinalizar();
+            // Envia o comando para o banco
+            set(ref(db, 'status_atividade'), { comando: 'finalizar', data: new Date().toISOString() });
+            window.mostrarNotificacao("Atividade encerrada para todos!", 'alerta');
+        };
 
-        // --- LÓGICA DO DROPDOWN ---
-        function toggleDropdown(id) {
+        // Modais de Reset
+        window.abrirModalReset = () => document.getElementById('modalReset').classList.add('visivel');
+        window.fecharModalReset = () => document.getElementById('modalReset').classList.remove('visivel');
+
+        window.resetar = function(tipo) {
+            if (!confirm("Isso apagará os dados do banco. Confirmar?")) return;
+            
+            if (tipo === 'tudo') {
+                remove(ref(db, 'alunos'));
+                // Libera a atividade novamente caso esteja bloqueada
+                set(ref(db, 'status_atividade'), { comando: 'liberado' });
+                alert("Banco de dados limpo e reiniciado!");
+            } else if (tipo === 'hoje') {
+                // Filtro local: apaga do banco quem é de hoje
+                const hoje = new Date().toISOString().split('T')[0];
+                todosRegistros.forEach(aluno => {
+                    if (aluno.data === hoje) {
+                        remove(ref(db, 'alunos/' + aluno.id));
+                    }
+                });
+                alert("Registros de hoje apagados.");
+            } else {
+                alert("Para limpar o mês, use o 'Resetar Site Inteiro' ou apague manualmente no console do Firebase.");
+            }
+            window.fecharModalReset();
+        };
+
+        // Lógica dos Dropdowns
+        window.toggleDropdown = function(id) {
             const el = document.getElementById(id);
             const estaAberto = el.classList.contains('aberto');
             document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
             if(!estaAberto) el.classList.add('aberto');
         }
+        
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-wrapper')) {
                 document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
             }
         });
 
-        function selecionarOpcao(tipo, valor, textoExibicao, elemento) {
+        window.selecionarOpcao = function(tipo, valor, textoExibicao, elemento) {
             const wrapperId = tipo === 'ano' ? 'dropAno' : 'dropTurma';
             const wrapper = document.getElementById(wrapperId);
             wrapper.querySelectorAll('.opcao-item').forEach(i => i.classList.remove('selecionado'));
@@ -509,16 +561,21 @@
                 document.getElementById('textoTurma').innerText = 'Turma: ' + textoExibicao;
             }
             wrapper.classList.remove('aberto');
-            renderizarRanking();
+            window.renderizarRanking();
         }
 
-        // --- RENDERIZAÇÃO ---
+        // Renderização da Tabela
         const listaEl = document.getElementById('listaRanking');
         const filtroData = document.getElementById('filtroData');
+        
+        // Define data de hoje no input
         filtroData.valueAsDate = new Date();
+        filtroData.addEventListener('change', () => window.renderizarRanking());
 
-        function renderizarRanking() {
+        window.renderizarRanking = function() {
             const dataSel = filtroData.value;
+            
+            // Filtros combinados
             let filtrados = todosRegistros.filter(item => {
                 const bateData = item.data === dataSel;
                 const bateAno = filtroAnoAtual === 'todas' ? true : item.serie.includes(filtroAnoAtual);
@@ -526,23 +583,29 @@
                 return bateData && bateAno && bateTurma;
             });
 
+            // Ordena por acertos (decrescente)
             filtrados.sort((a, b) => b.acertos - a.acertos);
 
+            // Atualiza Dashboard
             document.getElementById('totalAcessos').innerText = filtrados.length;
+            
             let totalAcertos = filtrados.reduce((sum, item) => sum + item.acertos, 0);
             let media = filtrados.length ? (totalAcertos / filtrados.length).toFixed(1) : "0.0";
             document.getElementById('mediaAcertos').innerText = media;
             document.getElementById('melhorAluno').innerText = filtrados.length > 0 ? filtrados[0].nome : "-";
 
+            // Monta HTML
             listaEl.innerHTML = "";
+            
             if (filtrados.length === 0) {
-                listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Nenhum registro encontrado.</li>`;
+                listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Nenhum aluno encontrado.<br><small>Verifique a data ou aguarde a conexão.</small></li>`;
                 return;
             }
 
             filtrados.forEach((aluno, index) => {
                 let rankClass = "";
                 let iconePosicao = index + 1;
+                
                 if (index === 0) { rankClass = "rank-1"; iconePosicao = "🥇"; }
                 else if (index === 1) { rankClass = "rank-2"; iconePosicao = "🥈"; }
                 else if (index === 2) { rankClass = "rank-3"; iconePosicao = "🥉"; }
@@ -559,27 +622,6 @@
                 listaEl.innerHTML += html;
             });
         }
-
-        // --- RESET ---
-        function abrirModalReset() { document.getElementById('modalReset').classList.add('visivel'); }
-        function fecharModalReset() { document.getElementById('modalReset').classList.remove('visivel'); }
-        function resetar(tipo) {
-            if (!confirm("Confirmar exclusão?")) return;
-            const hoje = new Date().toISOString().split('T')[0];
-            const mesAtual = new Date().toISOString().slice(0, 7);
-            
-            if (tipo === 'hoje') todosRegistros = todosRegistros.filter(i => i.data !== hoje);
-            else if (tipo === 'mes') todosRegistros = todosRegistros.filter(i => !i.data.startsWith(mesAtual));
-            else if (tipo === 'tudo') todosRegistros = [];
-            
-            salvarDadosSimulados();
-            renderizarRanking();
-            fecharModalReset();
-        }
-
-        filtroData.addEventListener('change', renderizarRanking);
-        initDados();
-        renderizarRanking();
     </script>
 </body>
 </html>
