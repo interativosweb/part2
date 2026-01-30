@@ -51,7 +51,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px; /* Reduzi um pouco para aproximar os botões */
             flex-wrap: wrap;
             gap: 20px;
         }
@@ -70,11 +70,12 @@
         }
         .input-data { border: none; background: transparent; font-size: 1rem; color: var(--accent); font-weight: 600; cursor: pointer; outline: none; }
 
-        /* --- NOVOS FILTROS LADO A LADO (DROPDOWN) --- */
+        /* --- BOTÕES DE FILTRO E AÇÃO --- */
         .area-filtros-topo {
             display: flex;
-            justify-content: center; /* Centralizado */
-            gap: 20px;
+            justify-content: flex-start; /* ALINHADO À ESQUERDA */
+            align-items: center;
+            gap: 15px;
             margin-bottom: 40px;
             flex-wrap: wrap;
         }
@@ -84,7 +85,7 @@
             display: inline-block;
         }
 
-        /* Botão principal do filtro (Estilo "Pílula" igual ao site anterior) */
+        /* Botão Padrão (Filtros) */
         .btn-filtro-trigger {
             background-color: white;
             color: var(--text-main);
@@ -99,7 +100,7 @@
             align-items: center;
             gap: 10px;
             transition: all 0.3s ease;
-            min-width: 180px;
+            min-width: 160px;
             justify-content: space-between;
         }
 
@@ -108,19 +109,31 @@
             box-shadow: 0 6px 15px rgba(0,0,0,0.12);
         }
 
-        /* Destaque quando algo está selecionado */
         .btn-filtro-trigger.ativo {
             border: 2px solid var(--accent);
             color: var(--accent);
         }
 
+        /* Botão Finalizar (Diferenciado) */
+        .btn-finalizar {
+            background-color: white;
+            color: var(--error); /* Texto vermelho */
+            border: 1px solid rgba(255, 59, 48, 0.3);
+        }
+        .btn-finalizar:hover {
+            background-color: var(--error);
+            color: white;
+            border-color: var(--error);
+            box-shadow: 0 6px 15px rgba(255, 59, 48, 0.25);
+        }
+
         .seta-dropdown { width: 14px; height: 14px; fill: var(--text-light); transition: transform 0.3s; }
         .dropdown-wrapper.aberto .seta-dropdown { transform: rotate(180deg); fill: var(--accent); }
 
-        /* O Menu Flutuante */
+        /* Menu Flutuante */
         .dropdown-menu {
             position: absolute;
-            top: 120%; /* Logo abaixo do botão */
+            top: 120%;
             left: 0;
             width: 100%;
             min-width: 200px;
@@ -129,7 +142,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             padding: 10px;
             z-index: 100;
-            
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px);
@@ -137,43 +149,26 @@
         }
 
         .dropdown-wrapper.aberto .dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
+            opacity: 1; visibility: visible; transform: translateY(0);
         }
 
-        /* Opções dentro do menu */
         .opcao-item {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding: 10px 15px;
-            background: none;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            color: var(--text-main);
-            cursor: pointer;
-            font-weight: 500;
-            transition: background 0.2s;
+            display: block; width: 100%; text-align: left; padding: 10px 15px;
+            background: none; border: none; border-radius: 8px; font-size: 0.95rem;
+            color: var(--text-main); cursor: pointer; font-weight: 500; transition: background 0.2s;
         }
-
         .opcao-item:hover { background-color: #f2f2f7; color: var(--accent); }
         .opcao-item.selecionado { background-color: var(--accent); color: white; }
 
         /* --- DATA E RESUMO --- */
         .grid-resumo {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px; margin-bottom: 30px;
         }
-
         .card-resumo {
             background: var(--card-bg); padding: 20px; border-radius: var(--radius);
             box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: flex-start;
         }
-
         .card-titulo { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 5px; }
         .card-valor { font-size: 2rem; font-weight: 700; color: var(--text-main); }
         
@@ -182,15 +177,12 @@
             background: var(--card-bg); border-radius: var(--radius);
             box-shadow: var(--shadow); overflow: hidden; min-height: 300px;
         }
-
         .tabela-header {
             display: grid; grid-template-columns: 0.5fr 2fr 1.5fr 1fr 1fr; padding: 15px 20px;
             background-color: rgba(0,0,0,0.02); border-bottom: 1px solid #e5e5ea;
             font-size: 0.8rem; font-weight: 600; color: var(--text-light); text-transform: uppercase;
         }
-
         .lista-alunos { list-style: none; }
-
         .item-aluno {
             display: grid; grid-template-columns: 0.5fr 2fr 1.5fr 1fr 1fr;
             padding: 15px 20px; align-items: center; border-bottom: 1px solid #f5f5f7;
@@ -198,12 +190,10 @@
         }
         .item-aluno:last-child { border-bottom: none; }
         .item-aluno:hover { background-color: #fafafa; }
-
         .posicao { font-weight: 700; color: var(--text-light); font-size: 1.1rem; }
         .rank-1 .posicao { color: transparent; text-shadow: 0 0 0 var(--warning); font-size: 1.5rem; }
         .rank-2 .posicao { color: transparent; text-shadow: 0 0 0 var(--silver); font-size: 1.5rem; }
         .rank-3 .posicao { color: transparent; text-shadow: 0 0 0 var(--bronze); font-size: 1.5rem; }
-
         .info-nome { font-weight: 600; font-size: 1.05rem; }
         .info-serie { display: inline-block; padding: 4px 12px; border-radius: 20px; background-color: #f2f2f7; color: var(--text-light); font-size: 0.8rem; font-weight: 600; }
         .info-nota { font-weight: 700; color: var(--success); }
@@ -222,6 +212,8 @@
             opacity: 1; transition: opacity 0.5s, transform 0.5s; max-width: 300px;
         }
         .toast.saindo { opacity: 0; transform: translateY(-20px); }
+        .toast.alerta { background-color: var(--error); } /* Estilo para alerta de fechamento */
+        
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
         /* --- RODAPÉ --- */
@@ -237,7 +229,7 @@
         .btn-acao-rodape:hover { background-color: var(--error); transform: scale(1.02); }
         .texto-creditos { font-size: 0.8rem; color: var(--text-light); }
 
-        /* --- MODAL RESET --- */
+        /* --- MODAIS --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
@@ -260,6 +252,11 @@
         .btn-reset-tudo { background-color: var(--error); color: white; }
         .btn-cancelar { margin-top: 15px; background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 0.9rem; text-decoration: underline; }
 
+        /* Botões do Modal Finalizar */
+        .botoes-confirmacao { display: flex; gap: 15px; justify-content: center; }
+        .btn-conf-sim { background-color: var(--error); color: white; flex: 1; }
+        .btn-conf-nao { background-color: #e5e5ea; color: var(--text-main); flex: 1; }
+
         @media (max-width: 700px) {
             .tabela-header { display: none; }
             .item-aluno {
@@ -272,8 +269,8 @@
             .info-nota { grid-area: nota; text-align: right; }
             .info-serie { grid-area: serie; align-self: start; }
             .info-tempo { grid-area: tempo; text-align: right; font-size: 0.8rem; }
-            .area-filtros-topo { gap: 10px; }
-            .btn-filtro-trigger { width: 100%; }
+            .area-filtros-topo { gap: 10px; justify-content: center; } /* Centraliza no mobile se ficar apertado */
+            .btn-filtro-trigger, .btn-finalizar { width: 100%; min-width: auto; }
         }
     </style>
 </head>
@@ -337,6 +334,11 @@
                 </div>
             </div>
 
+            <button class="btn-filtro-trigger btn-finalizar" onclick="abrirModalFinalizar()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
+                Finalizar Atividade
+            </button>
+
         </div>
 
         <div class="grid-resumo">
@@ -390,6 +392,20 @@
         </div>
     </div>
 
+    <div id="modalFinalizar" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-titulo" style="color:var(--error)">Finalizar Atividade?</div>
+            <div class="modal-desc">
+                Você tem certeza que deseja encerrar a atividade para todos os alunos agora?<br>
+                <small>Eles receberão uma notificação imediata.</small>
+            </div>
+            <div class="botoes-confirmacao">
+                <button class="btn-reset-opcao btn-conf-nao" onclick="fecharModalFinalizar()">Não</button>
+                <button class="btn-reset-opcao btn-conf-sim" onclick="confirmarFinalizar()">Sim, Finalizar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- DADOS E LÓGICA ---
         let todosRegistros = [];
@@ -423,44 +439,56 @@
             localStorage.setItem('simulacaoDB', JSON.stringify(todosRegistros));
         }
 
-        // --- NOTIFICAÇÕES (Simulação) ---
-        function mostrarNotificacao(nomeAluno) {
+        // --- NOTIFICAÇÕES E TOASTS ---
+        function mostrarNotificacao(texto, tipo = 'sucesso') {
             const container = document.getElementById('containerNotificacoes');
             const toast = document.createElement('div');
             toast.className = 'toast';
-            toast.innerHTML = `
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                ${nomeAluno} acabou de entrar
-            `;
+            if(tipo === 'alerta') toast.classList.add('alerta');
+
+            // Ícone diferente se for alerta
+            const icon = tipo === 'alerta' 
+                ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
+                : `<svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
+            
+            toast.innerHTML = `${icon} ${texto}`;
+            
             container.appendChild(toast);
             setTimeout(() => {
                 toast.classList.add('saindo');
                 setTimeout(() => toast.remove(), 500);
-            }, 2500);
+            }, 3000);
         }
 
+        // Simula entrada de alunos
         setInterval(() => {
             if(Math.random() > 0.8) { 
                 const nomesNovos = ["Felipe", "Júlia", "Roberto", "Amanda"];
-                mostrarNotificacao(nomesNovos[Math.floor(Math.random() * nomesNovos.length)]);
+                const nome = nomesNovos[Math.floor(Math.random() * nomesNovos.length)];
+                mostrarNotificacao(`${nome} acabou de entrar`);
             }
-        }, 5000);
+        }, 8000);
+
+        // --- FINALIZAR ATIVIDADE ---
+        function abrirModalFinalizar() { document.getElementById('modalFinalizar').classList.add('visivel'); }
+        function fecharModalFinalizar() { document.getElementById('modalFinalizar').classList.remove('visivel'); }
+        
+        function confirmarFinalizar() {
+            fecharModalFinalizar();
+            // Salva um status no navegador (simulação de envio para servidor)
+            localStorage.setItem('atividadeStatus', 'finalizada');
+            
+            // Exibe notificação de confirmação
+            mostrarNotificacao("Atividade encerrada! Notificação enviada para todos.", 'alerta');
+        }
 
         // --- LÓGICA DO DROPDOWN ---
         function toggleDropdown(id) {
             const el = document.getElementById(id);
             const estaAberto = el.classList.contains('aberto');
-            
-            // Fecha todos
             document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
-            
-            // Se não estava aberto, abre o clicado
-            if(!estaAberto) {
-                el.classList.add('aberto');
-            }
+            if(!estaAberto) el.classList.add('aberto');
         }
-
-        // Fecha se clicar fora
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-wrapper')) {
                 document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
@@ -468,13 +496,11 @@
         });
 
         function selecionarOpcao(tipo, valor, textoExibicao, elemento) {
-            // Remove seleção anterior visual
             const wrapperId = tipo === 'ano' ? 'dropAno' : 'dropTurma';
             const wrapper = document.getElementById(wrapperId);
             wrapper.querySelectorAll('.opcao-item').forEach(i => i.classList.remove('selecionado'));
             elemento.classList.add('selecionado');
             
-            // Atualiza Lógica
             if(tipo === 'ano') {
                 filtroAnoAtual = valor;
                 document.getElementById('textoAno').innerText = 'Ano: ' + textoExibicao;
@@ -482,22 +508,17 @@
                 filtroTurmaAtual = valor;
                 document.getElementById('textoTurma').innerText = 'Turma: ' + textoExibicao;
             }
-
-            // Fecha dropdown
             wrapper.classList.remove('aberto');
-            
-            // Filtra
             renderizarRanking();
         }
 
-        // --- FILTROS E RENDERIZAÇÃO ---
+        // --- RENDERIZAÇÃO ---
         const listaEl = document.getElementById('listaRanking');
         const filtroData = document.getElementById('filtroData');
         filtroData.valueAsDate = new Date();
 
         function renderizarRanking() {
             const dataSel = filtroData.value;
-            
             let filtrados = todosRegistros.filter(item => {
                 const bateData = item.data === dataSel;
                 const bateAno = filtroAnoAtual === 'todas' ? true : item.serie.includes(filtroAnoAtual);
@@ -508,7 +529,6 @@
             filtrados.sort((a, b) => b.acertos - a.acertos);
 
             document.getElementById('totalAcessos').innerText = filtrados.length;
-            
             let totalAcertos = filtrados.reduce((sum, item) => sum + item.acertos, 0);
             let media = filtrados.length ? (totalAcertos / filtrados.length).toFixed(1) : "0.0";
             document.getElementById('mediaAcertos').innerText = media;
