@@ -12,11 +12,25 @@
             --text-light: #86868b;
             --accent: #0071e3;
             --success: #34c759;
-            --warning: #ffcc00; /* Ouro */
-            --silver: #e0e0e0;  /* Prata */
-            --bronze: #cd7f32;  /* Bronze */
+            --warning: #ffcc00;
+            --silver: #e0e0e0;
+            --bronze: #cd7f32;
+            --error: #ff3b30;
             --radius: 16px;
             --shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        /* --- PROTEÇÃO ANTI-CÓPIA (CSS) --- */
+        body {
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and IE 11 */
+            user-select: none; /* Chrome, Edge, Opera, Firefox */
+            -webkit-touch-callout: none; /* iOS Safari */
+        }
+        
+        /* Esconde o conteúdo se tentarem imprimir */
+        @media print {
+            html, body { display: none !important; }
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -26,6 +40,7 @@
             color: var(--text-main);
             min-height: 100vh;
             padding: 40px 20px;
+            padding-bottom: 100px;
         }
 
         .container {
@@ -33,7 +48,7 @@
             margin: 0 auto;
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER & FILTROS --- */
         header {
             display: flex;
             justify-content: space-between;
@@ -43,21 +58,38 @@
             gap: 20px;
         }
 
-        .titulo-pagina {
-            font-size: 2rem;
-            font-weight: 700;
-        }
+        .titulo-container { display: flex; flex-direction: column; gap: 5px; }
+
+        .titulo-pagina { font-size: 2rem; font-weight: 700; }
 
         .btn-voltar {
-            text-decoration: none;
-            color: var(--accent);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: opacity 0.2s;
+            text-decoration: none; color: var(--accent); font-weight: 600;
+            display: flex; align-items: center; gap: 5px; transition: opacity 0.2s; font-size: 0.9rem;
         }
         .btn-voltar:hover { opacity: 0.7; }
+
+        .filtros-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filtro-box {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .label-filtro { font-size: 0.8rem; color: var(--text-light); font-weight: 600; }
+
+        .input-filtro {
+            border: none; background: transparent; font-size: 1rem; color: var(--accent);
+            font-weight: 600; cursor: pointer; outline: none;
+        }
 
         /* --- DATA E RESUMO --- */
         .grid-resumo {
@@ -72,134 +104,213 @@
             padding: 20px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            display: flex; flex-direction: column; align-items: flex-start;
         }
 
         .card-titulo { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 5px; }
         .card-valor { font-size: 2rem; font-weight: 700; color: var(--text-main); }
         
-        .input-data {
-            border: none;
-            background: transparent;
-            font-size: 1.1rem;
-            color: var(--accent);
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-        }
-
         /* --- TABELA DE RANKING --- */
         .painel-ranking {
             background: var(--card-bg);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            overflow: hidden; /* Para os cantos arredondados */
+            overflow: hidden;
+            min-height: 300px;
         }
 
         .tabela-header {
             display: grid;
-            grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr;
+            grid-template-columns: 0.5fr 2fr 1.5fr 1fr 1fr;
             padding: 15px 20px;
             background-color: rgba(0,0,0,0.02);
             border-bottom: 1px solid #e5e5ea;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-light);
-            text-transform: uppercase;
+            font-size: 0.8rem; font-weight: 600; color: var(--text-light); text-transform: uppercase;
         }
 
-        .lista-alunos {
-            list-style: none;
-        }
+        .lista-alunos { list-style: none; }
 
         .item-aluno {
             display: grid;
-            grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr;
+            grid-template-columns: 0.5fr 2fr 1.5fr 1fr 1fr;
             padding: 15px 20px;
             align-items: center;
             border-bottom: 1px solid #f5f5f7;
             transition: background 0.2s;
         }
-
         .item-aluno:last-child { border-bottom: none; }
         .item-aluno:hover { background-color: #fafafa; }
 
         .posicao { font-weight: 700; color: var(--text-light); font-size: 1.1rem; }
-        
-        /* Ícones de Troféu para Top 3 */
-        .rank-1 .posicao { color: transparent; text-shadow: 0 0 0 var(--warning); font-size: 1.5rem; } /* Ouro */
-        .rank-2 .posicao { color: transparent; text-shadow: 0 0 0 var(--silver); font-size: 1.5rem; } /* Prata */
-        .rank-3 .posicao { color: transparent; text-shadow: 0 0 0 var(--bronze); font-size: 1.5rem; } /* Bronze */
+        .rank-1 .posicao { color: transparent; text-shadow: 0 0 0 var(--warning); font-size: 1.5rem; }
+        .rank-2 .posicao { color: transparent; text-shadow: 0 0 0 var(--silver); font-size: 1.5rem; }
+        .rank-3 .posicao { color: transparent; text-shadow: 0 0 0 var(--bronze); font-size: 1.5rem; }
 
         .info-nome { font-weight: 600; font-size: 1.05rem; }
         .info-serie { 
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background-color: #f2f2f7;
-            color: var(--text-light);
-            font-size: 0.8rem;
-            font-weight: 600;
+            display: inline-block; padding: 4px 12px; border-radius: 20px;
+            background-color: #f2f2f7; color: var(--text-light); font-size: 0.8rem; font-weight: 600;
+        }
+        .info-nota { font-weight: 700; color: var(--success); }
+        .info-tempo { font-size: 0.9rem; color: var(--text-light); text-align: right; }
+
+        /* --- RODAPÉ E BOTÃO RESET --- */
+        .rodape-gestao {
+            margin-top: 50px;
+            text-align: center;
+            border-top: 1px solid #e5e5ea;
+            padding-top: 30px;
         }
 
-        .info-nota { font-weight: 700; color: var(--success); }
-        .info-nota.baixo { color: var(--text-main); } /* Nota neutra se for baixa */
+        .btn-gestao {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid #d2d2d7;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-gestao:hover {
+            border-color: var(--error);
+            color: var(--error);
+            background-color: rgba(255, 59, 48, 0.05);
+        }
 
-        .info-tempo { font-size: 0.9rem; color: var(--text-light); }
+        /* --- MODAL DE RESET --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-overlay.visivel { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Responsividade para Mobile */
+        .modal-box {
+            background: white; padding: 30px; border-radius: 16px;
+            width: 90%; max-width: 400px; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: popIn 0.3s ease;
+        }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .modal-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+        .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 25px; line-height: 1.4; }
+
+        .grid-botoes-reset { display: flex; flex-direction: column; gap: 10px; }
+
+        .btn-reset-opcao {
+            padding: 15px; border-radius: 12px; border: none;
+            font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn-reset-opcao:hover { transform: scale(1.02); }
+
+        .btn-reset-dia { background-color: #e5e5ea; color: var(--text-main); }
+        .btn-reset-mes { background-color: #ffcc00; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .btn-reset-tudo { background-color: var(--error); color: white; }
+
+        .btn-cancelar {
+            margin-top: 15px; background: none; border: none; 
+            color: var(--text-light); cursor: pointer; font-size: 0.9rem; text-decoration: underline;
+        }
+
+        /* Responsividade */
         @media (max-width: 700px) {
-            .tabela-header { display: none; } /* Esconde cabeçalho no mobile */
-            
+            .tabela-header { display: none; }
             .item-aluno {
                 grid-template-columns: 40px 1fr auto;
-                grid-template-areas: 
-                    "pos nome nota"
-                    "pos serie tempo";
-                gap: 5px;
+                grid-template-areas: "pos nome nota" "pos serie tempo";
+                gap: 5px; padding: 15px;
             }
-
-            .posicao { grid-area: pos; }
+            .posicao { grid-area: pos; align-self: center; }
             .info-nome { grid-area: nome; }
             .info-nota { grid-area: nota; text-align: right; }
             .info-serie { grid-area: serie; align-self: start; }
             .info-tempo { grid-area: tempo; text-align: right; font-size: 0.8rem; }
+            
+            .filtros-container { width: 100%; }
+            .filtro-box { flex: 1; justify-content: center; }
         }
-
     </style>
 </head>
 <body>
 
+    <script>
+        // --- SCRIPT DE PROTEÇÃO AVANÇADA ---
+        
+        // Bloqueia Botão Direito
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Bloqueia Atalhos de Teclado (F12, Ctrl+U, Ctrl+Shift+I, etc.)
+        document.onkeydown = function(e) {
+            // F12
+            if (e.keyCode == 123) { return false; } 
+            // Ctrl+Shift+I (Inspecionar)
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; } 
+            // Ctrl+Shift+C (Inspecionar Elemento)
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; } 
+            // Ctrl+Shift+J (Console)
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; } 
+            // Ctrl+U (Ver Código Fonte)
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; } 
+            // Ctrl+S (Salvar Página)
+            if (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) { return false; }
+            // Ctrl+P (Imprimir)
+            if (e.ctrlKey && e.keyCode == 'P'.charCodeAt(0)) { return false; }
+        };
+        
+        // Bloqueia arrastar elementos (imagens)
+        document.ondragstart = function() { return false; };
+    </script>
+
     <div class="container">
         <header>
-            <div>
+            <div class="titulo-container">
                 <a href="index.html" class="btn-voltar">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
                     Voltar para Atividade
                 </a>
-                <h1 class="titulo-pagina">Desempenho da Turma</h1>
+                <h1 class="titulo-pagina">Painel da Turma</h1>
             </div>
             
-            <div style="background: white; padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow);">
-                <label for="dataSelect" style="font-size: 0.8rem; color: var(--text-light); margin-right: 10px;">Visualizando:</label>
-                <input type="date" id="dataSelect" class="input-data">
+            <div class="filtros-container">
+                <div class="filtro-box">
+                    <span class="label-filtro">Data:</span>
+                    <input type="date" id="filtroData" class="input-filtro">
+                </div>
+
+                <div class="filtro-box">
+                    <span class="label-filtro">Turma:</span>
+                    <select id="filtroSerie" class="input-filtro">
+                        <option value="todas">Todas as Séries</option>
+                        <option value="6º Ano A">6º Ano A</option>
+                        <option value="6º Ano B">6º Ano B</option>
+                        <option value="6º Ano C">6º Ano C</option>
+                        <option value="7º Ano A">7º Ano A</option>
+                        <option value="7º Ano B">7º Ano B</option>
+                        <option value="8º Ano A">8º Ano A</option>
+                        <option value="9º Ano A">9º Ano A</option>
+                    </select>
+                </div>
             </div>
         </header>
 
         <div class="grid-resumo">
             <div class="card-resumo">
-                <span class="card-titulo">Total de Acessos</span>
+                <span class="card-titulo">Total de Alunos</span>
                 <span class="card-valor" id="totalAcessos">0</span>
             </div>
             <div class="card-resumo">
-                <span class="card-titulo">Média de Acertos</span>
+                <span class="card-titulo">Média da Turma</span>
                 <span class="card-valor" id="mediaAcertos" style="color: var(--accent)">0.0</span>
             </div>
             <div class="card-resumo">
-                <span class="card-titulo">Melhor Turma</span>
-                <span class="card-valor" id="melhorTurma" style="font-size: 1.5rem;">-</span>
+                <span class="card-titulo">Melhor Desempenho</span>
+                <span class="card-valor" id="melhorAluno">-</span>
             </div>
         </div>
 
@@ -214,102 +325,134 @@
             <ul id="listaRanking" class="lista-alunos">
                 </ul>
         </div>
+
+        <div class="rodape-gestao">
+            <button class="btn-gestao" onclick="abrirModalReset()">
+                Gerenciar Histórico
+            </button>
+            <div style="margin-top:10px; font-size:0.8rem; color:#ccc;">
+                Área restrita ao professor
+            </div>
+        </div>
+    </div>
+
+    <div id="modalReset" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-titulo">Limpar Dados</div>
+            <div class="modal-desc">Selecione quais registros deseja apagar permanentemente.</div>
+            
+            <div class="grid-botoes-reset">
+                <button class="btn-reset-opcao btn-reset-dia" onclick="resetar('hoje')">
+                    Limpar registros de <b>Hoje</b>
+                </button>
+                <button class="btn-reset-opcao btn-reset-mes" onclick="resetar('mes')">
+                    Limpar registros do <b>Mês</b>
+                </button>
+                <button class="btn-reset-opcao btn-reset-tudo" onclick="resetar('tudo')">
+                    🗑️ Resetar <b>Site Inteiro</b>
+                </button>
+            </div>
+            
+            <button class="btn-cancelar" onclick="fecharModalReset()">Cancelar</button>
+        </div>
     </div>
 
     <script>
-        // --- SIMULAÇÃO DE BANCO DE DADOS ---
-        // Como o site é estático (HTML), ele não salva dados de outros computadores.
-        // Este script cria dados fictícios para você visualizar como ficará o painel.
-        
-        function gerarDadosFicticios() {
-            const nomes = ["Ana Clara", "João Pedro", "Beatriz Silva", "Carlos Eduardo", "Fernanda Lima", "Gabriel Souza", "Isabela Costa", "Lucas Pereira", "Mariana Alves", "Pedro Henrique", "Julia Santos", "Rafael Oliveira"];
-            const series = ["6º Ano A", "6º Ano B", "7º Ano A", "8º Ano C", "9º Ano A"];
-            
-            let dados = [];
-            // Gera 25 alunos aleatórios
-            for (let i = 0; i < 25; i++) {
-                dados.push({
-                    nome: nomes[Math.floor(Math.random() * nomes.length)],
-                    serie: series[Math.floor(Math.random() * series.length)],
-                    acertos: Math.floor(Math.random() * 15) + 5, // Entre 5 e 20 acertos
-                    data: new Date().toISOString().split('T')[0], // Data de hoje
-                    hora: `${Math.floor(Math.random() * 8 + 8)}:${Math.floor(Math.random() * 59).toString().padStart(2, '0')}` // Entre 08:00 e 16:59
-                });
+        // --- DADOS FICTÍCIOS (Para demonstração) ---
+        let todosRegistros = [];
+
+        function initDados() {
+            // Se já tiver dados na memória (simulação), usa eles. Se não, cria novos.
+            const memoria = localStorage.getItem('simulacaoDB');
+            if (memoria) {
+                todosRegistros = JSON.parse(memoria);
+            } else {
+                gerarDadosFicticiosIniciais();
             }
-            
-            // Adiciona um "Aluno Real" se tiver algo salvo no navegador deste computador
-            const alunoLocal = localStorage.getItem('alunoNome');
-            const placarLocal = localStorage.getItem('placarComp');
-            if (alunoLocal && placarLocal) {
-                const p = JSON.parse(placarLocal);
-                dados.push({
-                    nome: alunoLocal + " (Você)",
-                    serie: localStorage.getItem('alunoSerie') || "N/A",
-                    acertos: p.acertos,
-                    data: new Date().toISOString().split('T')[0],
-                    hora: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-                });
-            }
-            
-            return dados;
         }
 
-        // --- LÓGICA DO RANKING ---
+        function gerarDadosFicticiosIniciais() {
+            const nomes = ["Ana Clara", "João Pedro", "Beatriz Silva", "Carlos Eduardo", "Fernanda Lima", "Gabriel Souza", "Isabela Costa", "Lucas Pereira", "Mariana Alves", "Pedro Henrique"];
+            const series = ["6º Ano A", "6º Ano B", "7º Ano A", "8º Ano A"];
+            
+            // Gera dados para HOJE
+            const hoje = new Date().toISOString().split('T')[0];
+            for (let i = 0; i < 15; i++) {
+                todosRegistros.push({
+                    nome: nomes[Math.floor(Math.random() * nomes.length)],
+                    serie: series[Math.floor(Math.random() * series.length)],
+                    acertos: Math.floor(Math.random() * 15) + 5,
+                    data: hoje,
+                    hora: `${Math.floor(Math.random() * 8 + 8)}:${Math.floor(Math.random() * 59).toString().padStart(2, '0')}`
+                });
+            }
 
+            // Gera dados para MÊS PASSADO (para testar o filtro)
+            const mesPassado = new Date();
+            mesPassado.setMonth(mesPassado.getMonth() - 1);
+            const dataAntiga = mesPassado.toISOString().split('T')[0];
+            
+            todosRegistros.push({
+                nome: "Aluno Antigo",
+                serie: "9º Ano A",
+                acertos: 20,
+                data: dataAntiga,
+                hora: "10:00"
+            });
+            
+            salvarDadosSimulados();
+        }
+
+        function salvarDadosSimulados() {
+            localStorage.setItem('simulacaoDB', JSON.stringify(todosRegistros));
+        }
+
+        // --- LÓGICA DE FILTRAGEM ---
         const listaEl = document.getElementById('listaRanking');
-        const dataSelect = document.getElementById('dataSelect');
-        
-        // Define a data de hoje no input
-        dataSelect.valueAsDate = new Date();
+        const filtroData = document.getElementById('filtroData');
+        const filtroSerie = document.getElementById('filtroSerie');
 
-        // Pega os dados (na vida real, isso viria de um Banco de Dados)
-        let todosRegistros = gerarDadosFicticios();
+        // Define data de hoje
+        filtroData.valueAsDate = new Date();
 
         function renderizarRanking() {
-            const dataFiltro = dataSelect.value;
-            
-            // 1. Filtrar pela data selecionada
-            let filtrados = todosRegistros.filter(item => item.data === dataFiltro);
+            const dataSelecionada = filtroData.value;
+            const serieSelecionada = filtroSerie.value;
 
-            // 2. Ordenar: Quem tem mais acertos primeiro. Critério de desempate: Hora (não implementado aqui, mas seria ideal)
+            // 1. Filtra
+            let filtrados = todosRegistros.filter(item => {
+                const bateData = item.data === dataSelecionada;
+                const bateSerie = serieSelecionada === "todas" ? true : item.serie === serieSelecionada;
+                return bateData && bateSerie;
+            });
+
+            // 2. Ordena (Mais acertos primeiro)
             filtrados.sort((a, b) => b.acertos - a.acertos);
 
-            // 3. Atualizar Cards
+            // 3. Atualiza Resumo
             document.getElementById('totalAcessos').innerText = filtrados.length;
             
             let totalAcertos = filtrados.reduce((sum, item) => sum + item.acertos, 0);
             let media = filtrados.length ? (totalAcertos / filtrados.length).toFixed(1) : "0.0";
             document.getElementById('mediaAcertos').innerText = media;
 
-            // Lógica simples para melhor turma (moda)
             if (filtrados.length > 0) {
-                const contagemTurmas = {};
-                let maiorTurma = "";
-                let maxCount = 0;
-                filtrados.forEach(f => {
-                    contagemTurmas[f.serie] = (contagemTurmas[f.serie] || 0) + f.acertos; // Soma acertos por turma
-                    if(contagemTurmas[f.serie] > maxCount) {
-                        maxCount = contagemTurmas[f.serie];
-                        maiorTurma = f.serie;
-                    }
-                });
-                document.getElementById('melhorTurma').innerText = maiorTurma;
+                document.getElementById('melhorAluno').innerText = filtrados[0].nome;
             } else {
-                document.getElementById('melhorTurma').innerText = "-";
+                document.getElementById('melhorAluno').innerText = "-";
             }
 
-            // 4. Renderizar Lista HTML
+            // 4. Renderiza Lista
             listaEl.innerHTML = "";
             
             if (filtrados.length === 0) {
-                listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Nenhuma atividade registrada nesta data.</li>`;
+                listaEl.innerHTML = `<li style="padding:50px; text-align:center; color:var(--text-light)">Nenhum aluno encontrado com esses filtros.</li>`;
                 return;
             }
 
             filtrados.forEach((aluno, index) => {
                 let rankClass = "";
                 let iconePosicao = index + 1;
-
                 if (index === 0) { rankClass = "rank-1"; iconePosicao = "🥇"; }
                 else if (index === 1) { rankClass = "rank-2"; iconePosicao = "🥈"; }
                 else if (index === 2) { rankClass = "rank-3"; iconePosicao = "🥉"; }
@@ -327,10 +470,38 @@
             });
         }
 
-        // Atualiza quando mudar a data
-        dataSelect.addEventListener('change', renderizarRanking);
+        // --- FUNÇÕES DE RESET ---
+        function abrirModalReset() { document.getElementById('modalReset').classList.add('visivel'); }
+        function fecharModalReset() { document.getElementById('modalReset').classList.remove('visivel'); }
 
-        // Inicializa
+        function resetar(tipo) {
+            if (!confirm("Tem certeza? Essa ação não pode ser desfeita.")) return;
+
+            const hoje = new Date().toISOString().split('T')[0];
+            const mesAtual = new Date().toISOString().slice(0, 7); // Ex: "2024-01"
+
+            if (tipo === 'hoje') {
+                todosRegistros = todosRegistros.filter(item => item.data !== hoje);
+            } 
+            else if (tipo === 'mes') {
+                todosRegistros = todosRegistros.filter(item => !item.data.startsWith(mesAtual));
+            } 
+            else if (tipo === 'tudo') {
+                todosRegistros = [];
+            }
+
+            salvarDadosSimulados();
+            renderizarRanking();
+            fecharModalReset();
+            alert("Dados apagados com sucesso!");
+        }
+
+        // Eventos
+        filtroData.addEventListener('change', renderizarRanking);
+        filtroSerie.addEventListener('change', renderizarRanking);
+
+        // Início
+        initDados();
         renderizarRanking();
 
     </script>
