@@ -19,7 +19,6 @@
             --radius: 16px;
             --shadow: 0 4px 20px rgba(0,0,0,0.05);
             
-            /* Cores dos Botões (iguais ao site principal) */
             --btn-gray-dark: #8e8e93;  
             --btn-gray-light: #aeb0b5;
         }
@@ -41,7 +40,7 @@
             min-height: 100vh;
             padding: 40px 20px;
             padding-bottom: 100px;
-            overflow-x: hidden; /* Evita rolagem horizontal da página inteira */
+            overflow-x: hidden;
         }
 
         .container {
@@ -73,41 +72,53 @@
         }
         .input-data { border: none; background: transparent; font-size: 1rem; color: var(--accent); font-weight: 600; cursor: pointer; outline: none; }
 
-        /* --- ABAS DE SÉRIE (ESTILO PILLS) --- */
+        /* --- ÁREA DE FILTROS (SEPARADOS) --- */
+        .area-filtros {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .label-grupo {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            font-weight: 700;
+            margin-left: 5px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
         .scroll-container {
             width: 100%;
             overflow-x: auto;
-            padding-bottom: 10px; /* Espaço para scrollbar não colar */
-            margin-bottom: 25px;
-            -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
+            padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
         }
-        
-        /* Esconde a barra de rolagem mas mantém a função */
-        .scroll-container::-webkit-scrollbar { height: 4px; }
-        .scroll-container::-webkit-scrollbar-thumb { background: #d2d2d7; border-radius: 4px; }
-        .scroll-container::-webkit-scrollbar-track { background: transparent; }
+        .scroll-container::-webkit-scrollbar { height: 0px; } /* Scroll invisível */
 
-        .abas-series {
+        .grupo-abas {
             display: flex;
-            gap: 10px;
-            min-width: min-content; /* Garante que os botões não quebrem linha */
+            gap: 8px;
+            min-width: min-content;
         }
 
         .aba-btn {
             background-color: white;
             border: 1px solid transparent;
-            padding: 10px 20px;
+            padding: 8px 18px;
             border-radius: 50px;
             font-size: 0.9rem;
             font-weight: 600;
             color: var(--text-light);
             cursor: pointer;
-            white-space: nowrap; /* Não quebra texto */
+            white-space: nowrap;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
         }
 
-        .aba-btn:hover { background-color: #f2f2f7; transform: translateY(-2px); }
+        .aba-btn:hover { background-color: #f2f2f7; transform: translateY(-1px); }
         
         .aba-btn.ativo {
             background-color: var(--accent);
@@ -165,96 +176,50 @@
 
         /* --- NOTIFICAÇÕES (TOAST) --- */
         .notificacao-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none; /* Deixa clicar no que está atrás */
+            position: fixed; top: 20px; right: 20px; z-index: 2000;
+            display: flex; flex-direction: column; gap: 10px; pointer-events: none;
         }
 
         .toast {
-            background-color: var(--success);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 50px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            background-color: var(--success); color: white; padding: 12px 20px; border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15); font-size: 0.9rem; font-weight: 600;
+            display: flex; align-items: center; gap: 10px;
             animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            opacity: 1;
-            transition: opacity 0.5s, transform 0.5s;
-            max-width: 300px;
+            opacity: 1; transition: opacity 0.5s, transform 0.5s; max-width: 300px;
         }
-
         .toast.saindo { opacity: 0; transform: translateY(-20px); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* --- RODAPÉ E BOTÃO --- */
+        /* --- RODAPÉ --- */
         .rodape-gestao {
-            margin-top: 50px;
-            text-align: center;
-            border-top: 1px solid #e5e5ea;
-            padding-top: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
+            margin-top: 50px; text-align: center; border-top: 1px solid #e5e5ea; padding-top: 30px;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
         }
-
-        /* Botão igual ao site principal */
         .btn-acao-rodape {
-            background-color: var(--btn-gray-dark);
-            color: white;
-            border: none;
-            padding: 12px 30px; 
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            background-color: var(--btn-gray-dark); color: white; border: none; padding: 12px 30px; 
+            border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .btn-acao-rodape:hover { background-color: var(--error); transform: scale(1.02); }
-
         .texto-creditos { font-size: 0.8rem; color: var(--text-light); }
 
-        /* --- MODAL DE RESET --- */
+        /* --- MODAL RESET --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
-            display: none; justify-content: center; align-items: center; z-index: 1000;
-            animation: fadeIn 0.3s ease;
+            display: none; justify-content: center; align-items: center; z-index: 1000; animation: fadeIn 0.3s ease;
         }
         .modal-overlay.visivel { display: flex; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         .modal-box {
-            background: white; padding: 30px; border-radius: 16px;
-            width: 90%; max-width: 400px; text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            animation: popIn 0.3s ease;
+            background: white; padding: 30px; border-radius: 16px; width: 90%; max-width: 400px; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: popIn 0.3s ease;
         }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
         .modal-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
         .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 25px; line-height: 1.4; }
-
         .grid-botoes-reset { display: flex; flex-direction: column; gap: 10px; }
-        .btn-reset-opcao {
-            padding: 15px; border-radius: 12px; border: none;
-            font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
-        }
+        .btn-reset-opcao { padding: 15px; border-radius: 12px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform 0.2s; }
         .btn-reset-opcao:hover { transform: scale(1.02); }
         .btn-reset-dia { background-color: #e5e5ea; color: var(--text-main); }
         .btn-reset-mes { background-color: #ffcc00; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
@@ -273,14 +238,14 @@
             .info-nota { grid-area: nota; text-align: right; }
             .info-serie { grid-area: serie; align-self: start; }
             .info-tempo { grid-area: tempo; text-align: right; font-size: 0.8rem; }
-            .btn-voltar { font-size: 0.8rem; }
+            .area-filtros { gap: 10px; }
         }
     </style>
 </head>
 <body>
 
     <script>
-        // Bloqueio de segurança
+        // Segurança
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.onkeydown = function(e) {
             if (e.keyCode == 123) return false;
@@ -308,19 +273,33 @@
             </div>
         </header>
 
-        <div class="scroll-container">
-            <div class="abas-series" id="containerAbas">
-                <button class="aba-btn ativo" onclick="filtrarSerie('todas', this)">Todas</button>
-                <button class="aba-btn" onclick="filtrarSerie('6º Ano A', this)">6º Ano A</button>
-                <button class="aba-btn" onclick="filtrarSerie('6º Ano B', this)">6º Ano B</button>
-                <button class="aba-btn" onclick="filtrarSerie('6º Ano C', this)">6º Ano C</button>
-                <button class="aba-btn" onclick="filtrarSerie('7º Ano A', this)">7º Ano A</button>
-                <button class="aba-btn" onclick="filtrarSerie('7º Ano B', this)">7º Ano B</button>
-                <button class="aba-btn" onclick="filtrarSerie('8º Ano A', this)">8º Ano A</button>
-                <button class="aba-btn" onclick="filtrarSerie('8º Ano B', this)">8º Ano B</button>
-                <button class="aba-btn" onclick="filtrarSerie('9º Ano A', this)">9º Ano A</button>
-                <button class="aba-btn" onclick="filtrarSerie('9º Ano B', this)">9º Ano B</button>
+        <div class="area-filtros">
+            
+            <div>
+                <span class="label-grupo">Ano Escolar</span>
+                <div class="scroll-container">
+                    <div class="grupo-abas" id="abasAnos">
+                        <button class="aba-btn ativo" onclick="filtrarAno('todas', this)">Todos</button>
+                        <button class="aba-btn" onclick="filtrarAno('6º Ano', this)">6º Ano</button>
+                        <button class="aba-btn" onclick="filtrarAno('7º Ano', this)">7º Ano</button>
+                        <button class="aba-btn" onclick="filtrarAno('8º Ano', this)">8º Ano</button>
+                        <button class="aba-btn" onclick="filtrarAno('9º Ano', this)">9º Ano</button>
+                    </div>
+                </div>
             </div>
+
+            <div>
+                <span class="label-grupo">Turma</span>
+                <div class="scroll-container">
+                    <div class="grupo-abas" id="abasTurmas">
+                        <button class="aba-btn ativo" onclick="filtrarTurma('todas', this)">Todas</button>
+                        <button class="aba-btn" onclick="filtrarTurma('A', this)">Turma A</button>
+                        <button class="aba-btn" onclick="filtrarTurma('B', this)">Turma B</button>
+                        <button class="aba-btn" onclick="filtrarTurma('C', this)">Turma C</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="grid-resumo">
@@ -365,27 +344,20 @@
         <div class="modal-box">
             <div class="modal-titulo">Limpar Dados</div>
             <div class="modal-desc">Selecione quais registros deseja apagar permanentemente.</div>
-            
             <div class="grid-botoes-reset">
-                <button class="btn-reset-opcao btn-reset-dia" onclick="resetar('hoje')">
-                    Limpar registros de <b>Hoje</b>
-                </button>
-                <button class="btn-reset-opcao btn-reset-mes" onclick="resetar('mes')">
-                    Limpar registros do <b>Mês</b>
-                </button>
-                <button class="btn-reset-opcao btn-reset-tudo" onclick="resetar('tudo')">
-                    🗑️ Resetar <b>Site Inteiro</b>
-                </button>
+                <button class="btn-reset-opcao btn-reset-dia" onclick="resetar('hoje')">Limpar registros de <b>Hoje</b></button>
+                <button class="btn-reset-opcao btn-reset-mes" onclick="resetar('mes')">Limpar registros do <b>Mês</b></button>
+                <button class="btn-reset-opcao btn-reset-tudo" onclick="resetar('tudo')">🗑️ Resetar <b>Site Inteiro</b></button>
             </div>
-            
             <button class="btn-cancelar" onclick="fecharModalReset()">Cancelar</button>
         </div>
     </div>
 
     <script>
-        // --- DADOS E LÓGICA PRINCIPAL ---
+        // --- DADOS E LÓGICA ---
         let todosRegistros = [];
-        let serieFiltroAtual = "todas";
+        let filtroAnoAtual = "todas";
+        let filtroTurmaAtual = "todas";
 
         function initDados() {
             const memoria = localStorage.getItem('simulacaoDB');
@@ -394,14 +366,17 @@
         }
 
         function gerarDadosFicticiosIniciais() {
-            const nomes = ["Ana Clara", "João Pedro", "Beatriz", "Carlos", "Fernanda", "Gabriel", "Isabela", "Lucas", "Mariana", "Pedro"];
-            const series = ["6º Ano A", "7º Ano A", "8º Ano B"];
+            const nomes = ["Ana", "Pedro", "João", "Maria", "Lucas", "Carla", "Bruno", "Sofia", "Diego", "Lara"];
+            const series = ["6º Ano A", "6º Ano B", "7º Ano A", "8º Ano C", "9º Ano A", "7º Ano B"];
             const hoje = new Date().toISOString().split('T')[0];
             
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 15; i++) {
                 todosRegistros.push({
-                    nome: nomes[i], serie: series[i%3], acertos: Math.floor(Math.random()*15)+5,
-                    data: hoje, hora: `0${8+i}:30`
+                    nome: nomes[i % nomes.length],
+                    serie: series[i % series.length],
+                    acertos: Math.floor(Math.random() * 11) + 5,
+                    data: hoje,
+                    hora: `0${Math.floor(Math.random()*9)+8}:${Math.floor(Math.random()*59)}`
                 });
             }
             salvarDadosSimulados();
@@ -411,94 +386,84 @@
             localStorage.setItem('simulacaoDB', JSON.stringify(todosRegistros));
         }
 
-        // --- SISTEMA DE NOTIFICAÇÃO (Simulado) ---
+        // --- NOTIFICAÇÕES (Simulação) ---
         function mostrarNotificacao(nomeAluno) {
             const container = document.getElementById('containerNotificacoes');
-            
             const toast = document.createElement('div');
             toast.className = 'toast';
-            // Ícone de usuário + Texto
             toast.innerHTML = `
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                 ${nomeAluno} acabou de entrar
             `;
-            
             container.appendChild(toast);
-
-            // Toca um som suave (opcional, removido para não incomodar, apenas visual)
-
-            // Remove após 2.5 segundos
             setTimeout(() => {
                 toast.classList.add('saindo');
-                setTimeout(() => { toast.remove(); }, 500); // Espera a animação de saída
+                setTimeout(() => toast.remove(), 500);
             }, 2500);
         }
 
-        // Simula entrada de alunos a cada X segundos para dar vida ao painel
+        // Simula entrada
         setInterval(() => {
-            // 30% de chance de alguém entrar a cada 4 segundos
-            if(Math.random() > 0.7) { 
-                const nomesNovos = ["Felipe", "Júlia", "Roberto", "Amanda", "Diego", "Larissa", "Bruno", "Camila"];
-                const nomeSorteado = nomesNovos[Math.floor(Math.random() * nomesNovos.length)];
-                
-                mostrarNotificacao(nomeSorteado);
-                
-                // Opcional: Adicionar esse aluno fictício à tabela em tempo real
-                // Isso faria a tabela crescer enquanto você olha
-                const novaEntrada = {
-                   nome: nomeSorteado,
-                   serie: "6º Ano B", // Simulação
-                   acertos: 0, // Acabou de entrar
-                   data: new Date().toISOString().split('T')[0],
-                   hora: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-                };
-                todosRegistros.push(novaEntrada);
-                salvarDadosSimulados();
-                renderizarRanking();
+            if(Math.random() > 0.8) { 
+                const nomesNovos = ["Felipe", "Júlia", "Roberto", "Amanda"];
+                mostrarNotificacao(nomesNovos[Math.floor(Math.random() * nomesNovos.length)]);
             }
-        }, 4000);
+        }, 5000);
 
-        // --- FILTROS E RENDERIZAÇÃO ---
+        // --- FILTROS DUPLOS ---
         const listaEl = document.getElementById('listaRanking');
         const filtroData = document.getElementById('filtroData');
         filtroData.valueAsDate = new Date();
 
-        function filtrarSerie(serie, elementoBotao) {
-            serieFiltroAtual = serie;
-            
-            // Atualiza visual dos botões
-            document.querySelectorAll('.aba-btn').forEach(btn => btn.classList.remove('ativo'));
-            elementoBotao.classList.add('ativo');
+        function filtrarAno(ano, btn) {
+            filtroAnoAtual = ano;
+            // Atualiza visual
+            document.querySelectorAll('#abasAnos .aba-btn').forEach(b => b.classList.remove('ativo'));
+            btn.classList.add('ativo');
+            renderizarRanking();
+        }
 
+        function filtrarTurma(turma, btn) {
+            filtroTurmaAtual = turma;
+            // Atualiza visual
+            document.querySelectorAll('#abasTurmas .aba-btn').forEach(b => b.classList.remove('ativo'));
+            btn.classList.add('ativo');
             renderizarRanking();
         }
 
         function renderizarRanking() {
-            const dataSelecionada = filtroData.value;
-
-            // Filtra
+            const dataSel = filtroData.value;
+            
+            // Filtro Principal
             let filtrados = todosRegistros.filter(item => {
-                const bateData = item.data === dataSelecionada;
-                const bateSerie = serieFiltroAtual === "todas" ? true : item.serie === serieFiltroAtual;
-                return bateData && bateSerie;
+                // 1. Filtra Data
+                const bateData = item.data === dataSel;
+                
+                // 2. Filtra Ano (ex: "6º Ano" deve estar contido em "6º Ano A")
+                const bateAno = filtroAnoAtual === 'todas' ? true : item.serie.includes(filtroAnoAtual);
+                
+                // 3. Filtra Turma (ex: "A" deve estar no final de "6º Ano A")
+                // Verificamos se termina com " A" ou se é a letra isolada
+                const bateTurma = filtroTurmaAtual === 'todas' ? true : item.serie.endsWith(" " + filtroTurmaAtual);
+
+                return bateData && bateAno && bateTurma;
             });
 
-            // Ordena
+            // Ordenação
             filtrados.sort((a, b) => b.acertos - a.acertos);
 
-            // Atualiza Cards
+            // Atualiza Dashboard
             document.getElementById('totalAcessos').innerText = filtrados.length;
             
             let totalAcertos = filtrados.reduce((sum, item) => sum + item.acertos, 0);
             let media = filtrados.length ? (totalAcertos / filtrados.length).toFixed(1) : "0.0";
             document.getElementById('mediaAcertos').innerText = media;
-
             document.getElementById('melhorAluno').innerText = filtrados.length > 0 ? filtrados[0].nome : "-";
 
-            // Renderiza Lista
+            // Renderiza HTML
             listaEl.innerHTML = "";
             if (filtrados.length === 0) {
-                listaEl.innerHTML = `<li style="padding:50px; text-align:center; color:var(--text-light)">Nenhum registro encontrado.</li>`;
+                listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Nenhum registro encontrado.</li>`;
                 return;
             }
 
@@ -522,30 +487,26 @@
             });
         }
 
-        // --- MODAL DE RESET ---
+        // --- RESET ---
         function abrirModalReset() { document.getElementById('modalReset').classList.add('visivel'); }
         function fecharModalReset() { document.getElementById('modalReset').classList.remove('visivel'); }
-
         function resetar(tipo) {
             if (!confirm("Confirmar exclusão?")) return;
             const hoje = new Date().toISOString().split('T')[0];
             const mesAtual = new Date().toISOString().slice(0, 7);
-
-            if (tipo === 'hoje') todosRegistros = todosRegistros.filter(item => item.data !== hoje);
-            else if (tipo === 'mes') todosRegistros = todosRegistros.filter(item => !item.data.startsWith(mesAtual));
+            
+            if (tipo === 'hoje') todosRegistros = todosRegistros.filter(i => i.data !== hoje);
+            else if (tipo === 'mes') todosRegistros = todosRegistros.filter(i => !i.data.startsWith(mesAtual));
             else if (tipo === 'tudo') todosRegistros = [];
-
+            
             salvarDadosSimulados();
             renderizarRanking();
             fecharModalReset();
         }
 
         filtroData.addEventListener('change', renderizarRanking);
-
-        // Inicializa
         initDados();
         renderizarRanking();
-
     </script>
 </body>
 </html>
