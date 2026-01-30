@@ -151,7 +151,7 @@
         .info-erro { font-weight: 700; color: var(--error); }
         .info-tempo { font-size: 0.9rem; color: var(--text-light); text-align: right; }
 
-        /* --- NOTIFICAÇÕES (TOAST) --- */
+        /* --- NOTIFICAÇÕES --- */
         .notificacao-container {
             position: fixed; top: 20px; right: 20px; z-index: 2000;
             display: flex; flex-direction: column; gap: 10px; pointer-events: none;
@@ -195,21 +195,36 @@
         }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .modal-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
-        .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.4; }
+        .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 25px; line-height: 1.4; }
         
-        /* Input de Senha */
-        .input-senha {
-            width: 100%; padding: 12px; border: 1px solid #d2d2d7; border-radius: 8px; font-size: 1rem;
-            margin-bottom: 20px; outline: none; text-align: center; transition: border 0.2s;
-        }
-        .input-senha:focus { border-color: var(--accent); }
-
+        /* ESTILO DOS BOTÕES DE RESET (Cinza que vira Vermelho) */
         .grid-botoes-reset { display: flex; flex-direction: column; gap: 10px; }
-        .btn-reset-opcao { padding: 15px; border-radius: 12px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform 0.2s; }
-        .btn-reset-opcao:hover { transform: scale(1.02); }
-        .btn-reset-dia { background-color: #e5e5ea; color: var(--text-main); }
-        .btn-reset-mes { background-color: #ffcc00; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .btn-reset-tudo { background-color: var(--error); color: white; }
+        
+        .btn-reset-opcao {
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            /* Cor padrão Cinza */
+            background-color: #e5e5ea;
+            color: var(--text-main);
+        }
+
+        /* Hover Vermelho para TODOS os botões de reset */
+        .btn-reset-opcao:hover {
+            transform: scale(1.02);
+            background-color: var(--error);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
+        }
+
         .btn-cancelar { margin-top: 15px; background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 0.9rem; text-decoration: underline; }
 
         .botoes-confirmacao { display: flex; gap: 15px; justify-content: center; }
@@ -342,14 +357,12 @@
     <div id="modalReset" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-titulo">Limpar Dados</div>
-            <div class="modal-desc">Digite a senha para apagar registros permanentemente.</div>
-            
-            <input type="password" id="inputSenhaReset" class="input-senha" placeholder="Senha do Professor">
+            <div class="modal-desc">Selecione uma opção e insira a senha.</div>
             
             <div class="grid-botoes-reset">
-                <button class="btn-reset-opcao btn-reset-dia" onclick="resetar('hoje')">Limpar registros de <b>Hoje</b></button>
-                <button class="btn-reset-opcao btn-reset-mes" onclick="resetar('mes')">Limpar registros do <b>Mês</b></button>
-                <button class="btn-reset-opcao btn-reset-tudo" onclick="resetar('tudo')">🗑️ Resetar <b>Site Inteiro</b></button>
+                <button class="btn-reset-opcao" onclick="resetar('hoje')">Limpar registros de <b>Hoje</b></button>
+                <button class="btn-reset-opcao" onclick="resetar('mes')">Limpar registros do <b>Mês</b></button>
+                <button class="btn-reset-opcao" onclick="resetar('tudo')">🗑️ Resetar <b>Site Inteiro</b></button>
             </div>
             <button class="btn-cancelar" onclick="fecharModalReset()">Cancelar</button>
         </div>
@@ -359,12 +372,10 @@
         <div class="modal-box">
             <div class="modal-titulo" style="color:var(--error)">Finalizar Atividade?</div>
             <div class="modal-desc">
-                Digite a senha para encerrar a atividade para todos os alunos.<br>
-                <small>Isso bloqueará a tela deles imediatamente.</small>
+                Você tem certeza que deseja encerrar a atividade para todos os alunos agora?<br>
+                <small>Eles receberão uma notificação imediata.</small>
             </div>
             
-            <input type="password" id="inputSenhaFinalizar" class="input-senha" placeholder="Senha do Professor">
-
             <div class="botoes-confirmacao">
                 <button class="btn-reset-opcao btn-conf-nao" onclick="fecharModalFinalizar()">Não</button>
                 <button class="btn-reset-opcao btn-conf-sim" onclick="confirmarFinalizar()">Sim, Finalizar</button>
@@ -447,34 +458,35 @@
             setTimeout(() => { toast.classList.add('saindo'); setTimeout(() => toast.remove(), 500); }, 3000);
         };
 
-        // --- FINALIZAR COM SENHA ---
-        window.abrirModalFinalizar = () => {
-            document.getElementById('inputSenhaFinalizar').value = ''; // Limpa senha anterior
-            document.getElementById('modalFinalizar').classList.add('visivel');
-        }
+        window.abrirModalFinalizar = () => document.getElementById('modalFinalizar').classList.add('visivel');
         window.fecharModalFinalizar = () => document.getElementById('modalFinalizar').classList.remove('visivel');
         
+        // --- FINALIZAR COM PROMPT ---
         window.confirmarFinalizar = function() {
-            const senha = document.getElementById('inputSenhaFinalizar').value;
-            if (senha !== '4241') {
-                alert('Senha incorreta!');
-                return;
-            }
-            
+            // Primeiro fecha o modal
             window.fecharModalFinalizar();
-            set(ref(db, 'status_atividade'), { comando: 'finalizar', data: new Date().toISOString() });
-            window.mostrarNotificacao("Atividade encerrada para todos!", 'alerta');
+            
+            // Depois pede a senha
+            setTimeout(() => {
+                const senha = prompt("Digite a senha do professor para confirmar:");
+                if (senha !== '4241') {
+                    alert('Senha incorreta!');
+                    return;
+                }
+                
+                set(ref(db, 'status_atividade'), { comando: 'finalizar', data: new Date().toISOString() });
+                window.mostrarNotificacao("Atividade encerrada para todos!", 'alerta');
+            }, 100);
         };
 
-        // --- RESET COM SENHA ---
-        window.abrirModalReset = () => {
-            document.getElementById('inputSenhaReset').value = ''; // Limpa senha anterior
-            document.getElementById('modalReset').classList.add('visivel');
-        }
+        // --- RESET COM PROMPT ---
+        window.abrirModalReset = () => document.getElementById('modalReset').classList.add('visivel');
         window.fecharModalReset = () => document.getElementById('modalReset').classList.remove('visivel');
 
         window.resetar = function(tipo) {
-            const senha = document.getElementById('inputSenhaReset').value;
+            // Pede a senha APÓS clicar no botão
+            const senha = prompt("Digite a senha do professor para confirmar a exclusão:");
+            
             if (senha !== '4241') {
                 alert('Senha incorreta!');
                 return;
@@ -493,7 +505,7 @@
                 });
                 alert("Registros de hoje apagados.");
             } else {
-                alert("Opção disponível apenas no console do Firebase.");
+                alert("Para limpar o mês, use o 'Resetar Site Inteiro' ou apague manualmente no console do Firebase.");
             }
             window.fecharModalReset();
         };
