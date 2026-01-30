@@ -11,22 +11,15 @@
             --text-light: #86868b;
             --border-color: transparent;
             --accent: #0071e3;
-            --success: #34c759; /* Verde */
-            --error: #ff3b30;   /* Vermelho */
+            --success: #34c759;
+            --error: #ff3b30;
             --radius: 12px;
-            
-            /* Cores dos Botões */
             --btn-gray-dark: #8e8e93;
             --btn-gray-light: #aeb0b5;
         }
 
-        /* --- PROTEÇÃO ANTI-CÓPIA --- */
-        body {
-            -webkit-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none;
-        }
+        /* PROTEÇÃO ANTI-CÓPIA */
+        body { -webkit-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
         @media print { html, body { display: none !important; } }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -40,17 +33,23 @@
             padding: 40px 20px;
         }
 
+        /* --- TELA DE BLOQUEIO DO PROFESSOR (ESCONDIDA POR PADRÃO) --- */
+        #telaBloqueio {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #f5f5f7;
+            z-index: 9999;
+            display: none; /* Só aparece se o Firebase mandar */
+            flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        }
+        #telaBloqueio.visivel { display: flex; }
+
         .app-container {
-            width: 100%;
-            max-width: 1100px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            opacity: 0; 
-            transition: opacity 0.5s;
+            width: 100%; max-width: 1100px;
+            display: flex; flex-direction: column; gap: 20px;
+            opacity: 0; transition: opacity 0.5s;
         }
 
-        /* HEADER */
+        /* UI DO JOGO (IGUAL ANTES) */
         .header-unificado { display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 5px; }
         .top-item { display: flex; align-items: center; gap: 10px; padding: 10px 25px; border-radius: 50px; font-size: 0.95rem; font-weight: 600; color: white; user-select: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.3s ease; height: 44px; white-space: nowrap; }
         .top-item svg { width: 20px; height: 20px; fill: white; }
@@ -58,23 +57,19 @@
         .bg-cinza-claro { background-color: var(--btn-gray-light); } 
         .hover-red:hover { background-color: var(--error) !important; transform: scale(1.05); cursor: pointer; }
 
-        /* BARRA DE PROGRESSO */
         .barra-progresso-container { width: 100%; max-width: 50%; height: 10px; background-color: #e5e5ea; border-radius: 6px; overflow: hidden; margin: 10px auto 40px auto; }
         .barra-progresso-fill { height: 100%; width: 0%; background-color: var(--success); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* FRAÇÃO */
         .fracao { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 4px; font-size: 1.1em; pointer-events: none; }
         .fracao .num { border-bottom: 2px solid currentColor; padding: 0 5px; display: block; line-height: 1.2; font-weight: 700; }
         .fracao .den { padding: 2px 5px 0 5px; display: block; line-height: 1.2; font-weight: 700; }
 
-        /* QUESTÃO */
         .secao-pergunta { display: flex; gap: 40px; align-items: flex-start; border-bottom: 1px solid var(--border-color); padding-bottom: 50px; }
         .coluna-imagem { flex: 1.2; display: flex; justify-content: center; align-items: flex-start; }
         .img-atividade { max-width: 100%; max-height: 550px; object-fit: contain; border-radius: var(--radius); pointer-events: none; }
         .coluna-conteudo { flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .topo-info { display: flex; justify-content: flex-end; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
         .enunciado { font-size: 1.5rem; font-weight: 400; margin-bottom: 30px; line-height: 1.5; color: var(--text-main); }
-        .enunciado b { font-weight: 700; }
         
         .grid-opcoes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
         .btn-opcao { background-color: transparent; border: 1px solid #d2d2d7; border-radius: var(--radius); aspect-ratio: 1 / 1; font-size: 1.4rem; cursor: pointer; transition: all 0.2s ease; color: var(--text-main); display: flex; align-items: center; justify-content: center; }
@@ -85,14 +80,12 @@
 
         .area-botao-proximo { margin-top: 10px; height: 50px; }
         .btn-proximo { background-color: var(--success); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; display: none; }
-        .btn-proximo:hover { background-color: #2da84e; }
-
+        
         .secao-resposta { display: none; padding-top: 20px; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .titulo-feedback { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; display: block; }
         .texto-resolucao { font-size: 1.1rem; line-height: 1.6; color: var(--text-main); margin-bottom: 20px; }
 
-        /* RODAPÉ */
         .rodape { margin-top: 40px; text-align: center; border-top: 1px solid var(--border-color); padding-top: 30px; display: flex; flex-direction: column; gap: 15px; align-items: center; }
         .botoes-rodape-container { display: flex; gap: 15px; justify-content: center; }
         .texto-creditos { font-size: 0.8rem; color: var(--text-light); }
@@ -104,8 +97,6 @@
         .modal-overlay.visivel { display: flex; }
         @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
         .modal-box { background: white; padding: 30px; border-radius: 16px; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
-        
-        /* Modal Reduzido */
         .modal-box-fase { margin-top: 80px; padding-top: 60px; padding-bottom: 30px; overflow: visible; max-width: 420px; }
         .animacao-foguinho, .animacao-trofeu { position: absolute; top: -150px; left: 50%; transform: translateX(-50%); width: 170px; height: auto; pointer-events: none; z-index: 20; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -113,14 +104,14 @@
         .modal-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
         .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 20px; }
         .modal-subtitulo { margin-bottom:10px; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; color: var(--text-light); font-weight: 600; margin-top: 15px;}
-
         .titulo-fase { font-size: 1.6rem; font-weight: 700; color: var(--text-main); margin-bottom: 15px; line-height: 1.2; }
         .nome-destaque { color: var(--accent); font-size: 2.2rem; display: block; margin-top: 5px; text-shadow: none; }
         .nome-gigante-final { color: var(--success); font-size: 2.8rem; font-weight: 800; display: block; margin: 15px 0; line-height: 1.1; text-shadow: none; }
         .desc-fase { font-size: 1.1rem; color: var(--text-light); margin-bottom: 25px; line-height: 1.4; }
-
+        
         .input-generico { width: 100%; padding: 12px; border: 1px solid #d2d2d7; border-radius: 8px; font-size: 1rem; margin-bottom: 5px; outline: none; text-align: center; transition: border 0.2s; }
         .input-generico:focus { border-color: var(--accent); }
+        
         .modal-botoes { display: flex; gap: 10px; justify-content: center; }
         .btn-modal { flex: 1; padding: 12px; border-radius: 8px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; }
         .btn-cancelar { background-color: #f2f2f7; color: var(--text-main); }
@@ -167,11 +158,21 @@
 </head>
 <body>
 
+    <div id="telaBloqueio">
+        <h1 style='font-size:3rem;color:#ff3b30;margin-bottom:10px'>Atividade Pausada</h1>
+        <p style='font-size:1.5rem;color:#86868b'>Aguarde a liberação do professor.</p>
+    </div>
+
     <div id="modalLogin" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-titulo">Identificação</div>
             <div class="modal-desc">Insira seus dados para começar.</div>
+            
             <input type="text" id="inputNomeAluno" class="input-generico" placeholder="Qual o seu nome?" maxlength="15">
+            
+            <div class="modal-subtitulo" style="margin-top:20px">Senha da Turma</div>
+            <input type="password" id="inputSenhaAcesso" class="input-generico" placeholder="Digite a senha" inputmode="numeric">
+
             <div class="modal-subtitulo">Qual seu ano?</div>
             <div class="grupo-selecao">
                 <input type="radio" id="ano6" name="ano" value="6º Ano"><label for="ano6">6º Ano</label>
@@ -279,11 +280,10 @@
     </div>
 
     <script type="module">
-        // Importando do link direto (CDN)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, set, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // SUA CONFIGURAÇÃO DO FIREBASE
+        // CONFIGURAÇÃO
         const firebaseConfig = {
           apiKey: "AIzaSyCHfcVVxma4M1LbYO5M-oMX4fnlaNUPi24",
           authDomain: "fracoesbanco.firebaseapp.com",
@@ -297,8 +297,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         let alunoId = localStorage.getItem('firebaseId');
+        const SENHA_ALUNO = "1234";
 
-        // --- DADOS DAS QUESTÕES ---
+        // DADOS
         const f = (n, d) => `<div class='fracao'><span class='num'>${n}</span><span class='den'>${d}</span></div>`;
         const iconCadeadoAberto = `<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>`;
         const iconCadeadoFechado = `<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>`;
@@ -336,14 +337,16 @@
         window.placarIntro = JSON.parse(localStorage.getItem('placarIntro')) || { acertos: 0, erros: 0 };
         window.placarComp = JSON.parse(localStorage.getItem('placarComp')) || { acertos: 0, erros: 0 };
 
-        // LOGIN INTEGRADO
         window.realizarLogin = function() {
             const inputNome = document.getElementById('inputNomeAluno');
+            const inputSenha = document.getElementById('inputSenhaAcesso');
             const aviso = document.getElementById('erroNome');
             let nome = inputNome.value.trim();
+            let senha = inputSenha.value.trim();
             if (!nome) { aviso.innerText = "Por favor, digite seu nome."; return; }
             if (nome.includes(" ")) { aviso.innerText = "Digite apenas o primeiro nome."; return; }
             if (nome.length > 15) { aviso.innerText = "O nome deve ter no máximo 15 letras."; return; }
+            if (senha !== SENHA_ALUNO) { aviso.innerText = "Senha da turma incorreta."; return; }
 
             nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
             const ano = document.querySelector('input[name="ano"]:checked');
@@ -355,7 +358,6 @@
             localStorage.setItem('alunoSerie', serieCompleta);
             window.aplicarDadosUsuario(nome, serieCompleta);
 
-            // FIREBASE
             if (!alunoId) {
                 const novoAlunoRef = push(ref(db, 'alunos'));
                 alunoId = novoAlunoRef.key;
@@ -379,10 +381,7 @@
             const serieSalva = localStorage.getItem('alunoSerie');
             if (nomeSalvo && serieSalva) {
                 window.aplicarDadosUsuario(nomeSalvo, serieSalva);
-                // Reconexão silenciosa no firebase
-                if(alunoId) {
-                    update(ref(db, 'alunos/' + alunoId), { status: 'reconectado', ultimoAcesso: new Date().toISOString() });
-                }
+                if(alunoId) { update(ref(db, 'alunos/' + alunoId), { status: 'reconectado', ultimoAcesso: new Date().toISOString() }); }
                 document.getElementById('modalLogin').classList.remove('visivel');
                 mostrarApp();
             } else {
@@ -419,7 +418,6 @@
             window.atualizarPlacarVisual();
             window.atualizarBarraProgresso();
 
-            // FIREBASE: Salva pontos
             if (alunoId && window.modoAtual === 'complementar') {
                 update(ref(db, 'alunos/' + alunoId), {
                     acertos: window.placarComp.acertos,
@@ -429,17 +427,15 @@
             }
         };
 
-        // BLOQUEIO REMOTO
+        // BLOQUEIO/LIBERAÇÃO REMOTA (TELA DE ESPERA)
         const statusRef = ref(db, 'status_atividade');
         onValue(statusRef, (snapshot) => {
             const dados = snapshot.val();
+            // Se o comando for 'finalizar', mostra a tela. Se for 'liberado', esconde.
             if (dados && dados.comando === 'finalizar') {
-                document.body.innerHTML = `
-                    <div style='display:flex;justify-content:center;align-items:center;height:100vh;flex-direction:column;text-align:center;font-family:-apple-system,sans-serif;color:#1d1d1f'>
-                        <h1 style='font-size:3rem;color:#ff3b30;margin-bottom:10px'>Atividade Encerrada</h1>
-                        <p style='font-size:1.5rem;color:#86868b'>O professor finalizou o tempo.</p>
-                    </div>
-                `;
+                document.getElementById('telaBloqueio').classList.add('visivel');
+            } else {
+                document.getElementById('telaBloqueio').classList.remove('visivel');
             }
         });
 
@@ -541,7 +537,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
-        // Inicia
         window.onload = window.carregar;
 
     </script>
