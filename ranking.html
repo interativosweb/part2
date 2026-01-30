@@ -42,7 +42,7 @@
         }
 
         .container {
-            max-width: 1100px; /* Aumentei um pouco para caber a nova coluna */
+            max-width: 1100px;
             margin: 0 auto;
         }
 
@@ -70,7 +70,7 @@
         }
         .input-data { border: none; background: transparent; font-size: 1rem; color: var(--accent); font-weight: 600; cursor: pointer; outline: none; }
 
-        /* --- FILTROS E AÇÕES (ALINHADOS À ESQUERDA) --- */
+        /* --- FILTROS E AÇÕES --- */
         .area-filtros-topo {
             display: flex;
             justify-content: flex-start;
@@ -122,10 +122,8 @@
             box-shadow: var(--shadow); overflow: hidden; min-height: 300px;
         }
 
-        /* GRID DA TABELA - AJUSTADO PARA 6 COLUNAS */
         .tabela-header {
             display: grid; 
-            /* Nova estrutura: Pos | Nome | Serie | Acertos | Erros | Hora */
             grid-template-columns: 0.5fr 2fr 1.5fr 0.8fr 0.8fr 1fr; 
             padding: 15px 20px;
             background-color: rgba(0,0,0,0.02); border-bottom: 1px solid #e5e5ea;
@@ -135,7 +133,6 @@
         .lista-alunos { list-style: none; }
         .item-aluno {
             display: grid; 
-            /* Mesma estrutura do header */
             grid-template-columns: 0.5fr 2fr 1.5fr 0.8fr 0.8fr 1fr; 
             padding: 15px 20px; align-items: center; border-bottom: 1px solid #f5f5f7;
             transition: background 0.2s;
@@ -150,10 +147,8 @@
 
         .info-nome { font-weight: 600; font-size: 1.05rem; }
         .info-serie { display: inline-block; padding: 4px 12px; border-radius: 20px; background-color: #f2f2f7; color: var(--text-light); font-size: 0.8rem; font-weight: 600; }
-        
         .info-nota { font-weight: 700; color: var(--success); }
-        .info-erro { font-weight: 700; color: var(--error); } /* Novo estilo para erros */
-        
+        .info-erro { font-weight: 700; color: var(--error); }
         .info-tempo { font-size: 0.9rem; color: var(--text-light); text-align: right; }
 
         /* --- NOTIFICAÇÕES (TOAST) --- */
@@ -200,7 +195,15 @@
         }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .modal-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
-        .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 25px; line-height: 1.4; }
+        .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.4; }
+        
+        /* Input de Senha */
+        .input-senha {
+            width: 100%; padding: 12px; border: 1px solid #d2d2d7; border-radius: 8px; font-size: 1rem;
+            margin-bottom: 20px; outline: none; text-align: center; transition: border 0.2s;
+        }
+        .input-senha:focus { border-color: var(--accent); }
+
         .grid-botoes-reset { display: flex; flex-direction: column; gap: 10px; }
         .btn-reset-opcao { padding: 15px; border-radius: 12px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform 0.2s; }
         .btn-reset-opcao:hover { transform: scale(1.02); }
@@ -216,11 +219,8 @@
         @media (max-width: 700px) {
             .tabela-header { display: none; }
             .item-aluno {
-                /* Layout Mobile ajustado para caber o Erro */
                 grid-template-columns: 40px 1fr auto auto;
-                grid-template-areas: 
-                    "pos nome nota erro" 
-                    "pos serie tempo tempo";
+                grid-template-areas: "pos nome nota erro" "pos serie tempo tempo";
                 gap: 5px; padding: 15px;
             }
             .posicao { grid-area: pos; align-self: center; }
@@ -342,7 +342,10 @@
     <div id="modalReset" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-titulo">Limpar Dados</div>
-            <div class="modal-desc">Selecione quais registros deseja apagar permanentemente.</div>
+            <div class="modal-desc">Digite a senha para apagar registros permanentemente.</div>
+            
+            <input type="password" id="inputSenhaReset" class="input-senha" placeholder="Senha do Professor">
+            
             <div class="grid-botoes-reset">
                 <button class="btn-reset-opcao btn-reset-dia" onclick="resetar('hoje')">Limpar registros de <b>Hoje</b></button>
                 <button class="btn-reset-opcao btn-reset-mes" onclick="resetar('mes')">Limpar registros do <b>Mês</b></button>
@@ -356,9 +359,12 @@
         <div class="modal-box">
             <div class="modal-titulo" style="color:var(--error)">Finalizar Atividade?</div>
             <div class="modal-desc">
-                Você tem certeza que deseja encerrar a atividade para todos os alunos agora?<br>
-                <small>Eles receberão uma notificação imediata.</small>
+                Digite a senha para encerrar a atividade para todos os alunos.<br>
+                <small>Isso bloqueará a tela deles imediatamente.</small>
             </div>
+            
+            <input type="password" id="inputSenhaFinalizar" class="input-senha" placeholder="Senha do Professor">
+
             <div class="botoes-confirmacao">
                 <button class="btn-reset-opcao btn-conf-nao" onclick="fecharModalFinalizar()">Não</button>
                 <button class="btn-reset-opcao btn-conf-sim" onclick="confirmarFinalizar()">Sim, Finalizar</button>
@@ -370,7 +376,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue, set, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // SUA CONFIGURAÇÃO DO FIREBASE (FracoesBanco)
+        // SUA CONFIGURAÇÃO
         const firebaseConfig = {
           apiKey: "AIzaSyCHfcVVxma4M1LbYO5M-oMX4fnlaNUPi24",
           authDomain: "fracoesbanco.firebaseapp.com",
@@ -390,7 +396,6 @@
 
         const alunosRef = ref(db, 'alunos');
         
-        // --- ESCUTAR DADOS ---
         onValue(alunosRef, (snapshot) => {
             const dados = snapshot.val();
             todosRegistros = [];
@@ -403,13 +408,12 @@
                         const d = new Date(aluno.entrouEm);
                         horaFormatada = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                     }
-                    
                     todosRegistros.push({
                         id: key,
                         nome: aluno.nome,
                         serie: aluno.serie,
                         acertos: aluno.acertos || 0,
-                        erros: aluno.erros || 0, // Pega os erros do banco
+                        erros: aluno.erros || 0,
                         data: aluno.entrouEm ? aluno.entrouEm.split('T')[0] : '',
                         hora: horaFormatada,
                         timestamp: new Date(aluno.entrouEm).getTime(),
@@ -417,10 +421,8 @@
                     });
                 });
                 
-                // Notificações
                 const agora = new Date().getTime();
                 const ultimosNotificados = JSON.parse(sessionStorage.getItem('notificados')) || [];
-                
                 todosRegistros.forEach(a => {
                     if (agora - a.timestamp < 20000 && !ultimosNotificados.includes(a.id)) {
                         window.mostrarNotificacao(a.nome + " entrou na atividade");
@@ -432,37 +434,54 @@
             window.renderizarRanking();
         });
 
-        // --- FUNÇÕES ---
         window.mostrarNotificacao = function(texto, tipo = 'sucesso') {
             const container = document.getElementById('containerNotificacoes');
             const toast = document.createElement('div');
             toast.className = 'toast';
             if(tipo === 'alerta') toast.classList.add('alerta');
-
             const icon = tipo === 'alerta' 
                 ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
                 : `<svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
-            
             toast.innerHTML = `${icon} ${texto}`;
             container.appendChild(toast);
-            setTimeout(() => {
-                toast.classList.add('saindo');
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
+            setTimeout(() => { toast.classList.add('saindo'); setTimeout(() => toast.remove(), 500); }, 3000);
         };
 
-        window.abrirModalFinalizar = () => document.getElementById('modalFinalizar').classList.add('visivel');
+        // --- FINALIZAR COM SENHA ---
+        window.abrirModalFinalizar = () => {
+            document.getElementById('inputSenhaFinalizar').value = ''; // Limpa senha anterior
+            document.getElementById('modalFinalizar').classList.add('visivel');
+        }
         window.fecharModalFinalizar = () => document.getElementById('modalFinalizar').classList.remove('visivel');
+        
         window.confirmarFinalizar = function() {
+            const senha = document.getElementById('inputSenhaFinalizar').value;
+            if (senha !== '4241') {
+                alert('Senha incorreta!');
+                return;
+            }
+            
             window.fecharModalFinalizar();
             set(ref(db, 'status_atividade'), { comando: 'finalizar', data: new Date().toISOString() });
             window.mostrarNotificacao("Atividade encerrada para todos!", 'alerta');
         };
 
-        window.abrirModalReset = () => document.getElementById('modalReset').classList.add('visivel');
+        // --- RESET COM SENHA ---
+        window.abrirModalReset = () => {
+            document.getElementById('inputSenhaReset').value = ''; // Limpa senha anterior
+            document.getElementById('modalReset').classList.add('visivel');
+        }
         window.fecharModalReset = () => document.getElementById('modalReset').classList.remove('visivel');
+
         window.resetar = function(tipo) {
-            if (!confirm("Isso apagará os dados do banco. Confirmar?")) return;
+            const senha = document.getElementById('inputSenhaReset').value;
+            if (senha !== '4241') {
+                alert('Senha incorreta!');
+                return;
+            }
+
+            if (!confirm("Confirmar exclusão definitiva?")) return;
+            
             if (tipo === 'tudo') {
                 remove(ref(db, 'alunos'));
                 set(ref(db, 'status_atividade'), { comando: 'liberado' });
@@ -474,33 +493,23 @@
                 });
                 alert("Registros de hoje apagados.");
             } else {
-                alert("Para limpar o mês, use o 'Resetar Site Inteiro' ou apague manualmente no console do Firebase.");
+                alert("Opção disponível apenas no console do Firebase.");
             }
             window.fecharModalReset();
         };
 
         window.toggleDropdown = function(id) {
-            const el = document.getElementById(id);
-            const estaAberto = el.classList.contains('aberto');
+            const el = document.getElementById(id); const estaAberto = el.classList.contains('aberto');
             document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
             if(!estaAberto) el.classList.add('aberto');
         }
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.dropdown-wrapper')) {
-                document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
-            }
-        });
-
+        document.addEventListener('click', function(e) { if (!e.target.closest('.dropdown-wrapper')) document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto')); });
         window.selecionarOpcao = function(tipo, valor, textoExibicao, elemento) {
             const wrapperId = tipo === 'ano' ? 'dropAno' : 'dropTurma';
             const wrapper = document.getElementById(wrapperId);
             wrapper.querySelectorAll('.opcao-item').forEach(i => i.classList.remove('selecionado'));
             elemento.classList.add('selecionado');
-            if(tipo === 'ano') {
-                filtroAnoAtual = valor; document.getElementById('textoAno').innerText = 'Ano: ' + textoExibicao;
-            } else {
-                filtroTurmaAtual = valor; document.getElementById('textoTurma').innerText = 'Turma: ' + textoExibicao;
-            }
+            if(tipo === 'ano') { filtroAnoAtual = valor; document.getElementById('textoAno').innerText = 'Ano: ' + textoExibicao; } else { filtroTurmaAtual = valor; document.getElementById('textoTurma').innerText = 'Turma: ' + textoExibicao; }
             wrapper.classList.remove('aberto');
             window.renderizarRanking();
         }
@@ -518,30 +527,17 @@
                 const bateTurma = filtroTurmaAtual === 'todas' ? true : item.serie.endsWith(" " + filtroTurmaAtual);
                 return bateData && bateAno && bateTurma;
             });
-
             filtrados.sort((a, b) => b.acertos - a.acertos);
-
             document.getElementById('totalAcessos').innerText = filtrados.length;
             let totalAcertos = filtrados.reduce((sum, item) => sum + item.acertos, 0);
             let media = filtrados.length ? (totalAcertos / filtrados.length).toFixed(1) : "0.0";
             document.getElementById('mediaAcertos').innerText = media;
             document.getElementById('melhorAluno').innerText = filtrados.length > 0 ? filtrados[0].nome : "-";
-
             listaEl.innerHTML = "";
-            
-            if (filtrados.length === 0) {
-                listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Nenhum aluno encontrado.<br><small>Verifique a data ou aguarde a conexão.</small></li>`;
-                return;
-            }
-
+            if (filtrados.length === 0) { listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Aguardando dados...</li>`; return; }
             filtrados.forEach((aluno, index) => {
-                let rankClass = "";
-                let iconePosicao = index + 1;
-                
-                if (index === 0) { rankClass = "rank-1"; iconePosicao = "🥇"; }
-                else if (index === 1) { rankClass = "rank-2"; iconePosicao = "🥈"; }
-                else if (index === 2) { rankClass = "rank-3"; iconePosicao = "🥉"; }
-
+                let rankClass = ""; let iconePosicao = index + 1;
+                if (index === 0) { rankClass = "rank-1"; iconePosicao = "🥇"; } else if (index === 1) { rankClass = "rank-2"; iconePosicao = "🥈"; } else if (index === 2) { rankClass = "rank-3"; iconePosicao = "🥉"; }
                 const html = `
                     <li class="item-aluno ${rankClass}">
                         <div class="posicao">${iconePosicao}</div>
