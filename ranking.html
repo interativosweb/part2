@@ -67,12 +67,12 @@
         .btn-voltar:hover { opacity: 0.7; }
 
         .filtro-data-container {
-            background: white; padding: 8px 20px; border-radius: 50px;
+            background: white; padding: 10px 20px; border-radius: 12px;
             box-shadow: var(--shadow); display: flex; align-items: center; gap: 10px;
         }
         .input-data { border: none; background: transparent; font-size: 1rem; color: var(--accent); font-weight: 600; cursor: pointer; outline: none; }
 
-        /* --- ÁREA DE FILTROS (SEPARADOS) --- */
+        /* --- FILTROS EM CASCATA (ACCORDION) --- */
         .area-filtros {
             display: flex;
             flex-direction: column;
@@ -80,49 +80,81 @@
             margin-bottom: 30px;
         }
 
-        .label-grupo {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            color: var(--text-light);
-            font-weight: 700;
-            margin-left: 5px;
-            margin-bottom: 5px;
-            display: block;
+        .filtro-accordion {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        .scroll-container {
+        .accordion-header {
             width: 100%;
-            overflow-x: auto;
-            padding-bottom: 5px;
-            -webkit-overflow-scrolling: touch;
-        }
-        .scroll-container::-webkit-scrollbar { height: 0px; } /* Scroll invisível */
-
-        .grupo-abas {
+            padding: 15px 20px;
+            background: white;
+            border: none;
             display: flex;
-            gap: 8px;
-            min-width: min-content;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: background 0.2s;
+        }
+        
+        .accordion-header:hover { background-color: #f9f9f9; }
+
+        .accordion-header .status-texto { color: var(--accent); font-weight: 700; }
+        
+        .seta-icon {
+            width: 20px; height: 20px; fill: var(--text-light); transition: transform 0.3s;
+        }
+        
+        /* Classe para girar a seta quando aberto */
+        .filtro-accordion.aberto .seta-icon { transform: rotate(180deg); fill: var(--accent); }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            background-color: #fafafa;
+            border-top: 1px solid transparent;
         }
 
-        .aba-btn {
+        .filtro-accordion.aberto .accordion-content {
+            max-height: 200px; /* Altura suficiente para mostrar o conteúdo */
+            border-top-color: #e5e5ea;
+        }
+
+        .opcoes-grid {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .opcao-btn {
             background-color: white;
-            border: 1px solid transparent;
-            padding: 8px 18px;
-            border-radius: 50px;
+            border: 1px solid #d2d2d7;
+            padding: 10px 20px;
+            border-radius: 8px;
             font-size: 0.9rem;
             font-weight: 600;
             color: var(--text-light);
             cursor: pointer;
-            white-space: nowrap;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
         }
 
-        .aba-btn:hover { background-color: #f2f2f7; transform: translateY(-1px); }
+        .opcao-btn:hover { border-color: var(--accent); color: var(--accent); }
         
-        .aba-btn.ativo {
+        .opcao-btn.ativo {
             background-color: var(--accent);
             color: white;
+            border-color: var(--accent);
             box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3);
         }
 
@@ -179,7 +211,6 @@
             position: fixed; top: 20px; right: 20px; z-index: 2000;
             display: flex; flex-direction: column; gap: 10px; pointer-events: none;
         }
-
         .toast {
             background-color: var(--success); color: white; padding: 12px 20px; border-radius: 50px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.15); font-size: 0.9rem; font-weight: 600;
@@ -238,7 +269,6 @@
             .info-nota { grid-area: nota; text-align: right; }
             .info-serie { grid-area: serie; align-self: start; }
             .info-tempo { grid-area: tempo; text-align: right; font-size: 0.8rem; }
-            .area-filtros { gap: 10px; }
         }
     </style>
 </head>
@@ -275,27 +305,33 @@
 
         <div class="area-filtros">
             
-            <div>
-                <span class="label-grupo">Ano Escolar</span>
-                <div class="scroll-container">
-                    <div class="grupo-abas" id="abasAnos">
-                        <button class="aba-btn ativo" onclick="filtrarAno('todas', this)">Todos</button>
-                        <button class="aba-btn" onclick="filtrarAno('6º Ano', this)">6º Ano</button>
-                        <button class="aba-btn" onclick="filtrarAno('7º Ano', this)">7º Ano</button>
-                        <button class="aba-btn" onclick="filtrarAno('8º Ano', this)">8º Ano</button>
-                        <button class="aba-btn" onclick="filtrarAno('9º Ano', this)">9º Ano</button>
+            <div class="filtro-accordion" id="accordionAno">
+                <button class="accordion-header" onclick="toggleAccordion('accordionAno')">
+                    <span>Ano Escolar: <span class="status-texto" id="textoAno">Todos</span></span>
+                    <svg class="seta-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </button>
+                <div class="accordion-content">
+                    <div class="opcoes-grid" id="gridAnos">
+                        <button class="opcao-btn ativo" onclick="filtrarAno('todas', this)">Todos</button>
+                        <button class="opcao-btn" onclick="filtrarAno('6º Ano', this)">6º Ano</button>
+                        <button class="opcao-btn" onclick="filtrarAno('7º Ano', this)">7º Ano</button>
+                        <button class="opcao-btn" onclick="filtrarAno('8º Ano', this)">8º Ano</button>
+                        <button class="opcao-btn" onclick="filtrarAno('9º Ano', this)">9º Ano</button>
                     </div>
                 </div>
             </div>
 
-            <div>
-                <span class="label-grupo">Turma</span>
-                <div class="scroll-container">
-                    <div class="grupo-abas" id="abasTurmas">
-                        <button class="aba-btn ativo" onclick="filtrarTurma('todas', this)">Todas</button>
-                        <button class="aba-btn" onclick="filtrarTurma('A', this)">Turma A</button>
-                        <button class="aba-btn" onclick="filtrarTurma('B', this)">Turma B</button>
-                        <button class="aba-btn" onclick="filtrarTurma('C', this)">Turma C</button>
+            <div class="filtro-accordion" id="accordionTurma">
+                <button class="accordion-header" onclick="toggleAccordion('accordionTurma')">
+                    <span>Turma: <span class="status-texto" id="textoTurma">Todas</span></span>
+                    <svg class="seta-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </button>
+                <div class="accordion-content">
+                    <div class="opcoes-grid" id="gridTurmas">
+                        <button class="opcao-btn ativo" onclick="filtrarTurma('todas', this)">Todas</button>
+                        <button class="opcao-btn" onclick="filtrarTurma('A', this)">Turma A</button>
+                        <button class="opcao-btn" onclick="filtrarTurma('B', this)">Turma B</button>
+                        <button class="opcao-btn" onclick="filtrarTurma('C', this)">Turma C</button>
                     </div>
                 </div>
             </div>
@@ -402,7 +438,6 @@
             }, 2500);
         }
 
-        // Simula entrada
         setInterval(() => {
             if(Math.random() > 0.8) { 
                 const nomesNovos = ["Felipe", "Júlia", "Roberto", "Amanda"];
@@ -410,49 +445,66 @@
             }
         }, 5000);
 
-        // --- FILTROS DUPLOS ---
+        // --- FUNÇÃO DE TOGGLE DO ACCORDION ---
+        function toggleAccordion(id) {
+            const acc = document.getElementById(id);
+            // Se já estiver aberto, fecha. Se não, abre.
+            if(acc.classList.contains('aberto')) {
+                acc.classList.remove('aberto');
+            } else {
+                // (Opcional) Fechar outros abertos
+                document.querySelectorAll('.filtro-accordion').forEach(el => el.classList.remove('aberto'));
+                acc.classList.add('aberto');
+            }
+        }
+
+        // --- FILTROS LÓGICA ---
         const listaEl = document.getElementById('listaRanking');
         const filtroData = document.getElementById('filtroData');
         filtroData.valueAsDate = new Date();
 
         function filtrarAno(ano, btn) {
             filtroAnoAtual = ano;
-            // Atualiza visual
-            document.querySelectorAll('#abasAnos .aba-btn').forEach(b => b.classList.remove('ativo'));
+            // Atualiza botões
+            document.querySelectorAll('#gridAnos .opcao-btn').forEach(b => b.classList.remove('ativo'));
             btn.classList.add('ativo');
+            
+            // Atualiza Texto do Header
+            document.getElementById('textoAno').innerText = ano === 'todas' ? 'Todos' : ano;
+            
+            // Fecha cascata automaticamente
+            toggleAccordion('accordionAno');
+            
             renderizarRanking();
         }
 
         function filtrarTurma(turma, btn) {
             filtroTurmaAtual = turma;
-            // Atualiza visual
-            document.querySelectorAll('#abasTurmas .aba-btn').forEach(b => b.classList.remove('ativo'));
+            // Atualiza botões
+            document.querySelectorAll('#gridTurmas .opcao-btn').forEach(b => b.classList.remove('ativo'));
             btn.classList.add('ativo');
+
+            // Atualiza Texto do Header
+            document.getElementById('textoTurma').innerText = turma === 'todas' ? 'Todas' : 'Turma ' + turma;
+
+            // Fecha cascata automaticamente
+            toggleAccordion('accordionTurma');
+            
             renderizarRanking();
         }
 
         function renderizarRanking() {
             const dataSel = filtroData.value;
             
-            // Filtro Principal
             let filtrados = todosRegistros.filter(item => {
-                // 1. Filtra Data
                 const bateData = item.data === dataSel;
-                
-                // 2. Filtra Ano (ex: "6º Ano" deve estar contido em "6º Ano A")
                 const bateAno = filtroAnoAtual === 'todas' ? true : item.serie.includes(filtroAnoAtual);
-                
-                // 3. Filtra Turma (ex: "A" deve estar no final de "6º Ano A")
-                // Verificamos se termina com " A" ou se é a letra isolada
                 const bateTurma = filtroTurmaAtual === 'todas' ? true : item.serie.endsWith(" " + filtroTurmaAtual);
-
                 return bateData && bateAno && bateTurma;
             });
 
-            // Ordenação
             filtrados.sort((a, b) => b.acertos - a.acertos);
 
-            // Atualiza Dashboard
             document.getElementById('totalAcessos').innerText = filtrados.length;
             
             let totalAcertos = filtrados.reduce((sum, item) => sum + item.acertos, 0);
@@ -460,7 +512,6 @@
             document.getElementById('mediaAcertos').innerText = media;
             document.getElementById('melhorAluno').innerText = filtrados.length > 0 ? filtrados[0].nome : "-";
 
-            // Renderiza HTML
             listaEl.innerHTML = "";
             if (filtrados.length === 0) {
                 listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Nenhum registro encontrado.</li>`;
