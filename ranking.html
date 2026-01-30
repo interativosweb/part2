@@ -18,9 +18,7 @@
             --error: #ff3b30;
             --radius: 16px;
             --shadow: 0 4px 20px rgba(0,0,0,0.05);
-            
             --btn-gray-dark: #8e8e93;  
-            --btn-gray-light: #aeb0b5;
         }
 
         /* --- PROTEÇÃO ANTI-CÓPIA --- */
@@ -53,7 +51,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
             gap: 20px;
         }
@@ -67,96 +65,101 @@
         .btn-voltar:hover { opacity: 0.7; }
 
         .filtro-data-container {
-            background: white; padding: 10px 20px; border-radius: 12px;
+            background: white; padding: 10px 20px; border-radius: 50px;
             box-shadow: var(--shadow); display: flex; align-items: center; gap: 10px;
         }
         .input-data { border: none; background: transparent; font-size: 1rem; color: var(--accent); font-weight: 600; cursor: pointer; outline: none; }
 
-        /* --- FILTROS EM CASCATA (ACCORDION) --- */
-        .area-filtros {
+        /* --- NOVOS FILTROS LADO A LADO (DROPDOWN) --- */
+        .area-filtros-topo {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .filtro-accordion {
-            background: white;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .accordion-header {
-            width: 100%;
-            padding: 15px 20px;
-            background: white;
-            border: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-main);
-            transition: background 0.2s;
-        }
-        
-        .accordion-header:hover { background-color: #f9f9f9; }
-
-        .accordion-header .status-texto { color: var(--accent); font-weight: 700; }
-        
-        .seta-icon {
-            width: 20px; height: 20px; fill: var(--text-light); transition: transform 0.3s;
-        }
-        
-        /* Classe para girar a seta quando aberto */
-        .filtro-accordion.aberto .seta-icon { transform: rotate(180deg); fill: var(--accent); }
-
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out;
-            background-color: #fafafa;
-            border-top: 1px solid transparent;
-        }
-
-        .filtro-accordion.aberto .accordion-content {
-            max-height: 200px; /* Altura suficiente para mostrar o conteúdo */
-            border-top-color: #e5e5ea;
-        }
-
-        .opcoes-grid {
-            padding: 15px;
-            display: flex;
-            gap: 10px;
+            justify-content: center; /* Centralizado */
+            gap: 20px;
+            margin-bottom: 40px;
             flex-wrap: wrap;
         }
 
-        .opcao-btn {
-            background-color: white;
-            border: 1px solid #d2d2d7;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-light);
-            cursor: pointer;
-            transition: all 0.2s;
-            flex: 1;
-            min-width: 80px;
-            text-align: center;
+        .dropdown-wrapper {
+            position: relative;
+            display: inline-block;
         }
 
-        .opcao-btn:hover { border-color: var(--accent); color: var(--accent); }
-        
-        .opcao-btn.ativo {
-            background-color: var(--accent);
-            color: white;
-            border-color: var(--accent);
-            box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3);
+        /* Botão principal do filtro (Estilo "Pílula" igual ao site anterior) */
+        .btn-filtro-trigger {
+            background-color: white;
+            color: var(--text-main);
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            min-width: 180px;
+            justify-content: space-between;
         }
+
+        .btn-filtro-trigger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+        }
+
+        /* Destaque quando algo está selecionado */
+        .btn-filtro-trigger.ativo {
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .seta-dropdown { width: 14px; height: 14px; fill: var(--text-light); transition: transform 0.3s; }
+        .dropdown-wrapper.aberto .seta-dropdown { transform: rotate(180deg); fill: var(--accent); }
+
+        /* O Menu Flutuante */
+        .dropdown-menu {
+            position: absolute;
+            top: 120%; /* Logo abaixo do botão */
+            left: 0;
+            width: 100%;
+            min-width: 200px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 10px;
+            z-index: 100;
+            
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .dropdown-wrapper.aberto .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Opções dentro do menu */
+        .opcao-item {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 10px 15px;
+            background: none;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .opcao-item:hover { background-color: #f2f2f7; color: var(--accent); }
+        .opcao-item.selecionado { background-color: var(--accent); color: white; }
 
         /* --- DATA E RESUMO --- */
         .grid-resumo {
@@ -269,6 +272,8 @@
             .info-nota { grid-area: nota; text-align: right; }
             .info-serie { grid-area: serie; align-self: start; }
             .info-tempo { grid-area: tempo; text-align: right; font-size: 0.8rem; }
+            .area-filtros-topo { gap: 10px; }
+            .btn-filtro-trigger { width: 100%; }
         }
     </style>
 </head>
@@ -303,36 +308,32 @@
             </div>
         </header>
 
-        <div class="area-filtros">
+        <div class="area-filtros-topo">
             
-            <div class="filtro-accordion" id="accordionAno">
-                <button class="accordion-header" onclick="toggleAccordion('accordionAno')">
-                    <span>Ano Escolar: <span class="status-texto" id="textoAno">Todos</span></span>
-                    <svg class="seta-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <div class="dropdown-wrapper" id="dropAno">
+                <button class="btn-filtro-trigger" onclick="toggleDropdown('dropAno')">
+                    <span id="textoAno">Ano: Todos</span>
+                    <svg class="seta-dropdown" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
                 </button>
-                <div class="accordion-content">
-                    <div class="opcoes-grid" id="gridAnos">
-                        <button class="opcao-btn ativo" onclick="filtrarAno('todas', this)">Todos</button>
-                        <button class="opcao-btn" onclick="filtrarAno('6º Ano', this)">6º Ano</button>
-                        <button class="opcao-btn" onclick="filtrarAno('7º Ano', this)">7º Ano</button>
-                        <button class="opcao-btn" onclick="filtrarAno('8º Ano', this)">8º Ano</button>
-                        <button class="opcao-btn" onclick="filtrarAno('9º Ano', this)">9º Ano</button>
-                    </div>
+                <div class="dropdown-menu">
+                    <button class="opcao-item selecionado" onclick="selecionarOpcao('ano', 'todas', 'Todos', this)">Todos</button>
+                    <button class="opcao-item" onclick="selecionarOpcao('ano', '6º Ano', '6º Ano', this)">6º Ano</button>
+                    <button class="opcao-item" onclick="selecionarOpcao('ano', '7º Ano', '7º Ano', this)">7º Ano</button>
+                    <button class="opcao-item" onclick="selecionarOpcao('ano', '8º Ano', '8º Ano', this)">8º Ano</button>
+                    <button class="opcao-item" onclick="selecionarOpcao('ano', '9º Ano', '9º Ano', this)">9º Ano</button>
                 </div>
             </div>
 
-            <div class="filtro-accordion" id="accordionTurma">
-                <button class="accordion-header" onclick="toggleAccordion('accordionTurma')">
-                    <span>Turma: <span class="status-texto" id="textoTurma">Todas</span></span>
-                    <svg class="seta-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <div class="dropdown-wrapper" id="dropTurma">
+                <button class="btn-filtro-trigger" onclick="toggleDropdown('dropTurma')">
+                    <span id="textoTurma">Turma: Todas</span>
+                    <svg class="seta-dropdown" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
                 </button>
-                <div class="accordion-content">
-                    <div class="opcoes-grid" id="gridTurmas">
-                        <button class="opcao-btn ativo" onclick="filtrarTurma('todas', this)">Todas</button>
-                        <button class="opcao-btn" onclick="filtrarTurma('A', this)">Turma A</button>
-                        <button class="opcao-btn" onclick="filtrarTurma('B', this)">Turma B</button>
-                        <button class="opcao-btn" onclick="filtrarTurma('C', this)">Turma C</button>
-                    </div>
+                <div class="dropdown-menu">
+                    <button class="opcao-item selecionado" onclick="selecionarOpcao('turma', 'todas', 'Todas', this)">Todas</button>
+                    <button class="opcao-item" onclick="selecionarOpcao('turma', 'A', 'Turma A', this)">Turma A</button>
+                    <button class="opcao-item" onclick="selecionarOpcao('turma', 'B', 'Turma B', this)">Turma B</button>
+                    <button class="opcao-item" onclick="selecionarOpcao('turma', 'C', 'Turma C', this)">Turma C</button>
                 </div>
             </div>
 
@@ -445,53 +446,54 @@
             }
         }, 5000);
 
-        // --- FUNÇÃO DE TOGGLE DO ACCORDION ---
-        function toggleAccordion(id) {
-            const acc = document.getElementById(id);
-            // Se já estiver aberto, fecha. Se não, abre.
-            if(acc.classList.contains('aberto')) {
-                acc.classList.remove('aberto');
-            } else {
-                // (Opcional) Fechar outros abertos
-                document.querySelectorAll('.filtro-accordion').forEach(el => el.classList.remove('aberto'));
-                acc.classList.add('aberto');
+        // --- LÓGICA DO DROPDOWN ---
+        function toggleDropdown(id) {
+            const el = document.getElementById(id);
+            const estaAberto = el.classList.contains('aberto');
+            
+            // Fecha todos
+            document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
+            
+            // Se não estava aberto, abre o clicado
+            if(!estaAberto) {
+                el.classList.add('aberto');
             }
         }
 
-        // --- FILTROS LÓGICA ---
+        // Fecha se clicar fora
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-wrapper')) {
+                document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
+            }
+        });
+
+        function selecionarOpcao(tipo, valor, textoExibicao, elemento) {
+            // Remove seleção anterior visual
+            const wrapperId = tipo === 'ano' ? 'dropAno' : 'dropTurma';
+            const wrapper = document.getElementById(wrapperId);
+            wrapper.querySelectorAll('.opcao-item').forEach(i => i.classList.remove('selecionado'));
+            elemento.classList.add('selecionado');
+            
+            // Atualiza Lógica
+            if(tipo === 'ano') {
+                filtroAnoAtual = valor;
+                document.getElementById('textoAno').innerText = 'Ano: ' + textoExibicao;
+            } else {
+                filtroTurmaAtual = valor;
+                document.getElementById('textoTurma').innerText = 'Turma: ' + textoExibicao;
+            }
+
+            // Fecha dropdown
+            wrapper.classList.remove('aberto');
+            
+            // Filtra
+            renderizarRanking();
+        }
+
+        // --- FILTROS E RENDERIZAÇÃO ---
         const listaEl = document.getElementById('listaRanking');
         const filtroData = document.getElementById('filtroData');
         filtroData.valueAsDate = new Date();
-
-        function filtrarAno(ano, btn) {
-            filtroAnoAtual = ano;
-            // Atualiza botões
-            document.querySelectorAll('#gridAnos .opcao-btn').forEach(b => b.classList.remove('ativo'));
-            btn.classList.add('ativo');
-            
-            // Atualiza Texto do Header
-            document.getElementById('textoAno').innerText = ano === 'todas' ? 'Todos' : ano;
-            
-            // Fecha cascata automaticamente
-            toggleAccordion('accordionAno');
-            
-            renderizarRanking();
-        }
-
-        function filtrarTurma(turma, btn) {
-            filtroTurmaAtual = turma;
-            // Atualiza botões
-            document.querySelectorAll('#gridTurmas .opcao-btn').forEach(b => b.classList.remove('ativo'));
-            btn.classList.add('ativo');
-
-            // Atualiza Texto do Header
-            document.getElementById('textoTurma').innerText = turma === 'todas' ? 'Todas' : 'Turma ' + turma;
-
-            // Fecha cascata automaticamente
-            toggleAccordion('accordionTurma');
-            
-            renderizarRanking();
-        }
 
         function renderizarRanking() {
             const dataSel = filtroData.value;
