@@ -1,1 +1,338 @@
-sdsd
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Professor - Ranking</title>
+    <style>
+        :root {
+            --bg-page: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-main: #1d1d1f;
+            --text-light: #86868b;
+            --accent: #0071e3;
+            --success: #34c759;
+            --warning: #ffcc00; /* Ouro */
+            --silver: #e0e0e0;  /* Prata */
+            --bronze: #cd7f32;  /* Bronze */
+            --radius: 16px;
+            --shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* --- HEADER --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .titulo-pagina {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .btn-voltar {
+            text-decoration: none;
+            color: var(--accent);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: opacity 0.2s;
+        }
+        .btn-voltar:hover { opacity: 0.7; }
+
+        /* --- DATA E RESUMO --- */
+        .grid-resumo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card-resumo {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .card-titulo { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .card-valor { font-size: 2rem; font-weight: 700; color: var(--text-main); }
+        
+        .input-data {
+            border: none;
+            background: transparent;
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* --- TABELA DE RANKING --- */
+        .painel-ranking {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden; /* Para os cantos arredondados */
+        }
+
+        .tabela-header {
+            display: grid;
+            grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr;
+            padding: 15px 20px;
+            background-color: rgba(0,0,0,0.02);
+            border-bottom: 1px solid #e5e5ea;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        .lista-alunos {
+            list-style: none;
+        }
+
+        .item-aluno {
+            display: grid;
+            grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr;
+            padding: 15px 20px;
+            align-items: center;
+            border-bottom: 1px solid #f5f5f7;
+            transition: background 0.2s;
+        }
+
+        .item-aluno:last-child { border-bottom: none; }
+        .item-aluno:hover { background-color: #fafafa; }
+
+        .posicao { font-weight: 700; color: var(--text-light); font-size: 1.1rem; }
+        
+        /* Ícones de Troféu para Top 3 */
+        .rank-1 .posicao { color: transparent; text-shadow: 0 0 0 var(--warning); font-size: 1.5rem; } /* Ouro */
+        .rank-2 .posicao { color: transparent; text-shadow: 0 0 0 var(--silver); font-size: 1.5rem; } /* Prata */
+        .rank-3 .posicao { color: transparent; text-shadow: 0 0 0 var(--bronze); font-size: 1.5rem; } /* Bronze */
+
+        .info-nome { font-weight: 600; font-size: 1.05rem; }
+        .info-serie { 
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background-color: #f2f2f7;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .info-nota { font-weight: 700; color: var(--success); }
+        .info-nota.baixo { color: var(--text-main); } /* Nota neutra se for baixa */
+
+        .info-tempo { font-size: 0.9rem; color: var(--text-light); }
+
+        /* Responsividade para Mobile */
+        @media (max-width: 700px) {
+            .tabela-header { display: none; } /* Esconde cabeçalho no mobile */
+            
+            .item-aluno {
+                grid-template-columns: 40px 1fr auto;
+                grid-template-areas: 
+                    "pos nome nota"
+                    "pos serie tempo";
+                gap: 5px;
+            }
+
+            .posicao { grid-area: pos; }
+            .info-nome { grid-area: nome; }
+            .info-nota { grid-area: nota; text-align: right; }
+            .info-serie { grid-area: serie; align-self: start; }
+            .info-tempo { grid-area: tempo; text-align: right; font-size: 0.8rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div>
+                <a href="index.html" class="btn-voltar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                    Voltar para Atividade
+                </a>
+                <h1 class="titulo-pagina">Desempenho da Turma</h1>
+            </div>
+            
+            <div style="background: white; padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow);">
+                <label for="dataSelect" style="font-size: 0.8rem; color: var(--text-light); margin-right: 10px;">Visualizando:</label>
+                <input type="date" id="dataSelect" class="input-data">
+            </div>
+        </header>
+
+        <div class="grid-resumo">
+            <div class="card-resumo">
+                <span class="card-titulo">Total de Acessos</span>
+                <span class="card-valor" id="totalAcessos">0</span>
+            </div>
+            <div class="card-resumo">
+                <span class="card-titulo">Média de Acertos</span>
+                <span class="card-valor" id="mediaAcertos" style="color: var(--accent)">0.0</span>
+            </div>
+            <div class="card-resumo">
+                <span class="card-titulo">Melhor Turma</span>
+                <span class="card-valor" id="melhorTurma" style="font-size: 1.5rem;">-</span>
+            </div>
+        </div>
+
+        <div class="painel-ranking">
+            <div class="tabela-header">
+                <div>#</div>
+                <div>Aluno</div>
+                <div>Série</div>
+                <div>Acertos</div>
+                <div style="text-align: right;">Horário</div>
+            </div>
+            <ul id="listaRanking" class="lista-alunos">
+                </ul>
+        </div>
+    </div>
+
+    <script>
+        // --- SIMULAÇÃO DE BANCO DE DADOS ---
+        // Como o site é estático (HTML), ele não salva dados de outros computadores.
+        // Este script cria dados fictícios para você visualizar como ficará o painel.
+        
+        function gerarDadosFicticios() {
+            const nomes = ["Ana Clara", "João Pedro", "Beatriz Silva", "Carlos Eduardo", "Fernanda Lima", "Gabriel Souza", "Isabela Costa", "Lucas Pereira", "Mariana Alves", "Pedro Henrique", "Julia Santos", "Rafael Oliveira"];
+            const series = ["6º Ano A", "6º Ano B", "7º Ano A", "8º Ano C", "9º Ano A"];
+            
+            let dados = [];
+            // Gera 25 alunos aleatórios
+            for (let i = 0; i < 25; i++) {
+                dados.push({
+                    nome: nomes[Math.floor(Math.random() * nomes.length)],
+                    serie: series[Math.floor(Math.random() * series.length)],
+                    acertos: Math.floor(Math.random() * 15) + 5, // Entre 5 e 20 acertos
+                    data: new Date().toISOString().split('T')[0], // Data de hoje
+                    hora: `${Math.floor(Math.random() * 8 + 8)}:${Math.floor(Math.random() * 59).toString().padStart(2, '0')}` // Entre 08:00 e 16:59
+                });
+            }
+            
+            // Adiciona um "Aluno Real" se tiver algo salvo no navegador deste computador
+            const alunoLocal = localStorage.getItem('alunoNome');
+            const placarLocal = localStorage.getItem('placarComp');
+            if (alunoLocal && placarLocal) {
+                const p = JSON.parse(placarLocal);
+                dados.push({
+                    nome: alunoLocal + " (Você)",
+                    serie: localStorage.getItem('alunoSerie') || "N/A",
+                    acertos: p.acertos,
+                    data: new Date().toISOString().split('T')[0],
+                    hora: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                });
+            }
+            
+            return dados;
+        }
+
+        // --- LÓGICA DO RANKING ---
+
+        const listaEl = document.getElementById('listaRanking');
+        const dataSelect = document.getElementById('dataSelect');
+        
+        // Define a data de hoje no input
+        dataSelect.valueAsDate = new Date();
+
+        // Pega os dados (na vida real, isso viria de um Banco de Dados)
+        let todosRegistros = gerarDadosFicticios();
+
+        function renderizarRanking() {
+            const dataFiltro = dataSelect.value;
+            
+            // 1. Filtrar pela data selecionada
+            let filtrados = todosRegistros.filter(item => item.data === dataFiltro);
+
+            // 2. Ordenar: Quem tem mais acertos primeiro. Critério de desempate: Hora (não implementado aqui, mas seria ideal)
+            filtrados.sort((a, b) => b.acertos - a.acertos);
+
+            // 3. Atualizar Cards
+            document.getElementById('totalAcessos').innerText = filtrados.length;
+            
+            let totalAcertos = filtrados.reduce((sum, item) => sum + item.acertos, 0);
+            let media = filtrados.length ? (totalAcertos / filtrados.length).toFixed(1) : "0.0";
+            document.getElementById('mediaAcertos').innerText = media;
+
+            // Lógica simples para melhor turma (moda)
+            if (filtrados.length > 0) {
+                const contagemTurmas = {};
+                let maiorTurma = "";
+                let maxCount = 0;
+                filtrados.forEach(f => {
+                    contagemTurmas[f.serie] = (contagemTurmas[f.serie] || 0) + f.acertos; // Soma acertos por turma
+                    if(contagemTurmas[f.serie] > maxCount) {
+                        maxCount = contagemTurmas[f.serie];
+                        maiorTurma = f.serie;
+                    }
+                });
+                document.getElementById('melhorTurma').innerText = maiorTurma;
+            } else {
+                document.getElementById('melhorTurma').innerText = "-";
+            }
+
+            // 4. Renderizar Lista HTML
+            listaEl.innerHTML = "";
+            
+            if (filtrados.length === 0) {
+                listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Nenhuma atividade registrada nesta data.</li>`;
+                return;
+            }
+
+            filtrados.forEach((aluno, index) => {
+                let rankClass = "";
+                let iconePosicao = index + 1;
+
+                if (index === 0) { rankClass = "rank-1"; iconePosicao = "🥇"; }
+                else if (index === 1) { rankClass = "rank-2"; iconePosicao = "🥈"; }
+                else if (index === 2) { rankClass = "rank-3"; iconePosicao = "🥉"; }
+
+                const html = `
+                    <li class="item-aluno ${rankClass}">
+                        <div class="posicao">${iconePosicao}</div>
+                        <div class="info-nome">${aluno.nome}</div>
+                        <div><span class="info-serie">${aluno.serie}</span></div>
+                        <div class="info-nota">${aluno.acertos} pts</div>
+                        <div class="info-tempo">${aluno.hora}</div>
+                    </li>
+                `;
+                listaEl.innerHTML += html;
+            });
+        }
+
+        // Atualiza quando mudar a data
+        dataSelect.addEventListener('change', renderizarRanking);
+
+        // Inicializa
+        renderizarRanking();
+
+    </script>
+</body>
+</html>
