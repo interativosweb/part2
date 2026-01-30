@@ -18,20 +18,20 @@
             --error: #ff3b30;
             --radius: 16px;
             --shadow: 0 4px 20px rgba(0,0,0,0.05);
+            
+            /* Cores dos Botões (iguais ao site principal) */
+            --btn-gray-dark: #8e8e93;  
+            --btn-gray-light: #aeb0b5;
         }
 
-        /* --- PROTEÇÃO ANTI-CÓPIA (CSS) --- */
+        /* --- PROTEÇÃO ANTI-CÓPIA --- */
         body {
-            -webkit-user-select: none; /* Safari */
-            -ms-user-select: none; /* IE 10 and IE 11 */
-            user-select: none; /* Chrome, Edge, Opera, Firefox */
-            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
         }
-        
-        /* Esconde o conteúdo se tentarem imprimir */
-        @media print {
-            html, body { display: none !important; }
-        }
+        @media print { html, body { display: none !important; } }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 
@@ -41,6 +41,7 @@
             min-height: 100vh;
             padding: 40px 20px;
             padding-bottom: 100px;
+            overflow-x: hidden; /* Evita rolagem horizontal da página inteira */
         }
 
         .container {
@@ -48,47 +49,70 @@
             margin: 0 auto;
         }
 
-        /* --- HEADER & FILTROS --- */
+        /* --- HEADER --- */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 20px;
         }
-
-        .titulo-container { display: flex; flex-direction: column; gap: 5px; }
 
         .titulo-pagina { font-size: 2rem; font-weight: 700; }
 
         .btn-voltar {
             text-decoration: none; color: var(--accent); font-weight: 600;
-            display: flex; align-items: center; gap: 5px; transition: opacity 0.2s; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 5px; transition: opacity 0.2s; font-size: 0.9rem; margin-bottom: 5px;
         }
         .btn-voltar:hover { opacity: 0.7; }
 
-        .filtros-container {
+        .filtro-data-container {
+            background: white; padding: 8px 20px; border-radius: 50px;
+            box-shadow: var(--shadow); display: flex; align-items: center; gap: 10px;
+        }
+        .input-data { border: none; background: transparent; font-size: 1rem; color: var(--accent); font-weight: 600; cursor: pointer; outline: none; }
+
+        /* --- ABAS DE SÉRIE (ESTILO PILLS) --- */
+        .scroll-container {
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 10px; /* Espaço para scrollbar não colar */
+            margin-bottom: 25px;
+            -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
+        }
+        
+        /* Esconde a barra de rolagem mas mantém a função */
+        .scroll-container::-webkit-scrollbar { height: 4px; }
+        .scroll-container::-webkit-scrollbar-thumb { background: #d2d2d7; border-radius: 4px; }
+        .scroll-container::-webkit-scrollbar-track { background: transparent; }
+
+        .abas-series {
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+            gap: 10px;
+            min-width: min-content; /* Garante que os botões não quebrem linha */
         }
 
-        .filtro-box {
-            background: white;
+        .aba-btn {
+            background-color: white;
+            border: 1px solid transparent;
             padding: 10px 20px;
             border-radius: 50px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            white-space: nowrap; /* Não quebra texto */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
         }
 
-        .label-filtro { font-size: 0.8rem; color: var(--text-light); font-weight: 600; }
-
-        .input-filtro {
-            border: none; background: transparent; font-size: 1rem; color: var(--accent);
-            font-weight: 600; cursor: pointer; outline: none;
+        .aba-btn:hover { background-color: #f2f2f7; transform: translateY(-2px); }
+        
+        .aba-btn.ativo {
+            background-color: var(--accent);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3);
         }
 
         /* --- DATA E RESUMO --- */
@@ -100,11 +124,8 @@
         }
 
         .card-resumo {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            display: flex; flex-direction: column; align-items: flex-start;
+            background: var(--card-bg); padding: 20px; border-radius: var(--radius);
+            box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: flex-start;
         }
 
         .card-titulo { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 5px; }
@@ -112,30 +133,21 @@
         
         /* --- TABELA DE RANKING --- */
         .painel-ranking {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            min-height: 300px;
+            background: var(--card-bg); border-radius: var(--radius);
+            box-shadow: var(--shadow); overflow: hidden; min-height: 300px;
         }
 
         .tabela-header {
-            display: grid;
-            grid-template-columns: 0.5fr 2fr 1.5fr 1fr 1fr;
-            padding: 15px 20px;
-            background-color: rgba(0,0,0,0.02);
-            border-bottom: 1px solid #e5e5ea;
+            display: grid; grid-template-columns: 0.5fr 2fr 1.5fr 1fr 1fr; padding: 15px 20px;
+            background-color: rgba(0,0,0,0.02); border-bottom: 1px solid #e5e5ea;
             font-size: 0.8rem; font-weight: 600; color: var(--text-light); text-transform: uppercase;
         }
 
         .lista-alunos { list-style: none; }
 
         .item-aluno {
-            display: grid;
-            grid-template-columns: 0.5fr 2fr 1.5fr 1fr 1fr;
-            padding: 15px 20px;
-            align-items: center;
-            border-bottom: 1px solid #f5f5f7;
+            display: grid; grid-template-columns: 0.5fr 2fr 1.5fr 1fr 1fr;
+            padding: 15px 20px; align-items: center; border-bottom: 1px solid #f5f5f7;
             transition: background 0.2s;
         }
         .item-aluno:last-child { border-bottom: none; }
@@ -147,42 +159,79 @@
         .rank-3 .posicao { color: transparent; text-shadow: 0 0 0 var(--bronze); font-size: 1.5rem; }
 
         .info-nome { font-weight: 600; font-size: 1.05rem; }
-        .info-serie { 
-            display: inline-block; padding: 4px 12px; border-radius: 20px;
-            background-color: #f2f2f7; color: var(--text-light); font-size: 0.8rem; font-weight: 600;
-        }
+        .info-serie { display: inline-block; padding: 4px 12px; border-radius: 20px; background-color: #f2f2f7; color: var(--text-light); font-size: 0.8rem; font-weight: 600; }
         .info-nota { font-weight: 700; color: var(--success); }
         .info-tempo { font-size: 0.9rem; color: var(--text-light); text-align: right; }
 
-        /* --- RODAPÉ E BOTÃO RESET --- */
+        /* --- NOTIFICAÇÕES (TOAST) --- */
+        .notificacao-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none; /* Deixa clicar no que está atrás */
+        }
+
+        .toast {
+            background-color: var(--success);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 1;
+            transition: opacity 0.5s, transform 0.5s;
+            max-width: 300px;
+        }
+
+        .toast.saindo { opacity: 0; transform: translateY(-20px); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* --- RODAPÉ E BOTÃO --- */
         .rodape-gestao {
             margin-top: 50px;
             text-align: center;
             border-top: 1px solid #e5e5ea;
             padding-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
 
-        .btn-gestao {
-            background-color: transparent;
-            color: var(--text-light);
-            border: 1px solid #d2d2d7;
-            padding: 10px 25px;
+        /* Botão igual ao site principal */
+        .btn-acao-rodape {
+            background-color: var(--btn-gray-dark);
+            color: white;
+            border: none;
+            padding: 12px 30px; 
             border-radius: 50px;
             font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .btn-gestao:hover {
-            border-color: var(--error);
-            color: var(--error);
-            background-color: rgba(255, 59, 48, 0.05);
-        }
+        .btn-acao-rodape:hover { background-color: var(--error); transform: scale(1.02); }
+
+        .texto-creditos { font-size: 0.8rem; color: var(--text-light); }
 
         /* --- MODAL DE RESET --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
+            background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
             display: none; justify-content: center; align-items: center; z-index: 1000;
             animation: fadeIn 0.3s ease;
         }
@@ -201,24 +250,17 @@
         .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 25px; line-height: 1.4; }
 
         .grid-botoes-reset { display: flex; flex-direction: column; gap: 10px; }
-
         .btn-reset-opcao {
             padding: 15px; border-radius: 12px; border: none;
             font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s;
             display: flex; justify-content: center; align-items: center; gap: 8px;
         }
         .btn-reset-opcao:hover { transform: scale(1.02); }
-
         .btn-reset-dia { background-color: #e5e5ea; color: var(--text-main); }
         .btn-reset-mes { background-color: #ffcc00; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .btn-reset-tudo { background-color: var(--error); color: white; }
+        .btn-cancelar { margin-top: 15px; background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 0.9rem; text-decoration: underline; }
 
-        .btn-cancelar {
-            margin-top: 15px; background: none; border: none; 
-            color: var(--text-light); cursor: pointer; font-size: 0.9rem; text-decoration: underline;
-        }
-
-        /* Responsividade */
         @media (max-width: 700px) {
             .tabela-header { display: none; }
             .item-aluno {
@@ -231,41 +273,24 @@
             .info-nota { grid-area: nota; text-align: right; }
             .info-serie { grid-area: serie; align-self: start; }
             .info-tempo { grid-area: tempo; text-align: right; font-size: 0.8rem; }
-            
-            .filtros-container { width: 100%; }
-            .filtro-box { flex: 1; justify-content: center; }
+            .btn-voltar { font-size: 0.8rem; }
         }
     </style>
 </head>
 <body>
 
     <script>
-        // --- SCRIPT DE PROTEÇÃO AVANÇADA ---
-        
-        // Bloqueia Botão Direito
+        // Bloqueio de segurança
         document.addEventListener('contextmenu', event => event.preventDefault());
-
-        // Bloqueia Atalhos de Teclado (F12, Ctrl+U, Ctrl+Shift+I, etc.)
         document.onkeydown = function(e) {
-            // F12
-            if (e.keyCode == 123) { return false; } 
-            // Ctrl+Shift+I (Inspecionar)
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; } 
-            // Ctrl+Shift+C (Inspecionar Elemento)
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; } 
-            // Ctrl+Shift+J (Console)
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; } 
-            // Ctrl+U (Ver Código Fonte)
-            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; } 
-            // Ctrl+S (Salvar Página)
-            if (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) { return false; }
-            // Ctrl+P (Imprimir)
-            if (e.ctrlKey && e.keyCode == 'P'.charCodeAt(0)) { return false; }
+            if (e.keyCode == 123) return false;
+            if (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'p')) return false;
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) return false;
         };
-        
-        // Bloqueia arrastar elementos (imagens)
         document.ondragstart = function() { return false; };
     </script>
+
+    <div id="containerNotificacoes" class="notificacao-container"></div>
 
     <div class="container">
         <header>
@@ -277,27 +302,26 @@
                 <h1 class="titulo-pagina">Painel da Turma</h1>
             </div>
             
-            <div class="filtros-container">
-                <div class="filtro-box">
-                    <span class="label-filtro">Data:</span>
-                    <input type="date" id="filtroData" class="input-filtro">
-                </div>
-
-                <div class="filtro-box">
-                    <span class="label-filtro">Turma:</span>
-                    <select id="filtroSerie" class="input-filtro">
-                        <option value="todas">Todas as Séries</option>
-                        <option value="6º Ano A">6º Ano A</option>
-                        <option value="6º Ano B">6º Ano B</option>
-                        <option value="6º Ano C">6º Ano C</option>
-                        <option value="7º Ano A">7º Ano A</option>
-                        <option value="7º Ano B">7º Ano B</option>
-                        <option value="8º Ano A">8º Ano A</option>
-                        <option value="9º Ano A">9º Ano A</option>
-                    </select>
-                </div>
+            <div class="filtro-data-container">
+                <span style="font-size:0.8rem; color:var(--text-light); font-weight:600;">Data:</span>
+                <input type="date" id="filtroData" class="input-data">
             </div>
         </header>
+
+        <div class="scroll-container">
+            <div class="abas-series" id="containerAbas">
+                <button class="aba-btn ativo" onclick="filtrarSerie('todas', this)">Todas</button>
+                <button class="aba-btn" onclick="filtrarSerie('6º Ano A', this)">6º Ano A</button>
+                <button class="aba-btn" onclick="filtrarSerie('6º Ano B', this)">6º Ano B</button>
+                <button class="aba-btn" onclick="filtrarSerie('6º Ano C', this)">6º Ano C</button>
+                <button class="aba-btn" onclick="filtrarSerie('7º Ano A', this)">7º Ano A</button>
+                <button class="aba-btn" onclick="filtrarSerie('7º Ano B', this)">7º Ano B</button>
+                <button class="aba-btn" onclick="filtrarSerie('8º Ano A', this)">8º Ano A</button>
+                <button class="aba-btn" onclick="filtrarSerie('8º Ano B', this)">8º Ano B</button>
+                <button class="aba-btn" onclick="filtrarSerie('9º Ano A', this)">9º Ano A</button>
+                <button class="aba-btn" onclick="filtrarSerie('9º Ano B', this)">9º Ano B</button>
+            </div>
+        </div>
 
         <div class="grid-resumo">
             <div class="card-resumo">
@@ -327,11 +351,12 @@
         </div>
 
         <div class="rodape-gestao">
-            <button class="btn-gestao" onclick="abrirModalReset()">
+            <button class="btn-acao-rodape" onclick="abrirModalReset()">
                 Gerenciar Histórico
             </button>
-            <div style="margin-top:10px; font-size:0.8rem; color:#ccc;">
-                Área restrita ao professor
+            <div style="display:flex; flex-direction:column; gap:5px;">
+                <span class="texto-creditos">Área restrita ao professor</span>
+                <span class="texto-creditos" style="font-weight:600; color:var(--text-main)">Desenvolvido por Gilberto Fernandes - Matemática</span>
             </div>
         </div>
     </div>
@@ -358,48 +383,27 @@
     </div>
 
     <script>
-        // --- DADOS FICTÍCIOS (Para demonstração) ---
+        // --- DADOS E LÓGICA PRINCIPAL ---
         let todosRegistros = [];
+        let serieFiltroAtual = "todas";
 
         function initDados() {
-            // Se já tiver dados na memória (simulação), usa eles. Se não, cria novos.
             const memoria = localStorage.getItem('simulacaoDB');
-            if (memoria) {
-                todosRegistros = JSON.parse(memoria);
-            } else {
-                gerarDadosFicticiosIniciais();
-            }
+            if (memoria) todosRegistros = JSON.parse(memoria);
+            else gerarDadosFicticiosIniciais();
         }
 
         function gerarDadosFicticiosIniciais() {
-            const nomes = ["Ana Clara", "João Pedro", "Beatriz Silva", "Carlos Eduardo", "Fernanda Lima", "Gabriel Souza", "Isabela Costa", "Lucas Pereira", "Mariana Alves", "Pedro Henrique"];
-            const series = ["6º Ano A", "6º Ano B", "7º Ano A", "8º Ano A"];
-            
-            // Gera dados para HOJE
+            const nomes = ["Ana Clara", "João Pedro", "Beatriz", "Carlos", "Fernanda", "Gabriel", "Isabela", "Lucas", "Mariana", "Pedro"];
+            const series = ["6º Ano A", "7º Ano A", "8º Ano B"];
             const hoje = new Date().toISOString().split('T')[0];
-            for (let i = 0; i < 15; i++) {
+            
+            for (let i = 0; i < 10; i++) {
                 todosRegistros.push({
-                    nome: nomes[Math.floor(Math.random() * nomes.length)],
-                    serie: series[Math.floor(Math.random() * series.length)],
-                    acertos: Math.floor(Math.random() * 15) + 5,
-                    data: hoje,
-                    hora: `${Math.floor(Math.random() * 8 + 8)}:${Math.floor(Math.random() * 59).toString().padStart(2, '0')}`
+                    nome: nomes[i], serie: series[i%3], acertos: Math.floor(Math.random()*15)+5,
+                    data: hoje, hora: `0${8+i}:30`
                 });
             }
-
-            // Gera dados para MÊS PASSADO (para testar o filtro)
-            const mesPassado = new Date();
-            mesPassado.setMonth(mesPassado.getMonth() - 1);
-            const dataAntiga = mesPassado.toISOString().split('T')[0];
-            
-            todosRegistros.push({
-                nome: "Aluno Antigo",
-                serie: "9º Ano A",
-                acertos: 20,
-                data: dataAntiga,
-                hora: "10:00"
-            });
-            
             salvarDadosSimulados();
         }
 
@@ -407,46 +411,94 @@
             localStorage.setItem('simulacaoDB', JSON.stringify(todosRegistros));
         }
 
-        // --- LÓGICA DE FILTRAGEM ---
+        // --- SISTEMA DE NOTIFICAÇÃO (Simulado) ---
+        function mostrarNotificacao(nomeAluno) {
+            const container = document.getElementById('containerNotificacoes');
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            // Ícone de usuário + Texto
+            toast.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                ${nomeAluno} acabou de entrar
+            `;
+            
+            container.appendChild(toast);
+
+            // Toca um som suave (opcional, removido para não incomodar, apenas visual)
+
+            // Remove após 2.5 segundos
+            setTimeout(() => {
+                toast.classList.add('saindo');
+                setTimeout(() => { toast.remove(); }, 500); // Espera a animação de saída
+            }, 2500);
+        }
+
+        // Simula entrada de alunos a cada X segundos para dar vida ao painel
+        setInterval(() => {
+            // 30% de chance de alguém entrar a cada 4 segundos
+            if(Math.random() > 0.7) { 
+                const nomesNovos = ["Felipe", "Júlia", "Roberto", "Amanda", "Diego", "Larissa", "Bruno", "Camila"];
+                const nomeSorteado = nomesNovos[Math.floor(Math.random() * nomesNovos.length)];
+                
+                mostrarNotificacao(nomeSorteado);
+                
+                // Opcional: Adicionar esse aluno fictício à tabela em tempo real
+                // Isso faria a tabela crescer enquanto você olha
+                const novaEntrada = {
+                   nome: nomeSorteado,
+                   serie: "6º Ano B", // Simulação
+                   acertos: 0, // Acabou de entrar
+                   data: new Date().toISOString().split('T')[0],
+                   hora: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                };
+                todosRegistros.push(novaEntrada);
+                salvarDadosSimulados();
+                renderizarRanking();
+            }
+        }, 4000);
+
+        // --- FILTROS E RENDERIZAÇÃO ---
         const listaEl = document.getElementById('listaRanking');
         const filtroData = document.getElementById('filtroData');
-        const filtroSerie = document.getElementById('filtroSerie');
-
-        // Define data de hoje
         filtroData.valueAsDate = new Date();
+
+        function filtrarSerie(serie, elementoBotao) {
+            serieFiltroAtual = serie;
+            
+            // Atualiza visual dos botões
+            document.querySelectorAll('.aba-btn').forEach(btn => btn.classList.remove('ativo'));
+            elementoBotao.classList.add('ativo');
+
+            renderizarRanking();
+        }
 
         function renderizarRanking() {
             const dataSelecionada = filtroData.value;
-            const serieSelecionada = filtroSerie.value;
 
-            // 1. Filtra
+            // Filtra
             let filtrados = todosRegistros.filter(item => {
                 const bateData = item.data === dataSelecionada;
-                const bateSerie = serieSelecionada === "todas" ? true : item.serie === serieSelecionada;
+                const bateSerie = serieFiltroAtual === "todas" ? true : item.serie === serieFiltroAtual;
                 return bateData && bateSerie;
             });
 
-            // 2. Ordena (Mais acertos primeiro)
+            // Ordena
             filtrados.sort((a, b) => b.acertos - a.acertos);
 
-            // 3. Atualiza Resumo
+            // Atualiza Cards
             document.getElementById('totalAcessos').innerText = filtrados.length;
             
             let totalAcertos = filtrados.reduce((sum, item) => sum + item.acertos, 0);
             let media = filtrados.length ? (totalAcertos / filtrados.length).toFixed(1) : "0.0";
             document.getElementById('mediaAcertos').innerText = media;
 
-            if (filtrados.length > 0) {
-                document.getElementById('melhorAluno').innerText = filtrados[0].nome;
-            } else {
-                document.getElementById('melhorAluno').innerText = "-";
-            }
+            document.getElementById('melhorAluno').innerText = filtrados.length > 0 ? filtrados[0].nome : "-";
 
-            // 4. Renderiza Lista
+            // Renderiza Lista
             listaEl.innerHTML = "";
-            
             if (filtrados.length === 0) {
-                listaEl.innerHTML = `<li style="padding:50px; text-align:center; color:var(--text-light)">Nenhum aluno encontrado com esses filtros.</li>`;
+                listaEl.innerHTML = `<li style="padding:50px; text-align:center; color:var(--text-light)">Nenhum registro encontrado.</li>`;
                 return;
             }
 
@@ -470,37 +522,27 @@
             });
         }
 
-        // --- FUNÇÕES DE RESET ---
+        // --- MODAL DE RESET ---
         function abrirModalReset() { document.getElementById('modalReset').classList.add('visivel'); }
         function fecharModalReset() { document.getElementById('modalReset').classList.remove('visivel'); }
 
         function resetar(tipo) {
-            if (!confirm("Tem certeza? Essa ação não pode ser desfeita.")) return;
-
+            if (!confirm("Confirmar exclusão?")) return;
             const hoje = new Date().toISOString().split('T')[0];
-            const mesAtual = new Date().toISOString().slice(0, 7); // Ex: "2024-01"
+            const mesAtual = new Date().toISOString().slice(0, 7);
 
-            if (tipo === 'hoje') {
-                todosRegistros = todosRegistros.filter(item => item.data !== hoje);
-            } 
-            else if (tipo === 'mes') {
-                todosRegistros = todosRegistros.filter(item => !item.data.startsWith(mesAtual));
-            } 
-            else if (tipo === 'tudo') {
-                todosRegistros = [];
-            }
+            if (tipo === 'hoje') todosRegistros = todosRegistros.filter(item => item.data !== hoje);
+            else if (tipo === 'mes') todosRegistros = todosRegistros.filter(item => !item.data.startsWith(mesAtual));
+            else if (tipo === 'tudo') todosRegistros = [];
 
             salvarDadosSimulados();
             renderizarRanking();
             fecharModalReset();
-            alert("Dados apagados com sucesso!");
         }
 
-        // Eventos
         filtroData.addEventListener('change', renderizarRanking);
-        filtroSerie.addEventListener('change', renderizarRanking);
 
-        // Início
+        // Inicializa
         initDados();
         renderizarRanking();
 
