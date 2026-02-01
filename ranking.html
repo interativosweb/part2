@@ -18,7 +18,7 @@
             --error: #ff3b30;
             --radius: 16px;
             --shadow: 0 4px 20px rgba(0,0,0,0.05);
-            --btn-gray-dark: #8e8e93;  
+            --btn-gray-dark: #8e8e93;
         }
 
         /* --- PROTEÇÃO ANTI-CÓPIA --- */
@@ -39,23 +39,13 @@
             padding: 40px 20px;
             padding-bottom: 100px;
             overflow-x: hidden;
-            overflow: hidden; 
+            overflow: auto;
         }
 
         .container {
             max-width: 1100px;
             margin: 0 auto;
-            filter: blur(5px);
-            transition: filter 0.5s ease;
-            pointer-events: none;
         }
-        
-        body.logado .container {
-            filter: blur(0);
-            pointer-events: auto;
-        }
-        
-        body.logado { overflow: auto; }
 
         /* --- HEADER --- */
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 20px; }
@@ -128,7 +118,7 @@
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .modal-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
         .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.4; }
-        
+
         /* Input de Senha */
         .input-senha { width: 100%; padding: 12px; border: 1px solid #d2d2d7; border-radius: 8px; font-size: 1rem; margin-bottom: 20px; outline: none; text-align: center; transition: border 0.2s; }
         .input-senha:focus { border-color: var(--accent); }
@@ -137,16 +127,12 @@
         .grid-botoes-reset { display: flex; flex-direction: column; gap: 10px; }
         .btn-reset-opcao { padding: 15px; border-radius: 12px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.2s; background-color: #e5e5ea; color: var(--text-main); }
         .btn-reset-opcao:hover { transform: scale(1.02); background-color: var(--error); color: white; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3); }
-        
+
         .btn-cancelar { margin-top: 15px; background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 0.9rem; text-decoration: underline; }
         .botoes-confirmacao { display: flex; gap: 15px; justify-content: center; }
         .btn-conf-sim { background-color: var(--error); color: white; flex: 1; }
-        .btn-conf-liberar { background-color: var(--success); color: white; flex: 1; } /* Verde para liberar */
+        .btn-conf-liberar { background-color: var(--success); color: white; flex: 1; }
         .btn-conf-nao { background-color: #e5e5ea; color: var(--text-main); flex: 1; }
-
-        /* --- MODAL DE BLOQUEIO (LOGIN) --- */
-        #modalBloqueio { z-index: 9999; backdrop-filter: blur(20px); background-color: rgba(255, 255, 255, 0.8); }
-        #modalBloqueio .btn-cancelar { display: none; }
 
         @media (max-width: 700px) {
             .tabela-header { display: none; }
@@ -163,22 +149,54 @@
     </style>
 </head>
 <body>
+    <!-- BLOQUEIOS (F12 / SALVAR / INSPECIONAR / ETC) -->
     <script>
-        document.addEventListener('contextmenu', event => event.preventDefault());
-        document.onkeydown = function(e) { if (e.keyCode == 123) return false; };
+        (function () {
+            const block = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            };
+
+            // Botão direito / menu de contexto
+            document.addEventListener('contextmenu', block, { capture: true });
+
+            // Seleção/arrasto/cópia
+            document.addEventListener('selectstart', block, { capture: true });
+            document.addEventListener('dragstart', block, { capture: true });
+            document.addEventListener('copy', block, { capture: true });
+            document.addEventListener('cut', block, { capture: true });
+            document.addEventListener('paste', block, { capture: true });
+
+            // Atalhos comuns de inspeção/visualização/salvar/imprimir
+            document.addEventListener('keydown', function (e) {
+                const k = (e.key || '').toLowerCase();
+
+                // F12
+                if (e.key === 'F12' || e.keyCode === 123) return block(e);
+
+                // Ctrl+Shift+I/J/C (DevTools)
+                if (e.ctrlKey && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) return block(e);
+
+                // Ctrl+U (view-source)
+                if (e.ctrlKey && k === 'u') return block(e);
+
+                // Ctrl+S (salvar)
+                if (e.ctrlKey && k === 's') return block(e);
+
+                // Ctrl+P (imprimir)
+                if (e.ctrlKey && k === 'p') return block(e);
+
+                // Ctrl+C / Ctrl+X (copiar/recortar)
+                if (e.ctrlKey && (k === 'c' || k === 'x')) return block(e);
+            }, { capture: true });
+
+            // Bloqueia print via UI quando possível
+            window.addEventListener('beforeprint', (e) => block(e));
+        })();
     </script>
 
     <div id="containerNotificacoes" class="notificacao-container"></div>
-
-    <div id="modalBloqueio" class="modal-overlay visivel">
-        <div class="modal-box">
-            <div class="modal-titulo">Acesso Restrito</div>
-            <div class="modal-desc">Área exclusiva para o professor.</div>
-            <input type="password" id="inputSenhaLogin" class="input-senha" placeholder="Senha de Acesso" inputmode="numeric">
-            <button class="btn-reset-opcao" style="width:100%; background-color:var(--accent); color:white" onclick="fazerLogin()">Entrar no Painel</button>
-            <div id="msgErroLogin" style="color:var(--error); margin-top:10px; font-size:0.9rem; font-weight:600"></div>
-        </div>
-    </div>
 
     <div class="container">
         <header>
@@ -189,7 +207,7 @@
                 </a>
                 <h1 class="titulo-pagina">Painel da Turma</h1>
             </div>
-            
+
             <div class="filtro-data-container">
                 <span style="font-size:0.8rem; color:var(--text-light); font-weight:600;">Data:</span>
                 <input type="date" id="filtroData" class="input-data">
@@ -279,7 +297,7 @@
         <div class="modal-box">
             <div class="modal-titulo">Limpar Dados</div>
             <div class="modal-desc">Selecione o que deseja apagar (Pedirá senha em seguida).</div>
-            
+
             <div class="grid-botoes-reset">
                 <button class="btn-reset-opcao" onclick="prepararReset('hoje')">Limpar registros de <b>Hoje</b></button>
                 <button class="btn-reset-opcao" onclick="prepararReset('mes')">Limpar registros do <b>Mês</b></button>
@@ -331,7 +349,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue, set, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         // SUA CONFIGURAÇÃO
         const firebaseConfig = {
@@ -346,18 +364,18 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        
+
         let todosRegistros = [];
         let filtroAnoAtual = "todas";
         let filtroTurmaAtual = "todas";
         let tipoResetPendente = null;
 
         const alunosRef = ref(db, 'alunos');
-        
+
         onValue(alunosRef, (snapshot) => {
             const dados = snapshot.val();
             todosRegistros = [];
-            
+
             if (dados) {
                 Object.keys(dados).forEach(key => {
                     const aluno = dados[key];
@@ -374,11 +392,10 @@
                         erros: aluno.erros || 0,
                         data: aluno.entrouEm ? aluno.entrouEm.split('T')[0] : '',
                         hora: horaFormatada,
-                        timestamp: new Date(aluno.entrouEm).getTime(),
-                        notificado: false
+                        timestamp: aluno.entrouEm ? new Date(aluno.entrouEm).getTime() : 0,
                     });
                 });
-                
+
                 const agora = new Date().getTime();
                 const ultimosNotificados = JSON.parse(sessionStorage.getItem('notificados')) || [];
                 todosRegistros.forEach(a => {
@@ -392,30 +409,17 @@
             window.renderizarRanking();
         });
 
-        // --- SISTEMA DE LOGIN INICIAL ---
-        window.fazerLogin = function() {
-            const senha = document.getElementById('inputSenhaLogin').value;
-            if(senha === '4241') {
-                document.getElementById('modalBloqueio').classList.remove('visivel');
-                document.body.classList.add('logado');
-            } else {
-                document.getElementById('msgErroLogin').innerText = "Senha incorreta!";
-                document.getElementById('inputSenhaLogin').value = "";
-            }
-        };
-        document.getElementById('inputSenhaLogin').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') window.fazerLogin();
-        });
-
         // --- NOTIFICAÇÕES ---
         window.mostrarNotificacao = function(texto, tipo = 'sucesso') {
             const container = document.getElementById('containerNotificacoes');
             const toast = document.createElement('div');
             toast.className = 'toast';
             if(tipo === 'alerta') toast.classList.add('alerta');
-            const icon = tipo === 'alerta' 
+
+            const icon = tipo === 'alerta'
                 ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
                 : `<svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
+
             toast.innerHTML = `${icon} ${texto}`;
             container.appendChild(toast);
             setTimeout(() => { toast.classList.add('saindo'); setTimeout(() => toast.remove(), 500); }, 3000);
@@ -427,7 +431,7 @@
             document.getElementById('modalFinalizar').classList.add('visivel');
         }
         window.fecharModalFinalizar = () => document.getElementById('modalFinalizar').classList.remove('visivel');
-        
+
         window.confirmarFinalizar = function() {
             const senha = document.getElementById('inputSenhaFinalizar').value;
             if (senha !== '4241') { alert('Senha incorreta!'); return; }
@@ -442,7 +446,7 @@
             document.getElementById('modalLiberar').classList.add('visivel');
         }
         window.fecharModalLiberar = () => document.getElementById('modalLiberar').classList.remove('visivel');
-        
+
         window.confirmarLiberar = function() {
             const senha = document.getElementById('inputSenhaLiberar').value;
             if (senha !== '4241') { alert('Senha incorreta!'); return; }
@@ -454,6 +458,7 @@
         // --- RESET COM SENHA ---
         window.abrirModalReset = () => document.getElementById('modalReset').classList.add('visivel');
         window.fecharModalReset = () => document.getElementById('modalReset').classList.remove('visivel');
+
         window.prepararReset = function(tipo) {
             tipoResetPendente = tipo;
             window.fecharModalReset();
@@ -466,6 +471,7 @@
         window.executarResetConfirmado = function() {
             const senha = document.getElementById('inputSenhaAction').value;
             if (senha !== '4241') { alert('Senha incorreta!'); return; }
+
             if (tipoResetPendente === 'tudo') {
                 remove(ref(db, 'alunos'));
                 set(ref(db, 'status_atividade'), { comando: 'liberado' });
@@ -475,29 +481,46 @@
                 todosRegistros.forEach(aluno => { if (aluno.data === hoje) remove(ref(db, 'alunos/' + aluno.id)); });
                 alert("Registros de hoje apagados.");
             } else if (tipoResetPendente === 'mes') {
-                 const mesAtual = new Date().toISOString().slice(0, 7);
-                 todosRegistros.forEach(aluno => { if (aluno.data.startsWith(mesAtual)) remove(ref(db, 'alunos/' + aluno.id)); });
+                const mesAtual = new Date().toISOString().slice(0, 7);
+                todosRegistros.forEach(aluno => { if ((aluno.data || '').startsWith(mesAtual)) remove(ref(db, 'alunos/' + aluno.id)); });
                 alert("Registros do mês apagados.");
             }
+
             window.fecharModalSenhaAction();
         }
 
+        // --- DROPDOWNS / FILTROS ---
         window.toggleDropdown = function(id) {
-            const el = document.getElementById(id); const estaAberto = el.classList.contains('aberto');
+            const el = document.getElementById(id);
+            const estaAberto = el.classList.contains('aberto');
             document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
             if(!estaAberto) el.classList.add('aberto');
         }
-        document.addEventListener('click', function(e) { if (!e.target.closest('.dropdown-wrapper')) document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto')); });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-wrapper')) {
+                document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
+            }
+        });
+
         window.selecionarOpcao = function(tipo, valor, textoExibicao, elemento) {
             const wrapperId = tipo === 'ano' ? 'dropAno' : 'dropTurma';
             const wrapper = document.getElementById(wrapperId);
             wrapper.querySelectorAll('.opcao-item').forEach(i => i.classList.remove('selecionado'));
             elemento.classList.add('selecionado');
-            if(tipo === 'ano') { filtroAnoAtual = valor; document.getElementById('textoAno').innerText = 'Ano: ' + textoExibicao; } else { filtroTurmaAtual = valor; document.getElementById('textoTurma').innerText = 'Turma: ' + textoExibicao; }
+
+            if(tipo === 'ano') {
+                filtroAnoAtual = valor;
+                document.getElementById('textoAno').innerText = 'Ano: ' + textoExibicao;
+            } else {
+                filtroTurmaAtual = valor;
+                document.getElementById('textoTurma').innerText = 'Turma: ' + textoExibicao;
+            }
             wrapper.classList.remove('aberto');
             window.renderizarRanking();
         }
 
+        // --- RENDER ---
         const listaEl = document.getElementById('listaRanking');
         const filtroData = document.getElementById('filtroData');
         filtroData.valueAsDate = new Date();
@@ -505,31 +528,44 @@
 
         window.renderizarRanking = function() {
             const dataSel = filtroData.value;
+
             let filtrados = todosRegistros.filter(item => {
                 const bateData = item.data === dataSel;
-                const bateAno = filtroAnoAtual === 'todas' ? true : item.serie.includes(filtroAnoAtual);
-                const bateTurma = filtroTurmaAtual === 'todas' ? true : item.serie.endsWith(" " + filtroTurmaAtual);
+                const bateAno = filtroAnoAtual === 'todas' ? true : (item.serie || '').includes(filtroAnoAtual);
+                const bateTurma = filtroTurmaAtual === 'todas' ? true : (item.serie || '').endsWith(" " + filtroTurmaAtual);
                 return bateData && bateAno && bateTurma;
             });
-            filtrados.sort((a, b) => b.acertos - a.acertos);
+
+            filtrados.sort((a, b) => (b.acertos || 0) - (a.acertos || 0));
+
             document.getElementById('totalAcessos').innerText = filtrados.length;
-            let totalAcertos = filtrados.reduce((sum, item) => sum + item.acertos, 0);
+
+            let totalAcertos = filtrados.reduce((sum, item) => sum + (item.acertos || 0), 0);
             let media = filtrados.length ? (totalAcertos / filtrados.length).toFixed(1) : "0.0";
             document.getElementById('mediaAcertos').innerText = media;
             document.getElementById('melhorAluno').innerText = filtrados.length > 0 ? filtrados[0].nome : "-";
+
             listaEl.innerHTML = "";
-            if (filtrados.length === 0) { listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Aguardando dados...</li>`; return; }
+            if (filtrados.length === 0) {
+                listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Aguardando dados...</li>`;
+                return;
+            }
+
             filtrados.forEach((aluno, index) => {
-                let rankClass = ""; let iconePosicao = index + 1;
-                if (index === 0) { rankClass = "rank-1"; iconePosicao = "🥇"; } else if (index === 1) { rankClass = "rank-2"; iconePosicao = "🥈"; } else if (index === 2) { rankClass = "rank-3"; iconePosicao = "🥉"; }
+                let rankClass = "";
+                let iconePosicao = index + 1;
+                if (index === 0) { rankClass = "rank-1"; iconePosicao = "🥇"; }
+                else if (index === 1) { rankClass = "rank-2"; iconePosicao = "🥈"; }
+                else if (index === 2) { rankClass = "rank-3"; iconePosicao = "🥉"; }
+
                 const html = `
                     <li class="item-aluno ${rankClass}">
                         <div class="posicao">${iconePosicao}</div>
-                        <div class="info-nome">${aluno.nome}</div>
-                        <div><span class="info-serie">${aluno.serie}</span></div>
-                        <div class="info-nota">${aluno.acertos} pts</div>
-                        <div class="info-erro">${aluno.erros} err</div>
-                        <div class="info-tempo">${aluno.hora}</div>
+                        <div class="info-nome">${aluno.nome || '-'}</div>
+                        <div><span class="info-serie">${aluno.serie || '-'}</span></div>
+                        <div class="info-nota">${aluno.acertos || 0} pts</div>
+                        <div class="info-erro">${aluno.erros || 0} err</div>
+                        <div class="info-tempo">${aluno.hora || '--:--'}</div>
                     </li>
                 `;
                 listaEl.innerHTML += html;
