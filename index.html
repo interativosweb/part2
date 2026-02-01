@@ -18,7 +18,7 @@
             --btn-gray-light: #aeb0b5;
         }
 
-        /* PROTEÇÃO ANTI-CÓPIA (JÁ EXISTIA) */
+        /* PROTEÇÃO ANTI-CÓPIA */
         body { -webkit-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
         @media print { html, body { display: none !important; } }
 
@@ -38,7 +38,7 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #f5f5f7;
             z-index: 9999;
-            display: none; /* Só aparece se o Firebase mandar */
+            display: none;
             flex-direction: column; justify-content: center; align-items: center; text-align: center;
         }
         #telaBloqueio.visivel { display: flex; }
@@ -135,6 +135,23 @@
         .aviso-erro { color: var(--error); font-size: 0.8rem; margin-top: 5px; min-height: 1.2em; font-weight: 600; }
         .btn-fechar-modal { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5rem; color: var(--text-light); cursor: pointer; }
 
+        /* Botão discreto no modal de identificação */
+        .btn-link-discreto{
+            position:absolute;
+            top: 12px;
+            left: 15px;
+            border:none;
+            background: transparent;
+            padding: 0;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .btn-link-discreto:hover{ color: var(--text-main); }
+
         @media (max-width: 900px) {
             .secao-pergunta { flex-direction: column; }
             .grid-opcoes { grid-template-columns: repeat(4, 1fr); }
@@ -164,8 +181,12 @@
         <p style='font-size:1.5rem;color:#86868b'>Aguarde a liberação do professor.</p>
     </div>
 
+    <!-- MODAL DE IDENTIFICAÇÃO -->
     <div id="modalLogin" class="modal-overlay">
         <div class="modal-box">
+            <!-- botão discreto do painel -->
+            <button class="btn-link-discreto" type="button" onclick="abrirModalPainelTurma()">Painel</button>
+
             <div class="modal-titulo">Identificação</div>
             <div class="modal-desc">Insira seus dados para começar.</div>
 
@@ -180,14 +201,31 @@
                 <input type="radio" id="ano8" name="ano" value="8º Ano"><label for="ano8">8º Ano</label>
                 <input type="radio" id="ano9" name="ano" value="9º Ano"><label for="ano9">9º Ano</label>
             </div>
+
             <div class="modal-subtitulo">Qual sua turma?</div>
             <div class="grupo-selecao">
                 <input type="radio" id="serieA" name="serie" value="A"><label for="serieA">A</label>
                 <input type="radio" id="serieB" name="serie" value="B"><label for="serieB">B</label>
                 <input type="radio" id="serieC" name="serie" value="C"><label for="serieC">C</label>
             </div>
+
             <div id="erroNome" class="aviso-erro"></div>
             <button class="btn-modal btn-confirmar" style="width:100%; margin-top:10px" onclick="realizarLogin()">Entrar</button>
+        </div>
+    </div>
+
+    <!-- MODAL DO PAINEL DA TURMA (SENHA DO PROFESSOR) -->
+    <div id="modalPainelTurma" class="modal-overlay">
+        <div class="modal-box">
+            <button class="btn-fechar-modal" onclick="fecharModalPainelTurma()">&times;</button>
+            <div class="modal-titulo">Acesso Professor</div>
+            <div class="modal-desc">Digite a senha para acessar o painel da turma.</div>
+            <input type="password" id="inputSenhaPainel" class="input-generico" placeholder="Senha" inputmode="numeric">
+            <div id="erroPainel" class="aviso-erro"></div>
+            <div class="modal-botoes">
+                <button class="btn-modal btn-cancelar" onclick="fecharModalPainelTurma()">Cancelar</button>
+                <button class="btn-modal btn-confirmar" onclick="confirmarPainelTurma()">Acessar</button>
+            </div>
         </div>
     </div>
 
@@ -287,80 +325,34 @@
         // PROTEÇÕES ANTI-CÓPIA (NÃO ALTERA VISUAL)
         // =========================================================================
         const ativarProtecoes = () => {
-            // Botão direito / menu de contexto
             document.addEventListener('contextmenu', (e) => e.preventDefault(), { capture: true });
-
-            // Bloquear seleção e arrastar (além do CSS)
             document.addEventListener('selectstart', (e) => e.preventDefault(), { capture: true });
             document.addEventListener('dragstart', (e) => e.preventDefault(), { capture: true });
-
-            // Bloquear copiar/recortar/colar
             document.addEventListener('copy', (e) => { e.preventDefault(); }, { capture: true });
             document.addEventListener('cut', (e) => { e.preventDefault(); }, { capture: true });
             document.addEventListener('paste', (e) => { e.preventDefault(); }, { capture: true });
 
-            // Bloquear teclas/atalhos comuns (F12, Ctrl+Shift+I/J/C, Ctrl+U, Ctrl+S, Ctrl+P)
             document.addEventListener('keydown', (e) => {
                 const key = (e.key || '').toLowerCase();
 
-                // F12
-                if (e.key === 'F12') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
-
-                // Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+Shift+C (DevTools)
-                if (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
-
-                // Ctrl+U (view source)
-                if (e.ctrlKey && key === 'u') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
-
-                // Ctrl+S (salvar)
-                if (e.ctrlKey && key === 's') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
-
-                // Ctrl+P (imprimir)
-                if (e.ctrlKey && key === 'p') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
-
-                // Ctrl+C / Ctrl+X (copiar/recortar)
-                if (e.ctrlKey && (key === 'c' || key === 'x')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
+                if (e.key === 'F12') { e.preventDefault(); e.stopPropagation(); return false; }
+                if (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) { e.preventDefault(); e.stopPropagation(); return false; }
+                if (e.ctrlKey && key === 'u') { e.preventDefault(); e.stopPropagation(); return false; }
+                if (e.ctrlKey && key === 's') { e.preventDefault(); e.stopPropagation(); return false; }
+                if (e.ctrlKey && key === 'p') { e.preventDefault(); e.stopPropagation(); return false; }
+                if (e.ctrlKey && (key === 'c' || key === 'x')) { e.preventDefault(); e.stopPropagation(); return false; }
             }, { capture: true });
 
-            // Caso alguém tente imprimir via menu do navegador
-            window.addEventListener('beforeprint', (e) => {
-                e.preventDefault?.();
-            });
+            window.addEventListener('beforeprint', (e) => { e.preventDefault?.(); });
         };
 
         // =========================================================================
-        // --- ÁREA DE PERGUNTAS (EDITE AQUI PARA COLOCAR SUAS RESPOSTAS DETALHADAS) ---
+        // --- ÁREA DE PERGUNTAS ---
         // =========================================================================
-        
         const f = (n, d) => `<div class='fracao'><span class='num'>${n}</span><span class='den'>${d}</span></div>`;
         const pathIntro = "https://interativosweb.github.io/part2/introducao/";
         const pathComp = "https://interativosweb.github.io/part2/complementar/";
 
-        // LISTA 1: INTRODUÇÃO
         window.questoesIntro = [
             { 
                 pergunta: "Uma fração é uma forma de representar uma parte de um todo, quando esse todo é dividido em partes iguais. Comer um pedaço dessa pizza representa em fração:", 
@@ -386,7 +378,6 @@
             { pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)}, no terceiro dia eu não usei. O celular da minha mãe tem uma bateria maior, quanto ela gastou de bateria?`, img: pathIntro + "img06intro.png", opcoes: [f(3,4), f(1,4), f(5,4), f(1,5)], correta: 0, resolucao: `A resposta correta é ${f(3,4)}.` }
         ];
 
-        // LISTA 2: ATIVIDADE COMPLEMENTAR
         window.questoesComp = [
             { pergunta: `Um bolo foi dividido em 4 partes iguais. João comeu ${f(1,4)} e Maria comeu ${f(2,4)}. Que fração do bolo foi comida ao todo?`, img: pathComp + "comp01.png", opcoes: [f(3,8), f(2,4), f(3,4), f(1,4)], correta: 2, resolucao: `Conta: ${f(1,4)} + ${f(2,4)} = ${f(3,4)}.` },
             { pergunta: `Ana bebeu ${f(1,5)} de uma garrafa de suco pela manhã e ${f(2,5)} à tarde. Quantas partes da garrafa ela bebeu no total?`, img: pathComp + "comp02.png", opcoes: [f(2,5), f(1,5), f(3,10), f(3,5)], correta: 3, resolucao: `Resultado: ${f(1,5)} + ${f(2,5)} = ${f(3,5)}.` },
@@ -424,12 +415,55 @@
         const iconCadeadoAberto = `<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>`;
         const iconCadeadoFechado = `<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>`;
 
-        window.modoAtual = localStorage.getItem('modoAtual') || 'intro'; 
+        window.modoAtual = localStorage.getItem('modoAtual') || 'intro';
         window.indice = parseInt(localStorage.getItem('indice')) || 0;
         window.placarIntro = JSON.parse(localStorage.getItem('placarIntro')) || { acertos: 0, erros: 0 };
         window.placarComp = JSON.parse(localStorage.getItem('placarComp')) || { acertos: 0, erros: 0 };
 
-        // LOGIN SEM SENHA
+        // =========================================================================
+        // PAINEL DA TURMA (BOTÃO DISCRETO NO LOGIN)
+        // =========================================================================
+        const URL_PAINEL_TURMA = "https://interativosweb.github.io/part2/ranking";
+        const SENHA_PROFESSOR_PAINEL = "4241";
+
+        window.abrirModalPainelTurma = function() {
+            const m = document.getElementById('modalPainelTurma');
+            const input = document.getElementById('inputSenhaPainel');
+            const erro = document.getElementById('erroPainel');
+            erro.innerText = "";
+            input.value = "";
+            m.classList.add('visivel');
+            setTimeout(() => input.focus(), 50);
+        };
+
+        window.fecharModalPainelTurma = function() {
+            document.getElementById('modalPainelTurma').classList.remove('visivel');
+        };
+
+        window.confirmarPainelTurma = function() {
+            const input = document.getElementById('inputSenhaPainel');
+            const erro = document.getElementById('erroPainel');
+            const senha = (input.value || "").trim();
+
+            if (senha !== SENHA_PROFESSOR_PAINEL) {
+                erro.innerText = "Senha incorreta.";
+                return;
+            }
+            // ok: vai para o painel
+            window.location.href = URL_PAINEL_TURMA;
+        };
+
+        // Enter no input do painel
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('modalPainelTurma').classList.contains('visivel') && e.key === 'Enter') {
+                e.preventDefault();
+                window.confirmarPainelTurma();
+            }
+        }, { capture: true });
+
+        // =========================================================================
+        // LOGIN SEM SENHA DO ALUNO
+        // =========================================================================
         window.realizarLogin = function() {
             const inputNome = document.getElementById('inputNomeAluno');
             const aviso = document.getElementById('erroNome');
@@ -440,6 +474,7 @@
             if (nome.length > 15) { aviso.innerText = "O nome deve ter no máximo 15 letras."; return; }
 
             nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+
             const ano = document.querySelector('input[name="ano"]:checked');
             const turma = document.querySelector('input[name="serie"]:checked');
             if (!ano || !turma) { aviso.innerText = "Selecione Ano e Turma."; return; }
@@ -454,6 +489,7 @@
                 alunoId = novoAlunoRef.key;
                 localStorage.setItem('firebaseId', alunoId);
             }
+
             update(ref(db, 'alunos/' + alunoId), {
                 nome: nome,
                 serie: serieCompleta,
@@ -472,7 +508,9 @@
             const serieSalva = localStorage.getItem('alunoSerie');
             if (nomeSalvo && serieSalva) {
                 window.aplicarDadosUsuario(nomeSalvo, serieSalva);
-                if(alunoId) { update(ref(db, 'alunos/' + alunoId), { status: 'reconectado', ultimoAcesso: new Date().toISOString() }); }
+                if (alunoId) {
+                    update(ref(db, 'alunos/' + alunoId), { status: 'reconectado', ultimoAcesso: new Date().toISOString() });
+                }
                 document.getElementById('modalLogin').classList.remove('visivel');
                 mostrarApp();
             } else {
@@ -604,17 +642,20 @@
         window.carregar = function() {
             window.checkLogin(); window.atualizarBotoesHeader(); window.atualizarPlacarVisual();
             const listaQuestao = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
+
             if (window.indice >= listaQuestao.length) {
                 if (window.modoAtual === 'intro') { window.abrirModalFase(); }
                 else { document.getElementById('barraFill').style.width = '100%'; window.abrirModalFinal(); }
                 return;
             }
+
             window.atualizarBarraProgresso();
             const q = listaQuestao[window.indice];
             document.getElementById('areaResposta').style.display = 'none';
             document.getElementById('btnProximo').style.display = 'none';
             document.getElementById('imgQuestao').src = q.img;
             document.getElementById('textoPergunta').innerHTML = q.pergunta;
+
             const divBotoes = document.getElementById('containerOpcoes');
             divBotoes.innerHTML = '';
             q.opcoes.forEach((opt, i) => {
@@ -630,10 +671,37 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ORDEM: ativa proteções antes de tudo
+        // ATIVA PROTEÇÕES
         ativarProtecoes();
+
+        // Inicia
         window.onload = window.carregar;
 
+    </script>
+
+    <script>
+        // =========================================================================
+        // PROTEÇÕES (script normal, para pegar o popup também)
+        // =========================================================================
+        (function(){
+            // Botão direito / seleção / drag / copiar
+            document.addEventListener('contextmenu', (e) => e.preventDefault(), { capture: true });
+            document.addEventListener('selectstart', (e) => e.preventDefault(), { capture: true });
+            document.addEventListener('dragstart', (e) => e.preventDefault(), { capture: true });
+            document.addEventListener('copy', (e) => e.preventDefault(), { capture: true });
+            document.addEventListener('cut', (e) => e.preventDefault(), { capture: true });
+            document.addEventListener('paste', (e) => e.preventDefault(), { capture: true });
+
+            document.addEventListener('keydown', (e) => {
+                const key = (e.key || '').toLowerCase();
+                if (e.key === 'F12') { e.preventDefault(); e.stopPropagation(); return false; }
+                if (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) { e.preventDefault(); e.stopPropagation(); return false; }
+                if (e.ctrlKey && key === 'u') { e.preventDefault(); e.stopPropagation(); return false; }
+                if (e.ctrlKey && key === 's') { e.preventDefault(); e.stopPropagation(); return false; }
+                if (e.ctrlKey && key === 'p') { e.preventDefault(); e.stopPropagation(); return false; }
+                if (e.ctrlKey && (key === 'c' || key === 'x')) { e.preventDefault(); e.stopPropagation(); return false; }
+            }, { capture: true });
+        })();
     </script>
 </body>
 </html>
