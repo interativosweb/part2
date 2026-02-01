@@ -18,7 +18,7 @@
             --btn-gray-light: #aeb0b5;
         }
 
-        /* PROTEÇÃO ANTI-CÓPIA */
+        /* PROTEÇÃO ANTI-CÓPIA (JÁ EXISTIA) */
         body { -webkit-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
         @media print { html, body { display: none !important; } }
 
@@ -168,7 +168,7 @@
         <div class="modal-box">
             <div class="modal-titulo">Identificação</div>
             <div class="modal-desc">Insira seus dados para começar.</div>
-            
+
             <input type="text" id="inputNomeAluno" class="input-generico" placeholder="Qual o seu nome?" maxlength="15">
 
             <!-- SENHA DO ALUNO REMOVIDA -->
@@ -281,11 +281,80 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // =================================================================================
+        // =========================================================================
+        // PROTEÇÕES ANTI-CÓPIA (NÃO ALTERA VISUAL)
+        // =========================================================================
+        const ativarProtecoes = () => {
+            // Botão direito / menu de contexto
+            document.addEventListener('contextmenu', (e) => e.preventDefault(), { capture: true });
+
+            // Bloquear seleção e arrastar (além do CSS)
+            document.addEventListener('selectstart', (e) => e.preventDefault(), { capture: true });
+            document.addEventListener('dragstart', (e) => e.preventDefault(), { capture: true });
+
+            // Bloquear copiar/recortar/colar
+            document.addEventListener('copy', (e) => { e.preventDefault(); }, { capture: true });
+            document.addEventListener('cut', (e) => { e.preventDefault(); }, { capture: true });
+            document.addEventListener('paste', (e) => { e.preventDefault(); }, { capture: true });
+
+            // Bloquear teclas/atalhos comuns (F12, Ctrl+Shift+I/J/C, Ctrl+U, Ctrl+S, Ctrl+P)
+            document.addEventListener('keydown', (e) => {
+                const key = (e.key || '').toLowerCase();
+
+                // F12
+                if (e.key === 'F12') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
+                // Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+Shift+C (DevTools)
+                if (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
+                // Ctrl+U (view source)
+                if (e.ctrlKey && key === 'u') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
+                // Ctrl+S (salvar)
+                if (e.ctrlKey && key === 's') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
+                // Ctrl+P (imprimir)
+                if (e.ctrlKey && key === 'p') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
+                // Ctrl+C / Ctrl+X (copiar/recortar)
+                if (e.ctrlKey && (key === 'c' || key === 'x')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            }, { capture: true });
+
+            // Caso alguém tente imprimir via menu do navegador
+            window.addEventListener('beforeprint', (e) => {
+                e.preventDefault?.();
+            });
+        };
+
+        // =========================================================================
         // --- ÁREA DE PERGUNTAS (EDITE AQUI PARA COLOCAR SUAS RESPOSTAS DETALHADAS) ---
-        // =================================================================================
+        // =========================================================================
         
         const f = (n, d) => `<div class='fracao'><span class='num'>${n}</span><span class='den'>${d}</span></div>`;
         const pathIntro = "https://interativosweb.github.io/part2/introducao/";
@@ -335,12 +404,9 @@
             { pergunta: `Ana percorreu ${f(1,4)} do caminho pela manhã e ${f(1,2)} à tarde. Que fração do caminho ela percorreu ao todo?`, img: pathComp + "comp14.png", opcoes: [f(2,4), f(1,6), f(3,4), f(1,2)], correta: 2, resolucao: `${f(1,4)} + ${f(2,4)} = ${f(3,4)}.` }
         ];
 
-        // =================================================================================
-        // --- FIM DA ÁREA DE PERGUNTAS ---
-        // =================================================================================
-
-
+        // =========================================================================
         // CONFIGURAÇÃO DO FIREBASE (NÃO MEXER)
+        // =========================================================================
         const firebaseConfig = {
           apiKey: "AIzaSyCHfcVVxma4M1LbYO5M-oMX4fnlaNUPi24",
           authDomain: "fracoesbanco.firebaseapp.com",
@@ -419,7 +485,7 @@
             const q = listaQuestao[window.indice];
             const todos = document.querySelectorAll('.btn-opcao');
             todos.forEach(b => b.disabled = true);
-            
+
             document.getElementById('btnProximo').style.display = 'block';
             document.getElementById('areaResposta').style.display = 'block';
             const titulo = document.getElementById('tituloFeedback');
@@ -433,11 +499,11 @@
             } else {
                 placarAtual.erros++;
                 btn.classList.add('errado');
-                todos[q.correta].classList.add('certo'); 
+                todos[q.correta].classList.add('certo');
                 titulo.innerText = "Resposta Incorreta";
                 titulo.style.color = "var(--error)";
             }
-            
+
             document.getElementById('textoResolucao').innerHTML = q.resolucao;
             window.salvarProgresso();
             window.atualizarPlacarVisual();
@@ -503,8 +569,8 @@
             document.getElementById('modalFinal').classList.add('visivel');
         }
         window.avancarFase = function() {
-            window.modoAtual = 'complementar'; window.indice = 0; 
-            window.salvarProgresso(); document.getElementById('modalFase').classList.remove('visivel'); window.carregar(); 
+            window.modoAtual = 'complementar'; window.indice = 0;
+            window.salvarProgresso(); document.getElementById('modalFase').classList.remove('visivel'); window.carregar();
         }
         window.atualizarBotoesHeader = function() {
             const btnIntro = document.getElementById('btnIntro');
@@ -514,8 +580,8 @@
                 btnIntro.classList.add('bg-verde-ativo'); btnIntro.innerHTML = `${iconCadeadoAberto} Introdução`;
                 btnComp.classList.add('bg-cinza-claro', 'hover-red'); btnComp.innerHTML = `${iconCadeadoFechado} Atividade complementar`;
             } else {
-                btnIntro.classList.add('bg-cinza-claro', 'hover-red'); btnIntro.innerHTML = `${iconCadeadoFechado} Introdução`; 
-                btnComp.classList.add('bg-verde-ativo'); btnComp.innerHTML = `${iconCadeadoAberto} Atividade complementar`; 
+                btnIntro.classList.add('bg-cinza-claro', 'hover-red'); btnIntro.innerHTML = `${iconCadeadoFechado} Introdução`;
+                btnComp.classList.add('bg-verde-ativo'); btnComp.innerHTML = `${iconCadeadoAberto} Atividade complementar`;
             }
         }
         window.atualizarPlacarVisual = function() {
@@ -539,7 +605,8 @@
             window.checkLogin(); window.atualizarBotoesHeader(); window.atualizarPlacarVisual();
             const listaQuestao = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
             if (window.indice >= listaQuestao.length) {
-                if (window.modoAtual === 'intro') { window.abrirModalFase(); } else { document.getElementById('barraFill').style.width = '100%'; window.abrirModalFinal(); }
+                if (window.modoAtual === 'intro') { window.abrirModalFase(); }
+                else { document.getElementById('barraFill').style.width = '100%'; window.abrirModalFinal(); }
                 return;
             }
             window.atualizarBarraProgresso();
@@ -552,7 +619,9 @@
             divBotoes.innerHTML = '';
             q.opcoes.forEach((opt, i) => {
                 const btn = document.createElement('button');
-                btn.className = 'btn-opcao'; btn.innerHTML = opt; btn.onclick = () => window.responder(i, btn);
+                btn.className = 'btn-opcao';
+                btn.innerHTML = opt;
+                btn.onclick = () => window.responder(i, btn);
                 divBotoes.appendChild(btn);
             });
         }
@@ -560,7 +629,9 @@
             window.indice++; window.salvarProgresso(); window.carregar();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        
+
+        // ORDEM: ativa proteções antes de tudo
+        ativarProtecoes();
         window.onload = window.carregar;
 
     </script>
