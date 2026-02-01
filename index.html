@@ -135,22 +135,34 @@
         .aviso-erro { color: var(--error); font-size: 0.8rem; margin-top: 5px; min-height: 1.2em; font-weight: 600; }
         .btn-fechar-modal { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5rem; color: var(--text-light); cursor: pointer; }
 
-        /* Botão discreto no modal de identificação */
-        .btn-link-discreto{
-            position:absolute;
-            top: 12px;
-            left: 15px;
-            border:none;
-            background: transparent;
-            padding: 0;
-            font-size: 0.75rem;
+        /* NOVO: botão discreto abaixo do "Entrar" com cadeado cinza claro */
+        .btn-prof-discreto{
+            margin-top: 12px;
+            width: 100%;
+            border: 1px solid #d2d2d7;
+            background: #f2f2f7;
             color: var(--text-light);
+            border-radius: 10px;
+            padding: 10px 12px;
             cursor: pointer;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.2s, background-color 0.2s, color 0.2s;
         }
-        .btn-link-discreto:hover{ color: var(--text-main); }
+        .btn-prof-discreto:hover{
+            background: #e9e9ee;
+            color: var(--text-main);
+            transform: translateY(-1px);
+        }
+        .icon-cadeado-cinza{
+            width: 18px;
+            height: 18px;
+            fill: #aeb0b5; /* cinza meio claro */
+        }
 
         @media (max-width: 900px) {
             .secao-pergunta { flex-direction: column; }
@@ -184,15 +196,11 @@
     <!-- MODAL DE IDENTIFICAÇÃO -->
     <div id="modalLogin" class="modal-overlay">
         <div class="modal-box">
-            <!-- botão discreto do painel -->
-            <button class="btn-link-discreto" type="button" onclick="abrirModalPainelTurma()">Painel</button>
 
             <div class="modal-titulo">Identificação</div>
             <div class="modal-desc">Insira seus dados para começar.</div>
 
             <input type="text" id="inputNomeAluno" class="input-generico" placeholder="Qual o seu nome?" maxlength="15">
-
-            <!-- SENHA DO ALUNO REMOVIDA -->
 
             <div class="modal-subtitulo">Qual seu ano?</div>
             <div class="grupo-selecao">
@@ -210,7 +218,17 @@
             </div>
 
             <div id="erroNome" class="aviso-erro"></div>
+
             <button class="btn-modal btn-confirmar" style="width:100%; margin-top:10px" onclick="realizarLogin()">Entrar</button>
+
+            <!-- NOVO BOTÃO ABAIXO DO ENTRAR -->
+            <button class="btn-prof-discreto" type="button" onclick="abrirModalPainelTurma()">
+                <svg class="icon-cadeado-cinza" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M18 10h-1V8a5 5 0 0 0-10 0v2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2zm-9-2a3 3 0 0 1 6 0v2H9V8zm3 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+                </svg>
+                Acesso restrito
+            </button>
+
         </div>
     </div>
 
@@ -334,7 +352,6 @@
 
             document.addEventListener('keydown', (e) => {
                 const key = (e.key || '').toLowerCase();
-
                 if (e.key === 'F12') { e.preventDefault(); e.stopPropagation(); return false; }
                 if (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) { e.preventDefault(); e.stopPropagation(); return false; }
                 if (e.ctrlKey && key === 'u') { e.preventDefault(); e.stopPropagation(); return false; }
@@ -354,23 +371,7 @@
         const pathComp = "https://interativosweb.github.io/part2/complementar/";
 
         window.questoesIntro = [
-            { 
-                pergunta: "Uma fração é uma forma de representar uma parte de um todo, quando esse todo é dividido em partes iguais. Comer um pedaço dessa pizza representa em fração:", 
-                img: pathIntro + "img01intro.png", 
-                opcoes: [f(1,4), f(1,6), f(7,1), f(1,7)], 
-                correta: 3, 
-                resolucao: `
-                    <div style="text-align:left;">
-                        <p><b>Explicação:</b></p>
-                        <p>Para criar a fração, olhamos duas coisas:</p>
-                        <ul style="margin-left:20px; margin-bottom:10px;">
-                            <li><b>Denominador (embaixo):</b> Total de fatias = 7.</li>
-                            <li><b>Numerador (em cima):</b> Fatias comidas = 1.</li>
-                        </ul>
-                        <p>Portanto, a fração é <span style="color:var(--success); font-weight:bold">${f(1,7)}</span>.</p>
-                    </div>
-                ` 
-            },
+            { pergunta: "Uma fração é uma forma de representar uma parte de um todo, quando esse todo é dividido em partes iguais. Comer um pedaço dessa pizza representa em fração:", img: pathIntro + "img01intro.png", opcoes: [f(1,4), f(1,6), f(7,1), f(1,7)], correta: 3, resolucao: `<div style="text-align:left;"><p><b>Explicação:</b></p><p>Para criar a fração, olhamos duas coisas:</p><ul style="margin-left:20px; margin-bottom:10px;"><li><b>Denominador (embaixo):</b> Total de fatias = 7.</li><li><b>Numerador (em cima):</b> Fatias comidas = 1.</li></ul><p>Portanto, a fração é <span style="color:var(--success); font-weight:bold">${f(1,7)}</span>.</p></div>` },
             { pergunta: "Pedi uma pizza e comi apenas a parte pintada em verde, represente em fração quantos pedaços eu comi:", img: pathIntro + "img02intro.png", opcoes: [f(3,7), f(5,6), f(7,3), f(7,2)], correta: 0, resolucao: `A fração é ${f(3,7)}.` },
             { pergunta: "Um copo cheio de suco é dividido em 2 partes iguais. Se alguém bebe uma dessas partes, temos:", img: pathIntro + "img03intro.png", opcoes: [f(2,5), f(2,1), f(1,4), f(1,2)], correta: 3, resolucao: `A fração é ${f(1,2)}.` },
             { pergunta: "Qual fração representa o círculo vermelho?", img: pathIntro + "img04intro.png", opcoes: [f(1,4), f(4,1), f(2,5), f(1,8)], correta: 0, resolucao: `A fração é ${f(1,4)}.` },
@@ -421,7 +422,7 @@
         window.placarComp = JSON.parse(localStorage.getItem('placarComp')) || { acertos: 0, erros: 0 };
 
         // =========================================================================
-        // PAINEL DA TURMA (BOTÃO DISCRETO NO LOGIN)
+        // PAINEL DA TURMA
         // =========================================================================
         const URL_PAINEL_TURMA = "https://interativosweb.github.io/part2/ranking";
         const SENHA_PROFESSOR_PAINEL = "4241";
@@ -449,7 +450,6 @@
                 erro.innerText = "Senha incorreta.";
                 return;
             }
-            // ok: vai para o painel
             window.location.href = URL_PAINEL_TURMA;
         };
 
@@ -680,11 +680,8 @@
     </script>
 
     <script>
-        // =========================================================================
-        // PROTEÇÕES (script normal, para pegar o popup também)
-        // =========================================================================
+        // Proteções extras (para pegar popup também)
         (function(){
-            // Botão direito / seleção / drag / copiar
             document.addEventListener('contextmenu', (e) => e.preventDefault(), { capture: true });
             document.addEventListener('selectstart', (e) => e.preventDefault(), { capture: true });
             document.addEventListener('dragstart', (e) => e.preventDefault(), { capture: true });
