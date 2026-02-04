@@ -418,6 +418,25 @@
         }
         .btn-prof-discreto-rodape:hover { color: #aeb0b5; text-decoration: underline; }
 
+        /* ✅ NOVO: Botão "Área do Professor" no popup de identificação */
+        .btn-area-prof-login {
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #d2d2d7;
+            background: #e5e5ea;        /* cinza claro */
+            color: #6e6e73;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s ease, background 0.15s ease;
+        }
+        .btn-area-prof-login:hover {
+            background: #d1d1d6;
+            transform: translateY(-1px);
+        }
+
         @media (max-width: 900px) {
             .secao-pergunta { flex-direction: column; }
             .grid-opcoes { grid-template-columns: repeat(4, 1fr); }
@@ -472,6 +491,11 @@
 
             <div id="erroNome" class="aviso-erro"></div>
             <button class="btn-modal btn-confirmar" style="width:100%; margin-top:10px" onclick="realizarLogin()">Entrar</button>
+
+            <!-- ✅ AQUI ESTÁ O BOTÃO QUE SUMIU (de volta, abaixo do Entrar) -->
+            <button class="btn-area-prof-login" type="button" onclick="abrirModalAcessoProfessor()">
+                Área do Professor
+            </button>
         </div>
     </div>
 
@@ -625,7 +649,7 @@
         </div>
     </div>
 
-    <!-- ✅ NOVO: MODAL ACESSO DO PROFESSOR (igual ao reset) -->
+    <!-- ✅ MODAL ACESSO DO PROFESSOR (igual ao reset) -->
     <div id="modalAcessoProfessor" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-titulo">Acesso do Professor</div>
@@ -702,7 +726,7 @@
         window.placarComp = JSON.parse(localStorage.getItem('placarComp')) || { acertos: 0, erros: 0 };
 
         // =========================================================================
-        // ✅ NOVO: ACESSO DO PROFESSOR COM POPUP + SENHA
+        // ACESSO DO PROFESSOR COM POPUP + SENHA
         // =========================================================================
         const SENHA_PROFESSOR = "4241";
         const URL_PAINEL_PROF = "./ranking.html"; // ajuste se seu painel tiver outro nome
@@ -730,7 +754,6 @@
                 return;
             }
 
-            // Sucesso: fecha modal e vai para o painel
             window.fecharModalAcessoProfessor();
             window.location.href = URL_PAINEL_PROF;
         };
