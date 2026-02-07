@@ -492,7 +492,6 @@
             <div id="erroNome" class="aviso-erro"></div>
             <button class="btn-modal btn-confirmar" style="width:100%; margin-top:10px" onclick="realizarLogin()">Entrar</button>
 
-            <!-- ✅ AQUI ESTÁ O BOTÃO QUE SUMIU (de volta, abaixo do Entrar) -->
             <button class="btn-area-prof-login" type="button" onclick="abrirModalAcessoProfessor()">
                 Área do Professor
             </button>
@@ -628,7 +627,6 @@
 
             <span class="texto-creditos">Desenvolvido por Gilberto Fernandes - Matemática [Atividade Professora Simone Vieira]</span>
 
-            <!-- Botão bem discreto: abre modal com senha -->
             <button class="btn-prof-discreto-rodape" type="button" onclick="abrirModalAcessoProfessor()">
                 Acesso do Professor
             </button>
@@ -986,15 +984,23 @@
             const titulo = document.getElementById('tituloFeedback');
             let placarAtual = window.modoAtual === 'intro' ? window.placarIntro : window.placarComp;
 
-            if (i === q.correta) {
+            // Suporta 1 ou mais alternativas corretas (frações equivalentes)
+            const corretas = Array.isArray(q.correta) ? q.correta : [q.correta];
+            const acertou = corretas.includes(i);
+
+            if (acertou) {
                 placarAtual.acertos++;
+                // Se houver 2 corretas, marca apenas a escolhida como certa (não revela a outra)
                 btn.classList.add('certo');
                 titulo.innerText = "Resposta Correta!";
                 titulo.style.color = "var(--success)";
             } else {
                 placarAtual.erros++;
                 btn.classList.add('errado');
-                todos[q.correta].classList.add('certo');
+                // Se errou, mostra TODAS as alternativas corretas (se houver mais de uma)
+                corretas.forEach((idx) => {
+                    if (todos[idx]) todos[idx].classList.add('certo');
+                });
                 titulo.innerText = "Resposta Incorreta";
                 titulo.style.color = "var(--error)";
             }
