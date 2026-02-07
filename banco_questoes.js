@@ -11,15 +11,18 @@ const pathComp  = "https://interativosweb.github.io/part2/complementar/";
 const pathResp = "https://interativosweb.github.io/part2/respostas/";
 const respostaCompImg = pathResp + "rep06.png";
 
-// Isso substitui TODAS as resoluções da atividade complementar por uma imagem PNG
+// 🔽 IMAGEM 35% MENOR (agora 65% do tamanho original)
 const resolucaoCompImgHTML = `
   <div class="resposta-img-wrap" style="text-align:center;">
-    <img src="${respostaCompImg}" alt="Resposta" class="resposta-img" style="max-width:100%; height:auto; display:inline-block;">
+    <img src="${respostaCompImg}"
+         alt="Resposta"
+         class="resposta-img"
+         style="width:65%; max-width:65%; height:auto; display:inline-block;">
   </div>
 `;
 
 // ============================
-// INTRODUÇÃO (6 questões)
+// INTRODUÇÃO (6 questões) — NÃO FOI ALTERADA
 // ============================
 export const questoesIntro = [
   {
@@ -68,7 +71,7 @@ export const questoesIntro = [
 
 // ============================
 // ATIVIDADE COMPLEMENTAR
-// (resoluções removidas e substituídas por imagem rep06.png)
+// (todas as respostas substituídas pela imagem rep06.png — MENOR)
 // ============================
 export const questoesComp = [
   {
