@@ -86,27 +86,34 @@ export const questoesComp = [
     correta: 1,
     resolucao: resolucaoCompImgHTML(3)
   },
+
+  // ✅ fita dividida em 6 partes: corretas 3/6 e 1/3
   {
     pergunta: `Em uma fita dividida em 6 partes iguais, foram usadas ${f(2,6)} para um trabalho e ${f(1,6)} para outro. Qual fração da fita foi usada ao todo?`,
     img: pathComp + "comp04.png",
-    opcoes: [f(1,6), f(3,12), f(3,6), f(2,6)],
-    correta: 2,
+    opcoes: [f(1,6), f(1,3), f(3,6), f(2,6)],
+    correta: [1, 2], // 1/3 e 3/6 são equivalentes
     resolucao: resolucaoCompImgHTML(4)
   },
+
+  // ✅ bolo dividido em 10 partes: corretas 6/10 e 3/5
   {
     pergunta: `Um bolo foi dividido em 10 partes iguais. Foram comidas ${f(4,10)} depois do almoço. Que fração do bolo ainda resta?`,
     img: pathComp + "comp05.png",
-    opcoes: [f(5,10), f(6,14), f(4,10), f(6,10)],
-    correta: 3,
+    opcoes: [f(5,10), f(3,5), f(4,10), f(6,10)],
+    correta: [1, 3], // 3/5 e 6/10 são equivalentes
     resolucao: resolucaoCompImgHTML(5)
   },
+
+  // ✅ forma com 8 cubos: corretas 4/8 e 1/2
   {
     pergunta: `Uma forma tinha 8 cubos de gelo. Durante o dia, foram usados ${f(4,8)} dos cubos. Que fração dos cubos de gelo ainda restou?`,
     img: pathComp + "comp06.png",
-    opcoes: [f(1,8), f(4,8), f(8,8), f(2,8)],
-    correta: 1,
+    opcoes: [f(1,8), f(4,8), f(1,2), f(8,8)],
+    correta: [1, 2], // 4/8 e 1/2 são equivalentes
     resolucao: resolucaoCompImgHTML(6)
   },
+
   {
     pergunta: `Em uma caixa de lápis, ${f(1,4)} foi usado na aula de Matemática e ${f(1,6)} na aula de Artes. Que fração da caixa de lápis foi usada ao todo?`,
     img: pathComp + "comp07.png",
@@ -121,20 +128,25 @@ export const questoesComp = [
     correta: 3,
     resolucao: resolucaoCompImgHTML(8)
   },
+
+  // ✅ Carlo caminhou: corretas 5/10 e 1/2
   {
     pergunta: `Carlo caminhou ${f(2,5)} de sua meta diária pela manhã e ${f(1,10)} à tarde. Que fração do percurso ele caminhou ao todo?`,
     img: pathComp + "comp09.png",
-    opcoes: [f(3,10), f(5,10), f(2,15), f(3,5)],
-    correta: 1,
+    opcoes: [f(3,10), f(5,10), f(1,2), f(3,5)],
+    correta: [1, 2], // 5/10 e 1/2 são equivalentes
     resolucao: resolucaoCompImgHTML(9)
   },
+
+  // ✅ pacote 15 bolachas: corretas 9/15 e 3/5
   {
     pergunta: `Um pacote tinha 15 bolachas. Durante o lanche, foram comidas ${f(6,15)} das bolachas. Que fração das bolachas ainda restou?`,
     img: pathComp + "comp10.png",
-    opcoes: [f(6,15), f(15,9), f(1,15), f(9,15)],
-    correta: 3,
+    opcoes: [f(6,15), f(3,5), f(1,15), f(9,15)],
+    correta: [1, 3], // 3/5 e 9/15 são equivalentes
     resolucao: resolucaoCompImgHTML(10)
   },
+
   {
     pergunta: `Um tanque de água teve ${f(1,3)} de sua capacidade usada pela manhã e ${f(1,4)} à tarde. Que fração da água foi utilizada no total?`,
     img: pathComp + "comp11.png",
