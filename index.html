@@ -791,6 +791,13 @@
 
             document.addEventListener('keydown', (e) => {
                 const key = (e.key || '').toLowerCase();
+                // ✅ Bloqueio de recarregar
+                if (e.key === 'F5') { e.preventDefault(); e.stopPropagation(); return false; }
+                if ((e.ctrlKey || e.metaKey) && key === 'r') { e.preventDefault(); e.stopPropagation(); return false; }
+                // ✅ Bloqueio de recarregar (não é 100% garantido em todos os navegadores, mas reduz bastante)
+                if (e.key === 'F5') { e.preventDefault(); e.stopPropagation(); return false; }
+                if ((e.ctrlKey || e.metaKey) && key === 'r') { e.preventDefault(); e.stopPropagation(); return false; }
+
                 if (e.key === 'F12') { e.preventDefault(); e.stopPropagation(); return false; }
                 if (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) { e.preventDefault(); e.stopPropagation(); return false; }
                 if (e.ctrlKey && key === 'u') { e.preventDefault(); e.stopPropagation(); return false; }
@@ -1002,6 +1009,80 @@
             localStorage.setItem('placarComp', JSON.stringify(window.placarComp));
         }
 
+// =========================================================================
+// ✅ TRAVA DE RESPOSTA (não perde ao recarregar)
+// Guarda a alternativa escolhida por questão, para não permitir "tentar de novo" após F5.
+// =========================================================================
+const STORAGE_RESPOSTAS_KEY = 'respostasMarcadas_v1';
+
+function _lerRespostasMarcadas() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_RESPOSTAS_KEY)) || {}; }
+    catch (e) { return {}; }
+}
+function _salvarRespostasMarcadas(obj) {
+    localStorage.setItem(STORAGE_RESPOSTAS_KEY, JSON.stringify(obj || {}));
+}
+function _getRespostaMarcada(modo, indice) {
+    const base = _lerRespostasMarcadas();
+    return (base[modo] && typeof base[modo][indice] !== 'undefined') ? base[modo][indice] : null;
+}
+function _setRespostaMarcada(modo, indice, escolha) {
+    const base = _lerRespostasMarcadas();
+    if (!base[modo]) base[modo] = {};
+    base[modo][indice] = escolha; // número do índice escolhido
+    _salvarRespostasMarcadas(base);
+}
+function _limparRespostasMarcadas() {
+    localStorage.removeItem(STORAGE_RESPOSTAS_KEY);
+}
+
+function restaurarEstadoRespostaSeExistir() {
+    const listaQuestao = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
+    const q = listaQuestao[window.indice];
+    if (!q) return;
+
+    const escolhaSalva = _getRespostaMarcada(window.modoAtual, window.indice);
+    if (escolhaSalva === null || typeof escolhaSalva === 'undefined') return;
+
+    const todos = document.querySelectorAll('.btn-opcao');
+    if (!todos || !todos.length) return;
+
+    // Desabilita tudo e aplica o mesmo feedback do momento da resposta
+    todos.forEach(b => b.disabled = true);
+
+    const corretas = Array.isArray(q.correta) ? q.correta : [q.correta];
+    const acertou = corretas.includes(Number(escolhaSalva));
+
+    const btnEscolhido = todos[Number(escolhaSalva)];
+    if (btnEscolhido) {
+        if (acertou) btnEscolhido.classList.add('certo');
+        else btnEscolhido.classList.add('errado');
+    }
+
+    // Se errou, mostra TODAS as alternativas corretas (igual ao comportamento original)
+    if (!acertou) {
+        corretas.forEach((idx) => {
+            if (todos[idx]) todos[idx].classList.add('certo');
+        });
+    }
+
+    // Reexibe área de feedback + botão próximo
+    document.getElementById('btnProximo').style.display = 'block';
+    document.getElementById('areaResposta').style.display = 'block';
+
+    const titulo = document.getElementById('tituloFeedback');
+    if (acertou) {
+        titulo.innerText = "Resposta Correta!";
+        titulo.style.color = "var(--success)";
+    } else {
+        titulo.innerText = "Resposta Incorreta";
+        titulo.style.color = "var(--error)";
+    }
+
+    document.getElementById('textoResolucao').innerHTML = q.resolucao;
+}
+
+
         // RESET
         window.abrirModalReset = function() {
             document.getElementById('modalReset').classList.add('visivel');
@@ -1012,6 +1093,7 @@
 
         window.confirmarReset = function() {
             if (document.getElementById('inputSenha').value === SENHA_PROFESSOR) {
+                _limparRespostasMarcadas();
                 localStorage.clear(); location.reload();
             } else { alert("Senha incorreta."); }
         }
@@ -1126,11 +1208,18 @@
                 btn.onclick = () => responder(i, btn);
                 divBotoes.appendChild(btn);
             });
+
+            // ✅ Se a questão já foi respondida, mantém a escolha marcada mesmo após recarregar.
+            restaurarEstadoRespostaSeExistir();
         }
 
         function responder(i, btn) {
             const listaQuestao = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
             const q = listaQuestao[window.indice];
+            // ✅ grava a alternativa escolhida para travar a tentativa, mesmo se recarregar.
+            if (_getRespostaMarcada(window.modoAtual, window.indice) === null) {
+                _setRespostaMarcada(window.modoAtual, window.indice, i);
+            }
             const todos = document.querySelectorAll('.btn-opcao');
             todos.forEach(b => b.disabled = true);
 
@@ -1193,6 +1282,12 @@
             }
         });
 
+        // ✅ Confirmação ao tentar sair/recarregar (o navegador pode ignorar o texto por segurança)
+        window.addEventListener('beforeunload', (e) => {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+
         ativarProtecoes();
         window.onload = carregar;
 
@@ -1210,6 +1305,13 @@
 
             document.addEventListener('keydown', (e) => {
                 const key = (e.key || '').toLowerCase();
+                // ✅ Bloqueio de recarregar
+                if (e.key === 'F5') { e.preventDefault(); e.stopPropagation(); return false; }
+                if ((e.ctrlKey || e.metaKey) && key === 'r') { e.preventDefault(); e.stopPropagation(); return false; }
+                // ✅ Bloqueio de recarregar (não é 100% garantido em todos os navegadores, mas reduz bastante)
+                if (e.key === 'F5') { e.preventDefault(); e.stopPropagation(); return false; }
+                if ((e.ctrlKey || e.metaKey) && key === 'r') { e.preventDefault(); e.stopPropagation(); return false; }
+
                 if (e.key === 'F12') { e.preventDefault(); e.stopPropagation(); return false; }
                 if (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) { e.preventDefault(); e.stopPropagation(); return false; }
                 if (e.ctrlKey && key === 'u') { e.preventDefault(); e.stopPropagation(); return false; }
