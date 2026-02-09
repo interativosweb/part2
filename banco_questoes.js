@@ -69,13 +69,12 @@ export const questoesIntro = [
     resolucao: `Se a barra tem 5 pedaços e eu comi 1, restam 4 pedaços. Em fração, fica ${f(4,5)}.`
   },
 
-  // ✅ ALTERADO: opções e correta = 4/5
   {
     pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)}, no terceiro dia eu não usei. O celular da minha mãe tem uma bateria maior, quanto ela gastou de bateria?`,
     img: pathIntro + "img06intro.png",
     opcoes: [f(4,5), f(5,4), f(3,4), f(4,4)],
-    correta: 0,
-    resolucao: `Observe a imagem para entender a lógica do consumo.`
+    correta: 3,
+    resolucao: `Como as frações têm o mesmo denominador, basta somar os numeradores: ${f(1,4)} + ${f(3,4)} = ${f(4,4)}. Isso significa que foi usada a bateria inteira (100%). No terceiro dia não foi usada bateria, então o total continua ${f(4,4)}.`
   }
 ];
 
@@ -120,11 +119,11 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(5)
   },
 
-  // ✅ forma com 8 cubos: corretas 4/8 e 1/2
+  // ✅ CORRIGIDO: 2 formas de gelo (corretas 12/8 e 3/2)
   {
-    pergunta: `Uma forma tinha 8 cubos de gelo. Durante o dia, foram usados ${f(4,8)} dos cubos. Que fração dos cubos de gelo ainda restou?`,
+    pergunta: `Havia 2 formas de gelo, cada uma com 8 cubos. Durante o dia, foram usados ${f(4,8)} dos cubos de apenas uma forma. Que fração dos cubos de gelo restou ao todo?`,
     img: pathComp + "comp06.png",
-    opcoes: [f(1,8), f(4,8), f(1,2), f(8,8)],
+    opcoes: [f(16,8), f(12,8), f(3,2), f(8,4)],
     correta: [1, 2],
     resolucao: resolucaoCompImgHTML(6)
   },
@@ -156,12 +155,12 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(9, 1.4)
   },
 
-  // ✅ pacote 15 bolachas: corretas 9/15 e 3/5
+  // ✅ CORRIGIDO: pacote 15 bolachas (correta 9/15)
   {
-    pergunta: `Um pacote tinha 15 bolachas. Durante o lanche, foram comidas ${f(6,15)} das bolachas. Que fração das bolachas ainda restou?`,
+    pergunta: `Um pacote tinha 15 bolachas. Durante o lanche, João comeu ${f(6,15)} das bolachas e Maria comeu ${f(3,15)}. Que fração das bolachas eles comeram ao todo?`,
     img: pathComp + "comp10.png",
-    opcoes: [f(6,15), f(3,5), f(1,15), f(9,15)],
-    correta: [1, 3],
+    opcoes: [f(3,15), f(6,15), f(18,15), f(9,15)],
+    correta: 3,
     resolucao: resolucaoCompImgHTML(10)
   },
 
