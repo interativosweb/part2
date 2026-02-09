@@ -50,24 +50,30 @@ export const questoesIntro = [
     correta: 3,
     resolucao: `Isso representa metade do copo: ${f(1,2)}.`
   },
+
+  // ✅ ALTERADO: opções e correta = 3/4
   {
     pergunta: "Qual fração representa o círculo vermelho?",
     img: pathIntro + "img04intro.png",
-    opcoes: [f(1,4), f(4,1), f(2,5), f(1,8)],
+    opcoes: [f(3,4), f(1,4), f(4,3), f(2,3)],
     correta: 0,
-    resolucao: `São 4 bolinhas no total e apenas 1 vermelha: ${f(1,4)}.`
+    resolucao: `Observe o total de partes do círculo e quantas estão em vermelho. Aqui, a parte vermelha representa ${f(3,4)} do círculo.`
   },
+
+  // ✅ ALTERADO: resolução com explicação breve e simples
   {
     pergunta: `Uma barra de chocolate tem 5 pedaços iguais, se eu comer ${f(1,5)}, quantos ainda me restam?`,
     img: pathIntro + "img05intro.png",
     opcoes: ["1", f(2,5), f(4,5), f(3,5)],
     correta: 2,
-    resolucao: `${f(5,5)} - ${f(1,5)} = ${f(4,5)}.`
+    resolucao: `Se a barra tem 5 pedaços e eu comi 1, restam 4 pedaços. Em fração, fica ${f(4,5)}.`
   },
+
+  // ✅ ALTERADO: opções e correta = 4/5
   {
     pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)}, no terceiro dia eu não usei. O celular da minha mãe tem uma bateria maior, quanto ela gastou de bateria?`,
     img: pathIntro + "img06intro.png",
-    opcoes: [f(3,4), f(1,4), f(5,4), f(1,5)],
+    opcoes: [f(4,5), f(5,4), f(3,4), f(4,4)],
     correta: 0,
     resolucao: `Observe a imagem para entender a lógica do consumo.`
   }
