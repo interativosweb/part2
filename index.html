@@ -1010,30 +1010,64 @@
         }
 
 // =========================================================================
-// ✅ TRAVA DE RESPOSTA (não perde ao recarregar)
-// Guarda a alternativa escolhida por questão, para não permitir "tentar de novo" após F5.
+// ✅ ESTADO DAS QUESTÕES (não perde ao recarregar)
+// - Salva a alternativa escolhida por questão (mesmo se recarregar)
+// - NÃO contabiliza acerto/erro nem avança barra até clicar em "Próxima Questão"
 // =========================================================================
-const STORAGE_RESPOSTAS_KEY = 'respostasMarcadas_v1';
+const STORAGE_ESTADO_KEY = 'estadoQuestoes_v2';
 
-function _lerRespostasMarcadas() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_RESPOSTAS_KEY)) || {}; }
+function _lerEstadoQuestoes() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_ESTADO_KEY)) || {}; }
     catch (e) { return {}; }
 }
-function _salvarRespostasMarcadas(obj) {
-    localStorage.setItem(STORAGE_RESPOSTAS_KEY, JSON.stringify(obj || {}));
+function _salvarEstadoQuestoes(obj) {
+    localStorage.setItem(STORAGE_ESTADO_KEY, JSON.stringify(obj || {}));
 }
-function _getRespostaMarcada(modo, indice) {
-    const base = _lerRespostasMarcadas();
-    return (base[modo] && typeof base[modo][indice] !== 'undefined') ? base[modo][indice] : null;
+function _getEstadoQuestao(modo, indice) {
+    const base = _lerEstadoQuestoes();
+    return (base[modo] && base[modo][indice]) ? base[modo][indice] : null;
 }
-function _setRespostaMarcada(modo, indice, escolha) {
-    const base = _lerRespostasMarcadas();
+function _setEstadoQuestao(modo, indice, estado) {
+    const base = _lerEstadoQuestoes();
     if (!base[modo]) base[modo] = {};
-    base[modo][indice] = escolha; // número do índice escolhido
-    _salvarRespostasMarcadas(base);
+    base[modo][indice] = Object.assign({}, base[modo][indice] || {}, estado);
+    _salvarEstadoQuestoes(base);
 }
-function _limparRespostasMarcadas() {
-    localStorage.removeItem(STORAGE_RESPOSTAS_KEY);
+function _limparEstadoQuestoes() {
+    localStorage.removeItem(STORAGE_ESTADO_KEY);
+}
+
+// Aplica pontuação UMA ÚNICA VEZ, somente quando o aluno clica em "Próxima Questão".
+function _aplicarPontuacaoQuestaoAtualSeNecessario() {
+    const listaQuestao = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
+    const q = listaQuestao[window.indice];
+    if (!q) return;
+
+    const estado = _getEstadoQuestao(window.modoAtual, window.indice);
+    if (!estado || typeof estado.choice === 'undefined' || estado.choice === null) return;
+
+    // Já pontuou? não pontua de novo.
+    if (estado.scored === true) return;
+
+    const corretas = Array.isArray(q.correta) ? q.correta : [q.correta];
+    const acertou = corretas.includes(Number(estado.choice));
+
+    let placarAtual = window.modoAtual === 'intro' ? window.placarIntro : window.placarComp;
+    if (acertou) placarAtual.acertos++;
+    else placarAtual.erros++;
+
+    _setEstadoQuestao(window.modoAtual, window.indice, { scored: true });
+
+    salvarProgresso();
+    atualizarPlacarVisual();
+
+    if (alunoId && window.modoAtual === 'complementar') {
+        update(ref(db, 'alunos/' + alunoId), {
+            acertos: window.placarComp.acertos,
+            erros: window.placarComp.erros,
+            ultimoAcesso: new Date().toISOString()
+        });
+    }
 }
 
 function restaurarEstadoRespostaSeExistir() {
@@ -1041,25 +1075,23 @@ function restaurarEstadoRespostaSeExistir() {
     const q = listaQuestao[window.indice];
     if (!q) return;
 
-    const escolhaSalva = _getRespostaMarcada(window.modoAtual, window.indice);
-    if (escolhaSalva === null || typeof escolhaSalva === 'undefined') return;
+    const estado = _getEstadoQuestao(window.modoAtual, window.indice);
+    if (!estado || typeof estado.choice === 'undefined' || estado.choice === null) return;
 
     const todos = document.querySelectorAll('.btn-opcao');
     if (!todos || !todos.length) return;
 
-    // Desabilita tudo e aplica o mesmo feedback do momento da resposta
+    // Desabilita tudo e aplica feedback
     todos.forEach(b => b.disabled = true);
 
     const corretas = Array.isArray(q.correta) ? q.correta : [q.correta];
-    const acertou = corretas.includes(Number(escolhaSalva));
+    const acertou = corretas.includes(Number(estado.choice));
 
-    const btnEscolhido = todos[Number(escolhaSalva)];
+    const btnEscolhido = todos[Number(estado.choice)];
     if (btnEscolhido) {
         if (acertou) btnEscolhido.classList.add('certo');
         else btnEscolhido.classList.add('errado');
     }
-
-    // Se errou, mostra TODAS as alternativas corretas (igual ao comportamento original)
     if (!acertou) {
         corretas.forEach((idx) => {
             if (todos[idx]) todos[idx].classList.add('certo');
@@ -1093,7 +1125,7 @@ function restaurarEstadoRespostaSeExistir() {
 
         window.confirmarReset = function() {
             if (document.getElementById('inputSenha').value === SENHA_PROFESSOR) {
-                _limparRespostasMarcadas();
+                _limparEstadoQuestoes();
                 localStorage.clear(); location.reload();
             } else { alert("Senha incorreta."); }
         }
@@ -1164,12 +1196,11 @@ function restaurarEstadoRespostaSeExistir() {
 
         function atualizarBarraProgresso() {
             const listaAtual = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
-            const placarAtual = window.modoAtual === 'intro' ? window.placarIntro : window.placarComp;
 
-            const respondidas = placarAtual.acertos + placarAtual.erros;
-            const porcentagem = (respondidas / listaAtual.length) * 100;
-            const largura = porcentagem > 100 ? 100 : porcentagem;
-            document.getElementById('barraFill').style.width = largura + '%';
+            // ✅ progresso real = questões CONCLUÍDAS (só conta quando clica em "Próxima Questão")
+            const concluidas = Math.max(0, Math.min(listaAtual.length, Number(window.indice) || 0));
+            const porcentagem = (concluidas / listaAtual.length) * 100;
+            document.getElementById('barraFill').style.width = (porcentagem > 100 ? 100 : porcentagem) + '%';
         }
 
         function carregar() {
@@ -1216,10 +1247,16 @@ function restaurarEstadoRespostaSeExistir() {
         function responder(i, btn) {
             const listaQuestao = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
             const q = listaQuestao[window.indice];
-            // ✅ grava a alternativa escolhida para travar a tentativa, mesmo se recarregar.
-            if (_getRespostaMarcada(window.modoAtual, window.indice) === null) {
-                _setRespostaMarcada(window.modoAtual, window.indice, i);
-            }
+
+            // ✅ Se já respondeu essa questão, não deixa responder de novo (mesmo após recarregar)
+            const ja = _getEstadoQuestao(window.modoAtual, window.indice);
+            if (ja && typeof ja.choice !== 'undefined' && ja.choice !== null) return;
+
+            // Salva a escolha (mas NÃO soma pontos ainda)
+            const corretas = Array.isArray(q.correta) ? q.correta : [q.correta];
+            const acertou = corretas.includes(i);
+            _setEstadoQuestao(window.modoAtual, window.indice, { choice: i, acertou: acertou, scored: false });
+
             const todos = document.querySelectorAll('.btn-opcao');
             todos.forEach(b => b.disabled = true);
 
@@ -1227,20 +1264,13 @@ function restaurarEstadoRespostaSeExistir() {
             document.getElementById('areaResposta').style.display = 'block';
 
             const titulo = document.getElementById('tituloFeedback');
-            let placarAtual = window.modoAtual === 'intro' ? window.placarIntro : window.placarComp;
-
-            // Suporta 1 ou mais alternativas corretas (frações equivalentes)
-            const corretas = Array.isArray(q.correta) ? q.correta : [q.correta];
-            const acertou = corretas.includes(i);
 
             if (acertou) {
-                placarAtual.acertos++;
                 // Se houver 2 corretas, marca apenas a escolhida como certa (não revela a outra)
                 btn.classList.add('certo');
                 titulo.innerText = "Resposta Correta!";
                 titulo.style.color = "var(--success)";
             } else {
-                placarAtual.erros++;
                 btn.classList.add('errado');
                 // Se errou, mostra TODAS as alternativas corretas (se houver mais de uma)
                 corretas.forEach((idx) => {
@@ -1250,21 +1280,19 @@ function restaurarEstadoRespostaSeExistir() {
                 titulo.style.color = "var(--error)";
             }
 
-            salvarProgresso();
-            atualizarPlacarVisual();
-            atualizarBarraProgresso();
             document.getElementById('textoResolucao').innerHTML = q.resolucao;
 
-            if (alunoId && window.modoAtual === 'complementar') {
-                update(ref(db, 'alunos/' + alunoId), {
-                    acertos: window.placarComp.acertos,
-                    erros: window.placarComp.erros,
-                    ultimoAcesso: new Date().toISOString()
-                });
-            }
+            // ✅ NÃO atualiza placar/barra aqui. Só quando clicar em "Próxima Questão".
         }
 
         window.proximaQuestao = function() {
+            // ✅ só avança se ele já respondeu a questão atual
+            const estado = _getEstadoQuestao(window.modoAtual, window.indice);
+            if (!estado || typeof estado.choice === 'undefined' || estado.choice === null) return;
+
+            // ✅ agora sim contabiliza (uma vez) e avança
+            _aplicarPontuacaoQuestaoAtualSeNecessario();
+
             window.indice++;
             salvarProgresso();
             carregar();
