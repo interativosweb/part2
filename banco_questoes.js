@@ -69,12 +69,13 @@ export const questoesIntro = [
     resolucao: `Se a barra tem 5 pedaços e eu comi 1, restam 4 pedaços. Em fração, fica ${f(4,5)}.`
   },
 
+  // ✅ CORRIGIDO: resposta correta 4/5 + explicação ajustada
   {
-    pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)}, no terceiro dia eu não usei. O celular da minha mãe tem uma bateria maior, quanto ela gastou de bateria?`,
+    pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,5)} da bateria, no segundo dia ${f(3,5)} e, no terceiro dia, eu não usei o celular. Que fração da bateria eu gastei ao todo?`,
     img: pathIntro + "img06intro.png",
-    opcoes: [f(4,5), f(5,4), f(3,4), f(4,4)],
-    correta: 3,
-    resolucao: `Como as frações têm o mesmo denominador, basta somar os numeradores: ${f(1,4)} + ${f(3,4)} = ${f(4,4)}. Isso significa que foi usada a bateria inteira (100%). No terceiro dia não foi usada bateria, então o total continua ${f(4,4)}.`
+    opcoes: [f(4,5), f(1,1), f(3,5), f(2,5)],
+    correta: 0,
+    resolucao: `Como as frações têm o mesmo denominador (5), basta somar os numeradores: ${f(1,5)} + ${f(3,5)} = ${f(4,5)}. No terceiro dia não houve gasto de bateria, então o total continua ${f(4,5)}. Isso significa que ainda restou ${f(1,5)} de bateria.`
   }
 ];
 
@@ -93,12 +94,14 @@ export const questoesComp = [
     correta: 3,
     resolucao: resolucaoCompImgHTML(2)
   },
+
+  // ✅ Chocolate: imagem 40% maior
   {
     pergunta: `Um chocolate foi dividido em 8 pedaços iguais. Pedro comeu ${f(3,8)}. Que fração do chocolate sobrou?`,
     img: pathComp + "comp03.png",
     opcoes: [f(1,8), f(5,8), f(3,8), f(8,5)],
     correta: 1,
-    resolucao: resolucaoCompImgHTML(3)
+    resolucao: resolucaoCompImgHTML(3, 1.4)
   },
 
   // ✅ fita dividida em 6 partes: corretas 3/6 e 1/3
@@ -110,22 +113,22 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(4)
   },
 
-  // ✅ bolo dividido em 10 partes: corretas 6/10 e 3/5
+  // ✅ bolo dividido em 10 partes: imagem 40% maior (corretas 6/10 e 3/5)
   {
     pergunta: `Um bolo foi dividido em 10 partes iguais. Foram comidas ${f(4,10)} depois do almoço. Que fração do bolo ainda resta?`,
     img: pathComp + "comp05.png",
     opcoes: [f(5,10), f(3,5), f(4,10), f(6,10)],
     correta: [1, 3],
-    resolucao: resolucaoCompImgHTML(5)
+    resolucao: resolucaoCompImgHTML(5, 1.4)
   },
 
-  // ✅ CORRIGIDO: 2 formas de gelo (corretas 12/8 e 3/2)
+  // ✅ 2 formas de gelo: imagem 40% maior (corretas 12/8 e 3/2)
   {
     pergunta: `Havia 2 formas de gelo, cada uma com 8 cubos. Durante o dia, foram usados ${f(4,8)} dos cubos de apenas uma forma. Que fração dos cubos de gelo restou ao todo?`,
     img: pathComp + "comp06.png",
     opcoes: [f(16,8), f(12,8), f(3,2), f(8,4)],
     correta: [1, 2],
-    resolucao: resolucaoCompImgHTML(6)
+    resolucao: resolucaoCompImgHTML(6, 1.4)
   },
 
   // ✅ PEDIDO: imagem da resposta 40% maior (rep07)
@@ -137,12 +140,13 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(7, 1.4)
   },
 
+  // ✅ Caixa de suco: imagem 40% maior
   {
     pergunta: `Uma caixa estava cheia de suco. Após o almoço, foram consumidos ${f(2,3)} da caixa. Que fração do suco restou?`,
     img: pathComp + "comp08.png",
     opcoes: [f(2,3), f(1,6), f(3,2), f(1,3)],
     correta: 3,
-    resolucao: resolucaoCompImgHTML(8)
+    resolucao: resolucaoCompImgHTML(8, 1.4)
   },
 
   // ✅ PEDIDO: imagem da resposta 40% maior (rep09)
@@ -155,7 +159,7 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(9, 1.4)
   },
 
-  // ✅ CORRIGIDO: pacote 15 bolachas (correta 9/15)
+  // ✅ pacote 15 bolachas (correta 9/15)
   {
     pergunta: `Um pacote tinha 15 bolachas. Durante o lanche, João comeu ${f(6,15)} das bolachas e Maria comeu ${f(3,15)}. Que fração das bolachas eles comeram ao todo?`,
     img: pathComp + "comp10.png",
@@ -173,12 +177,13 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(11, 1.4)
   },
 
+  // ✅ Criança com R$10: imagem 40% maior
   {
     pergunta: `Uma criança tinha R$ 10,00, divididos em 10 partes iguais. Ela gastou ${f(3,10)} desse dinheiro comprando um lanche. Que fração do dinheiro ainda restou?`,
     img: pathComp + "comp12.png",
     opcoes: [f(10,3), f(7,10), f(1,10), f(3,10)],
     correta: 1,
-    resolucao: resolucaoCompImgHTML(12)
+    resolucao: resolucaoCompImgHTML(12, 1.4)
   },
 
   // ✅ PEDIDO: imagem da resposta 40% maior (rep13)
