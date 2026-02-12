@@ -69,13 +69,13 @@ export const questoesIntro = [
     resolucao: `Se a barra tem 5 pedaços e eu comi 1, restam 4 pedaços. Em fração, fica ${f(4,5)}.`
   },
 
-  // ✅ CORRIGIDO: resposta correta 4/5 + explicação ajustada
+  // ✅ MODIFICADO: 4º dia usando o celular da mãe (gabarito definido: 1/5)
   {
-    pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,5)} da bateria, no segundo dia ${f(3,5)} e, no terceiro dia, eu não usei o celular. Que fração da bateria eu gastei ao todo?`,
+    pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)} e, no terceiro dia, eu não usei o celular. No 4º dia eu usei o celular da minha mãe. Quanto eu usei da bateria dela?`,
     img: pathIntro + "img06intro.png",
-    opcoes: [f(4,5), f(1,1), f(3,5), f(2,5)],
+    opcoes: [f(1,5), f(4,5), f(3,5), f(1,6)],
     correta: 0,
-    resolucao: `Como as frações têm o mesmo denominador (5), basta somar os numeradores: ${f(1,5)} + ${f(3,5)} = ${f(4,5)}. No terceiro dia não houve gasto de bateria, então o total continua ${f(4,5)}. Isso significa que ainda restou ${f(1,5)} de bateria.`
+    resolucao: `No 4º dia, o uso foi no celular da mãe. Como o enunciado não informa o gasto exato, nesta atividade consideramos como correta a alternativa ${f(1,5)}.`
   }
 ];
 
