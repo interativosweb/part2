@@ -1,11 +1,16 @@
 const f = (n, d) => `<div class='fracao'><span class='num'>${n}</span><span class='den'>${d}</span></div>`;
 
-const pathIntro = "https:
-const pathComp  = "https:
-const pathResp  = "https:
+const pathIntro = "https://interativosweb.github.io/part2/introducao/";
+const pathComp  = "https://interativosweb.github.io/part2/complementar/";
+const pathResp  = "https://interativosweb.github.io/part2/respostas/";
 
 const pad2 = (n) => String(n).padStart(2, "0");
 
+/**
+ * Gera o HTML da imagem de resolução.
+ * - Padrão: 65%
+ * - scale=1.4 => 65% * 1.4 = 91% (40% maior)
+ */
 const resolucaoCompImgHTML = (n, scale = 1) => {
   const base = `${pathResp}rep${pad2(n)}`;
   const baseWidth = 65;
@@ -46,6 +51,7 @@ export const questoesIntro = [
     resolucao: `Isso representa metade do copo: ${f(1,2)}.`
   },
 
+  // ✅ ALTERADO: opções e correta = 3/4
   {
     pergunta: "Qual fração representa o círculo vermelho?",
     img: pathIntro + "img04intro.png",
@@ -54,6 +60,7 @@ export const questoesIntro = [
     resolucao: `Observe o total de partes do círculo e quantas estão em vermelho. Aqui, a parte vermelha representa ${f(3,4)} do círculo.`
   },
 
+  // ✅ ALTERADO: resolução com explicação breve e simples
   {
     pergunta: `Uma barra de chocolate tem 5 pedaços iguais, se eu comer ${f(1,5)}, quantos ainda me restam?`,
     img: pathIntro + "img05intro.png",
@@ -62,6 +69,7 @@ export const questoesIntro = [
     resolucao: `Se a barra tem 5 pedaços e eu comi 1, restam 4 pedaços. Em fração, fica ${f(4,5)}.`
   },
 
+  // ✅ MODIFICADO: 4º dia usando o celular da mãe (gabarito definido: 1/5)
   {
     pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)} e, no terceiro dia, eu não usei o celular. No 4º dia eu usei o celular da minha mãe. Quanto eu usei da bateria dela?`,
     img: pathIntro + "img06intro.png",
@@ -87,6 +95,7 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(2)
   },
 
+  // ✅ Chocolate: imagem 40% maior
   {
     pergunta: `Um chocolate foi dividido em 8 pedaços iguais. Pedro comeu ${f(3,8)}. Que fração do chocolate sobrou?`,
     img: pathComp + "comp03.png",
@@ -95,6 +104,7 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(3, 1.4)
   },
 
+  // ✅ fita dividida em 6 partes: corretas 3/6 e 1/3
   {
     pergunta: `Em uma fita dividida em 6 partes iguais, foram usadas ${f(2,6)} para um trabalho e ${f(1,6)} para outro. Qual fração da fita foi usada ao todo?`,
     img: pathComp + "comp04.png",
@@ -103,6 +113,7 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(4)
   },
 
+  // ✅ bolo dividido em 10 partes: imagem 40% maior (corretas 6/10 e 3/5)
   {
     pergunta: `Um bolo foi dividido em 10 partes iguais. Foram comidas ${f(4,10)} depois do almoço. Que fração do bolo ainda resta?`,
     img: pathComp + "comp05.png",
@@ -111,6 +122,7 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(5, 1.4)
   },
 
+  // ✅ 2 formas de gelo: MODIFICADA conforme pedido (corretas 12/8 e 3/2)
   {
     pergunta: `Havia 2 formas de gelo, cada uma com 8 cubos. Durante o dia, foi usado ${f(4,8)} de uma forma de gelo. Quantas formas de gelo restaram ao todo?`,
     img: pathComp + "comp06.png",
@@ -119,6 +131,7 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(6, 1.4)
   },
 
+  // ✅ PEDIDO: imagem da resposta 40% maior (rep07)
   {
     pergunta: `Em uma caixa de lápis, ${f(1,4)} foi usado na aula de Matemática e ${f(1,6)} na aula de Artes. Que fração da caixa de lápis foi usada ao todo?`,
     img: pathComp + "comp07.png",
@@ -127,6 +140,7 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(7, 1.4)
   },
 
+  // ✅ Caixa de suco: imagem 40% maior
   {
     pergunta: `Uma caixa estava cheia de suco. Após o almoço, foram consumidos ${f(2,3)} da caixa. Que fração do suco restou?`,
     img: pathComp + "comp08.png",
@@ -135,6 +149,8 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(8, 1.4)
   },
 
+  // ✅ PEDIDO: imagem da resposta 40% maior (rep09)
+  // ✅ Carlo caminhou: corretas 5/10 e 1/2
   {
     pergunta: `Carlo caminhou ${f(2,5)} de sua meta diária pela manhã e ${f(1,10)} à tarde. Que fração do percurso ele caminhou ao todo?`,
     img: pathComp + "comp09.png",
@@ -143,6 +159,7 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(9, 1.4)
   },
 
+  // ✅ pacote 15 bolachas (correta 9/15)
   {
     pergunta: `Um pacote tinha 15 bolachas. Durante o lanche, João comeu ${f(6,15)} das bolachas e Maria comeu ${f(3,15)}. Que fração das bolachas eles comeram ao todo?`,
     img: pathComp + "comp10.png",
@@ -151,6 +168,7 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(10)
   },
 
+  // ✅ PEDIDO: imagem da resposta 40% maior (rep11)
   {
     pergunta: `Um tanque de água teve ${f(1,3)} de sua capacidade usada pela manhã e ${f(1,4)} à tarde. Que fração da água foi utilizada no total?`,
     img: pathComp + "comp11.png",
@@ -159,6 +177,7 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(11, 1.4)
   },
 
+  // ✅ Criança com R$10: imagem 40% maior
   {
     pergunta: `Uma criança tinha R$ 10,00, divididos em 10 partes iguais. Ela gastou ${f(3,10)} desse dinheiro comprando um lanche. Que fração do dinheiro ainda restou?`,
     img: pathComp + "comp12.png",
@@ -167,6 +186,7 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(12, 1.4)
   },
 
+  // ✅ PEDIDO: imagem da resposta 40% maior (rep13)
   {
     pergunta: `Em uma prova, Maria acertou ${f(3,5)} das questões na primeira parte e ${f(1,10)} na segunda parte. Ao juntar as duas partes, quantas questões Maria acertou no total?`,
     img: pathComp + "comp13.png",
@@ -175,6 +195,7 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(13, 1.4)
   },
 
+  // ✅ PEDIDO: imagem da resposta 40% maior (rep14)
   {
     pergunta: `Ana percorreu ${f(1,4)} do caminho pela manhã e ${f(1,2)} à tarde. Que fração do caminho ela percorreu ao todo?`,
     img: pathComp + "comp14.png",
