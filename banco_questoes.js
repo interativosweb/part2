@@ -122,12 +122,12 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(5, 1.4)
   },
 
-  // ✅ 2 formas de gelo: imagem 40% maior (corretas 12/8 e 3/2)
+  // ✅ 2 formas de gelo: ALTERADA conforme pedido (corretas 12/16 e 3/4)
   {
     pergunta: `Havia 2 formas de gelo, cada uma com 8 cubos. Durante o dia, foram usados ${f(4,8)} dos cubos de apenas uma forma. Que fração dos cubos de gelo restou ao todo?`,
     img: pathComp + "comp06.png",
-    opcoes: [f(16,8), f(12,8), f(3,2), f(8,4)],
-    correta: [1, 2],
+    opcoes: [f(12,16), f(3,4), f(8,16), f(4,16)],
+    correta: [0, 1],
     resolucao: resolucaoCompImgHTML(6, 1.4)
   },
 
