@@ -28,164 +28,43 @@ const resolucaoCompImgHTML = (n, scale = 1) => {
   `;
 };
 
-
-// =====================================================================
-// ✅ INTRODUÇÃO I (nova) + INTRODUÇÃO II (antiga)
-// - INTRODUÇÃO I vem antes, com 5 questões
-// - A introdução que já existia passa a ser "Introdução II"
-// =====================================================================
-
-const svgUri = (svg) => `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-
-// Figuras em SVG (não dependem de arquivos externos)
-const figDiv2 = svgUri(`
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
-  <rect x="70" y="90" width="760" height="420" rx="26" fill="#ffffff" stroke="#d2d2d7" stroke-width="10"/>
-  <line x1="450" y1="95" x2="450" y2="505" stroke="#0071e3" stroke-width="12"/>
-  <rect x="455" y="95" width="375" height="410" rx="20" fill="rgba(0,113,227,0.12)"/>
-  <text x="450" y="560" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="42" fill="#86868b">
-    Figura dividida em 2 partes
-  </text>
-</svg>
-`);
-
-const figDen49 = svgUri(`
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
-  <rect x="70" y="90" width="760" height="420" rx="26" fill="#ffffff" stroke="#d2d2d7" stroke-width="10"/>
-  <text x="450" y="300" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="140" fill="#1d1d1f">4/9</text>
-  <text x="450" y="560" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="42" fill="#86868b">
-    Identifique o denominador
-  </text>
-</svg>
-`);
-
-const fig23 = svgUri(`
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
-  <rect x="70" y="90" width="760" height="420" rx="26" fill="#ffffff" stroke="#d2d2d7" stroke-width="10"/>
-  <rect x="130" y="190" width="640" height="220" rx="18" fill="#ffffff" stroke="#d2d2d7" stroke-width="8"/>
-  <line x1="343.333" y1="190" x2="343.333" y2="410" stroke="#d2d2d7" stroke-width="8"/>
-  <line x1="556.666" y1="190" x2="556.666" y2="410" stroke="#d2d2d7" stroke-width="8"/>
-  <rect x="130" y="190" width="426.666" height="220" rx="18" fill="rgba(52,199,89,0.16)"/>
-  <text x="450" y="560" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="42" fill="#86868b">
-    2 partes de 3 (2/3)
-  </text>
-</svg>
-`);
-
-const fig45 = svgUri(`
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
-  <rect x="70" y="90" width="760" height="420" rx="26" fill="#ffffff" stroke="#d2d2d7" stroke-width="10"/>
-  <rect x="130" y="230" width="640" height="140" rx="18" fill="#ffffff" stroke="#d2d2d7" stroke-width="8"/>
-  <!-- 5 partes -->
-  <line x1="258" y1="230" x2="258" y2="370" stroke="#d2d2d7" stroke-width="8"/>
-  <line x1="386" y1="230" x2="386" y2="370" stroke="#d2d2d7" stroke-width="8"/>
-  <line x1="514" y1="230" x2="514" y2="370" stroke="#d2d2d7" stroke-width="8"/>
-  <line x1="642" y1="230" x2="642" y2="370" stroke="#d2d2d7" stroke-width="8"/>
-  <!-- 4 pintadas -->
-  <rect x="130" y="230" width="512" height="140" rx="18" fill="rgba(0,113,227,0.14)"/>
-  <text x="450" y="560" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="42" fill="#86868b">
-    4 de 5 partes pintadas
-  </text>
-</svg>
-`);
-
-const questoesIntroI = [
+export const questoesIntro = [
   {
     pergunta: "Isso está inteiro ou dividido?",
-    img: figDiv2,
+    img: pathIntro + "img07intro.png",
     opcoes: ["Inteiro", "Dividido"],
     correta: 0,
-    resolucao: `A figura mostrada não está quebrada em vários pedaços separados. Ela está inteira.`
+    resolucao: `A figura apresentada está completa, sem estar separada em partes independentes. Portanto, ela está inteira.`
   },
   {
     pergunta: "Em quantas partes foi dividido?",
-    img: figDiv2,
+    img: pathIntro + "img08intro.png",
     opcoes: ["1", "2", "3", "6"],
     correta: 1,
-    resolucao: `Observe a linha azul. Ela divide a figura em <b>2</b> partes iguais.`
+    resolucao: `Observe a figura: ela foi dividida em 2 partes iguais.`
   },
   {
     pergunta: `Na fração ${f(4,9)}, qual é o denominador?`,
-    img: figDen49,
+    img: pathIntro + "img09intro.png",
     opcoes: ["4", "9", "2", "5"],
     correta: 1,
-    resolucao: `Em uma fração, o denominador é o número de baixo. Em ${f(4,9)}, o denominador é <b>9</b>.`
+    resolucao: `O denominador é o número que fica na parte de baixo da fração. Portanto, o denominador é 9.`
   },
   {
     pergunta: "Se você tem 2 parte de 3, qual é a fração?",
-    img: fig23,
+    img: pathIntro + "img10intro.png",
     opcoes: [f(3,3), f(3,2), f(2,3), f(6,9)],
     correta: 2,
-    resolucao: `O numerador indica quantas partes temos (2) e o denominador indica em quantas partes o todo foi dividido (3). Portanto, a fração é ${f(2,3)}.`
+    resolucao: `O numerador representa as partes que temos (2) e o denominador representa o total de partes (3). Logo, a fração é ${f(2,3)}.`
   },
   {
     pergunta: "Qual fração representa a última figura?",
-    img: fig45,
+    img: pathIntro + "img11intro.png",
     opcoes: [f(5,5), f(5,4), f(5,2), f(4,5)],
     correta: 3,
-    resolucao: `A figura tem 5 partes iguais ao todo e 4 estão pintadas. Logo, a fração é ${f(4,5)}.`
+    resolucao: `A figura mostra 4 partes pintadas de um total de 5 partes iguais. Portanto, a fração é ${f(4,5)}.`
   }
 ];
-
-// ✅ A antiga introdução passa a ser "Introdução II"
-const questoesIntroII = [
-
-{
-    pergunta: "Uma fração é uma forma de representar uma parte de um todo, quando esse todo é dividido em partes iguais. Comer um pedaço dessa pizza representa em fração:",
-    img: pathIntro + "img01intro.png",
-    opcoes: [f(1,4), f(1,6), f(7,1), f(1,7)],
-    correta: 3,
-    resolucao: `A pizza inteira foi dividida em 7 partes iguais. Como comemos apenas 1 dessas partes, a fração é ${f(1,7)}.`
-  },
-  {
-    pergunta: "Pedi uma pizza e comi apenas a parte pintada em verde, represente em fração quantos pedaços eu comi:",
-    img: pathIntro + "img02intro.png",
-    opcoes: [f(3,7), f(5,6), f(7,3), f(7,2)],
-    correta: 0,
-    resolucao: `Contamos 7 pedaços no total e 3 pintados de verde. A fração é ${f(3,7)}.`
-  },
-  {
-    pergunta: "Um copo cheio de suco é dividido em 2 partes iguais. Se alguém bebe uma dessas partes, temos:",
-    img: pathIntro + "img03intro.png",
-    opcoes: [f(2,5), f(2,1), f(1,4), f(1,2)],
-    correta: 3,
-    resolucao: `Isso representa metade do copo: ${f(1,2)}.`
-  },
-
-  // ✅ ALTERADO: opções e correta = 3/4
-  {
-    pergunta: "Qual fração representa o círculo vermelho?",
-    img: pathIntro + "img04intro.png",
-    opcoes: [f(3,4), f(1,4), f(4,3), f(2,3)],
-    correta: 0,
-    resolucao: `Observe o total de partes do círculo e quantas estão em vermelho. Aqui, a parte vermelha representa ${f(3,4)} do círculo.`
-  },
-
-  // ✅ ALTERADO: resolução com explicação breve e simples
-  {
-    pergunta: `Uma barra de chocolate tem 5 pedaços iguais, se eu comer ${f(1,5)}, quantos ainda me restam?`,
-    img: pathIntro + "img05intro.png",
-    opcoes: ["1", f(2,5), f(4,5), f(3,5)],
-    correta: 2,
-    resolucao: `Se a barra tem 5 pedaços e eu comi 1, restam 4 pedaços. Em fração, fica ${f(4,5)}.`
-  },
-
-  // ✅ MODIFICADO: 4º dia usando o celular da mãe (gabarito definido: 1/5)
-  {
-    pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)} e, no terceiro dia, eu não usei o celular. No 4º dia eu usei o celular da minha mãe. Quanto eu usei da bateria dela?`,
-    img: pathIntro + "img06intro.png",
-    opcoes: [f(1,5), f(4,5), f(3,5), f(1,6)],
-    correta: 0,
-    resolucao: `No 4º dia, o uso foi no celular da mãe. Como o enunciado não informa o gasto exato, nesta atividade consideramos como correta a alternativa ${f(1,5)}.`
-  }
-
-];
-
-export const introSplitIndex = questoesIntroI.length;
-
-// Export final usado pelo site: Introdução I + Introdução II
-export const questoesIntro = [...questoesIntroI, ...questoesIntroII];
-
 
 export const questoesComp = [
   {
