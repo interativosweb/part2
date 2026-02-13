@@ -550,7 +550,7 @@
             </div>
 
             <div class="desc-fase">
-                Você concluiu a <b>Introdução</b> com sucesso!
+                Você concluiu a <b>Introdução II</b> com sucesso!
                 <br>Agora vamos para a parte da atividade.
             </div>
 
@@ -595,7 +595,7 @@
             <button class="btn-fechar-modal" onclick="fecharModalHistorico()">&times;</button>
             <div class="modal-titulo">Histórico das atividades</div>
 
-            <div class="modal-subtitulo" style="text-align:left; color:var(--success)">INTRODUÇÃO</div>
+            <div class="modal-subtitulo" style="text-align:left; color:var(--success)">INTRODUÇÃO I e II</div>
             <div class="historico-row">
                 <span class="hist-label">Acertos</span>
                 <span class="hist-val val-verde" id="histIntroAcertos">0</span>
@@ -620,7 +620,7 @@
     <div id="appContainer" class="app-container">
 
         <div class="header-unificado">
-            <div class="top-item" id="btnIntro">Introdução</div>
+            <div class="top-item" id="btnIntro">Introdução II</div>
             <div class="top-item" id="btnComplementar">Atividade complementar</div>
             <div id="badgeNome" class="top-item bg-cinza-claro hover-red">Aluno</div>
             <div id="badgeSerie" class="top-item bg-cinza-claro hover-red">Série</div>
@@ -773,7 +773,7 @@
     </script>
 
     <script type="module">
-        import { questoesIntro, questoesComp } from "./banco_questoes.js";
+        import { questoesIntro, questoesComp, introSplitIndex } from "./banco_questoes.js";
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -812,6 +812,7 @@
         // =========================================================================
         window.questoesIntro = questoesIntro;
         window.questoesComp  = questoesComp;
+        window.introSplitIndex = introSplitIndex;
 
         // =========================================================================
         // FIREBASE (MANTIDO)
@@ -1166,23 +1167,30 @@ function restaurarEstadoRespostaSeExistir() {
             const btnIntro = document.getElementById('btnIntro');
             const btnComp = document.getElementById('btnComplementar');
 
+            // ✅ Título dinâmico: Introdução I (primeiras 5) e depois Introdução II
+            const split = Number(window.introSplitIndex) || 0;
+            const tituloIntro = (window.modoAtual === 'intro' && split > 0 && Number(window.indice) < split)
+                ? "Introdução I"
+                : "Introdução II";
+
             btnIntro.className = 'top-item';
             btnComp.className = 'top-item';
 
             if (window.modoAtual === 'intro') {
                 btnIntro.classList.add('bg-verde-ativo');
-                btnIntro.innerHTML = `${iconCadeadoAberto} Introdução`;
+                btnIntro.innerHTML = `${iconCadeadoAberto} ${tituloIntro}`;
 
                 btnComp.classList.add('bg-cinza-claro', 'hover-red');
                 btnComp.innerHTML = `${iconCadeadoFechado} Atividade complementar`;
             } else {
                 btnIntro.classList.add('bg-cinza-claro', 'hover-red');
-                btnIntro.innerHTML = `${iconCadeadoFechado} Introdução`;
+                btnIntro.innerHTML = `${iconCadeadoFechado} Introdução II`;
 
                 btnComp.classList.add('bg-verde-ativo');
                 btnComp.innerHTML = `${iconCadeadoAberto} Atividade complementar`;
             }
         }
+
 
         function atualizarPlacarVisual() {
             if (window.modoAtual === 'intro') {
