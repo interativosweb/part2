@@ -28,44 +28,155 @@ const resolucaoCompImgHTML = (n, scale = 1) => {
   `;
 };
 
-export const questoesIntro = [
+
+// =====================================================================
+// ✅ INTRODUÇÃO (única) — chamada no site como "Introdução I"
+// - Inclui as 5 novas questões (img07intro a img11intro)
+// - Mantém as questões que já existiam (img01intro a img06intro)
+// =====================================================================
+
+const questoesIntroI = [
   {
     pergunta: "Isso está inteiro ou dividido?",
     img: pathIntro + "img07intro.png",
     opcoes: ["Inteiro", "Dividido"],
     correta: 0,
-    resolucao: `A figura apresentada está completa, sem estar separada em partes independentes. Portanto, ela está inteira.`
+    resolucao: `A figura mostrada não está separada em partes diferentes. Ela está inteira.`
   },
   {
     pergunta: "Em quantas partes foi dividido?",
     img: pathIntro + "img08intro.png",
     opcoes: ["1", "2", "3", "6"],
     correta: 1,
-    resolucao: `Observe a figura: ela foi dividida em 2 partes iguais.`
+    resolucao: `A figura foi dividida em <b>2</b> partes iguais.`
   },
   {
     pergunta: `Na fração ${f(4,9)}, qual é o denominador?`,
     img: pathIntro + "img09intro.png",
     opcoes: ["4", "9", "2", "5"],
     correta: 1,
-    resolucao: `O denominador é o número que fica na parte de baixo da fração. Portanto, o denominador é 9.`
+    resolucao: `Em uma fração, o denominador é o número de baixo. Em ${f(4,9)}, o denominador é <b>9</b>.`
   },
   {
     pergunta: "Se você tem 2 parte de 3, qual é a fração?",
     img: pathIntro + "img10intro.png",
     opcoes: [f(3,3), f(3,2), f(2,3), f(6,9)],
     correta: 2,
-    resolucao: `O numerador representa as partes que temos (2) e o denominador representa o total de partes (3). Logo, a fração é ${f(2,3)}.`
+    resolucao: `O numerador indica quantas partes temos (2) e o denominador indica em quantas partes o todo foi dividido (3). Portanto, a fração é ${f(2,3)}.`
   },
   {
     pergunta: "Qual fração representa a última figura?",
     img: pathIntro + "img11intro.png",
     opcoes: [f(5,5), f(5,4), f(5,2), f(4,5)],
     correta: 3,
-    resolucao: `A figura mostra 4 partes pintadas de um total de 5 partes iguais. Portanto, a fração é ${f(4,5)}.`
+    resolucao: `A figura tem 5 partes iguais ao todo e 4 estão pintadas. Logo, a fração é ${f(4,5)}.`
+  },
+
+  // Questões que já existiam no site (antiga introdução)
+  {
+    pergunta: "Uma fração é uma forma de representar uma parte de um todo, quando esse todo é dividido em partes iguais. Comer um pedaço dessa pizza representa em fração:",
+    img: pathIntro + "img01intro.png",
+    opcoes: [f(1,4), f(1,6), f(7,1), f(1,7)],
+    correta: 3,
+    resolucao: `A pizza inteira foi dividida em 7 partes iguais. Como comemos apenas 1 dessas partes, a fração é ${f(1,7)}.`
+  },
+  {
+    pergunta: "Pedi uma pizza e comi apenas a parte pintada em verde, represente em fração quantos pedaços eu comi:",
+    img: pathIntro + "img02intro.png",
+    opcoes: [f(3,7), f(5,6), f(7,3), f(7,2)],
+    correta: 0,
+    resolucao: `Contamos 7 pedaços no total e 3 pintados de verde. A fração é ${f(3,7)}.`
+  },
+  {
+    pergunta: "Um copo cheio de suco é dividido em 2 partes iguais. Se alguém bebe uma dessas partes, temos:",
+    img: pathIntro + "img03intro.png",
+    opcoes: [f(2,5), f(2,1), f(1,4), f(1,2)],
+    correta: 3,
+    resolucao: `Isso representa metade do copo: ${f(1,2)}.`
+  },
+
+  // ✅ Mantido como estava na sua versão mais recente (correta: 3/4)
+  {
+    pergunta: "Qual fração representa o círculo vermelho?",
+    img: pathIntro + "img04intro.png",
+    opcoes: [f(3,4), f(1,4), f(4,3), f(2,3)],
+    correta: 0,
+    resolucao: `Observe o total de partes do círculo e quantas estão em vermelho. Aqui, a parte vermelha representa ${f(3,4)} do círculo.`
+  },
+
+  // ✅ Mantido como estava na sua versão mais recente
+  {
+    pergunta: `Uma barra de chocolate tem 5 pedaços iguais, se eu comer ${f(1,5)}, quantos ainda me restam?`,
+    img: pathIntro + "img05intro.png",
+    opcoes: ["1", f(2,5), f(4,5), f(3,5)],
+    correta: 2,
+    resolucao: `Se a barra tem 5 pedaços e eu comi 1, restam 4 pedaços. Em fração, fica ${f(4,5)}.`
+  },
+
+  // ✅ Mantido como estava na sua versão mais recente
+  {
+    pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)} e, no terceiro dia, eu não usei o celular. No 4º dia eu usei o celular da minha mãe. Quanto eu usei da bateria dela?`,
+    img: pathIntro + "img06intro.png",
+    opcoes: [f(1,5), f(4,5), f(3,5), f(1,6)],
+    correta: 0,
+    resolucao: `No 4º dia, o uso foi no celular da mãe. Como o enunciado não informa o gasto exato, nesta atividade consideramos como correta a alternativa ${f(1,5)}.`
   }
 ];
 
+// Questões que já existiam na introdução (antiga "Introdução II")
+const questoesIntroII = [
+  {
+      pergunta: "Uma fração é uma forma de representar uma parte de um todo, quando esse todo é dividido em partes iguais. Comer um pedaço dessa pizza representa em fração:",
+      img: pathIntro + "img01intro.png",
+      opcoes: [f(1,4), f(1,6), f(7,1), f(1,7)],
+      correta: 3,
+      resolucao: `A pizza inteira foi dividida em 7 partes iguais. Como comemos apenas 1 dessas partes, a fração é ${f(1,7)}.`
+    },
+    {
+      pergunta: "Pedi uma pizza e comi apenas a parte pintada em verde, represente em fração quantos pedaços eu comi:",
+      img: pathIntro + "img02intro.png",
+      opcoes: [f(3,7), f(5,6), f(7,3), f(7,2)],
+      correta: 0,
+      resolucao: `Contamos 7 pedaços no total e 3 pintados de verde. A fração é ${f(3,7)}.`
+    },
+    {
+      pergunta: "Um copo cheio de suco é dividido em 2 partes iguais. Se alguém bebe uma dessas partes, temos:",
+      img: pathIntro + "img03intro.png",
+      opcoes: [f(2,5), f(2,1), f(1,4), f(1,2)],
+      correta: 3,
+      resolucao: `Isso representa metade do copo: ${f(1,2)}.`
+    },
+  
+    // ✅ ALTERADO: opções e correta = 3/4
+    {
+      pergunta: "Qual fração representa o círculo vermelho?",
+      img: pathIntro + "img04intro.png",
+      opcoes: [f(3,4), f(1,4), f(4,3), f(2,3)],
+      correta: 0,
+      resolucao: `Observe o total de partes do círculo e quantas estão em vermelho. Aqui, a parte vermelha representa ${f(3,4)} do círculo.`
+    },
+  
+    // ✅ ALTERADO: resolução com explicação breve e simples
+    {
+      pergunta: `Uma barra de chocolate tem 5 pedaços iguais, se eu comer ${f(1,5)}, quantos ainda me restam?`,
+      img: pathIntro + "img05intro.png",
+      opcoes: ["1", f(2,5), f(4,5), f(3,5)],
+      correta: 2,
+      resolucao: `Se a barra tem 5 pedaços e eu comi 1, restam 4 pedaços. Em fração, fica ${f(4,5)}.`
+    },
+  
+    // ✅ MODIFICADO: 4º dia usando o celular da mãe (gabarito definido: 1/5)
+    {
+      pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)} e, no terceiro dia, eu não usei o celular. No 4º dia eu usei o celular da minha mãe. Quanto eu usei da bateria dela?`,
+      img: pathIntro + "img06intro.png",
+      opcoes: [f(1,5), f(4,5), f(3,5), f(1,6)],
+      correta: 0,
+      resolucao: `No 4º dia, o uso foi no celular da mãe. Como o enunciado não informa o gasto exato, nesta atividade consideramos como correta a alternativa ${f(1,5)}.`
+    }
+];
+
+
+export const questoesIntro = [...questoesIntroI, ...questoesIntroII];
 export const questoesComp = [
   {
     pergunta: `Um bolo foi dividido em 4 partes iguais. João comeu ${f(1,4)} e Maria comeu ${f(2,4)}. Que fração do bolo foi comida ao todo?`,
