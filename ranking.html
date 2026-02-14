@@ -588,18 +588,35 @@
         // ============================================================
         let questoesIntro = [];
         let questoesComp = [];
+
+        // ============================================================
+        // ✅ Banco de questões (carregado de forma segura)
+        // Tenta vários nomes comuns, inclusive os que o Windows cria ao baixar:
+        //   - banco_questoes.js
+        //   - banco_questoes (21).js
+        // ============================================================
         (async () => {
-            try {
-                const mod = await import("./banco_questoes.js");
-                questoesIntro = mod.questoesIntro || [];
-                questoesComp = mod.questoesComp || [];
-            } catch (e) {
-                console.warn("Não foi possível carregar ./banco_questoes.js (caminho diferente?).", e);
+            const candidatos = [
+                "./banco_questoes.js",
+                "./banco_questoes (21).js",
+                "./banco_questoes(21).js"
+            ];
+
+            for (const caminho of candidatos) {
+                try {
+                    const mod = await import(caminho);
+                    questoesIntro = mod.questoesIntro || [];
+                    questoesComp = mod.questoesComp || [];
+                    console.log("Banco de questões carregado:", caminho);
+                    return;
+                } catch (e) {
+                    // tenta o próximo
+                }
             }
+
+            console.warn("Não foi possível carregar o banco de questões. Coloque o arquivo banco_questoes.js (ou similar) no mesmo diretório do ranking.html.");
         })();
-
-
-        let todosRegistros = [];
+let todosRegistros = [];
         let filtroAnoAtual = "todas";
         let filtroTurmaAtual = "todas";
         let tipoResetPendente = null;
@@ -941,14 +958,11 @@
             const info = getQuestaoPorId(id);
             const label = info.titulo ? `${info.titulo} • Q${(info.idx ?? 0)+1}` : `Q${(info.idx ?? 0)+1}`;
             const texto = info.q?.pergunta ? _escapeHTML(info.q.pergunta) : "Questão não encontrada (banco mudou).";
-            const img = info.q?.img || "";
             const chip = `<span class="chip">${label}</span>`;
-            const imgOk = img ? "1" : "0";
             return `
-              <div class="item-questao" data-qid="${_escapeHTML(id)}" data-imgok="${imgOk}">
+              <div class="item-questao">
                 <div class="linha1">
                   ${chip}
-                  <span style="font-size:.78rem;color:#6b7280;">abrir</span>
                 </div>
                 <div class="txt-curto">${texto}</div>
               </div>
@@ -956,17 +970,7 @@
           }).join("");
 
           listaQuestoesDiv.innerHTML = itens;
-
-          // click nos itens -> abre a imagem da questão em nova aba (ou a atividade, se você preferir depois)
-          listaQuestoesDiv.querySelectorAll('.item-questao').forEach(el=>{
-            el.addEventListener('click', ()=>{
-              const qid = el.getAttribute('data-qid');
-              const info = getQuestaoPorId(qid);
-              const url = info.q?.img;
-              if (url) window.open(url, "_blank");
-            });
-          });
-        }
+}
 
         btnAcertos.addEventListener('click', ()=>renderListaQuestoes("acertos"));
         btnErros.addEventListener('click', ()=>renderListaQuestoes("erros"));
@@ -1012,7 +1016,7 @@
         </div>
 
         <div class="aluno-modal-dica">
-          Clique em <b>Acertos</b> ou <b>Erros</b> para ver a lista de questões. Clique em uma questão para abrir em nova aba.
+          Clique em <b>Acertos</b> ou <b>Erros</b> para ver a lista de questões.
         </div>
       </div>
 
