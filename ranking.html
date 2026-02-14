@@ -565,8 +565,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-        import { questoesIntro, questoesComp } from "./banco_questoes.js";
-
+        
         // SUA CONFIGURAÇÃO
         const firebaseConfig = {
           apiKey: "AIzaSyCHfcVVxma4M1LbYO5M-oMX4fnlaNUPi24",
@@ -580,6 +579,24 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+
+        // ============================================================
+        // ✅ Banco de questões (carregado de forma segura)
+        // Se o arquivo ./banco_questoes.js não estiver no mesmo diretório do ranking,
+        // o painel continua funcionando (só não mostra o texto completo da questão).
+        // ============================================================
+        let questoesIntro = [];
+        let questoesComp = [];
+        (async () => {
+            try {
+                const mod = await import("./banco_questoes.js");
+                questoesIntro = mod.questoesIntro || [];
+                questoesComp = mod.questoesComp || [];
+            } catch (e) {
+                console.warn("Não foi possível carregar ./banco_questoes.js (caminho diferente?).", e);
+            }
+        })();
+
 
         let todosRegistros = [];
         let filtroAnoAtual = "todas";
@@ -808,7 +825,7 @@
                 else if (index === 2) { rankClass = "rank-3"; iconePosicao = "🥉"; }
 
                 const html = `
-                    <li class="item-aluno ${rankClass}">
+                    <li class="item-aluno ${rankClass}" data-aluno-id="${aluno.id}">
                         <div class="posicao">${iconePosicao}</div>
                         <div class="info-nome">${aluno.nome || '-'}</div>
                         <div><span class="info-serie">${aluno.serie || '-'}</span></div>
@@ -954,10 +971,10 @@
 
         // Clique em aluno no ranking -> abre modal
         document.addEventListener('click', (e)=>{
-          const tr = e.target.closest('tr');
-          if (!tr || !tr.dataset || !tr.dataset.alunoId) return;
+          const li = e.target.closest('li.item-aluno');
+          if (!li || !li.dataset || !li.dataset.alunoId) return;
 
-          const id = tr.dataset.alunoId;
+          const id = li.dataset.alunoId;
           const aluno = (todosRegistros || []).find(x => x.id === id);
           if (aluno) abrirModalAluno(aluno);
         });
