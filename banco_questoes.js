@@ -127,13 +127,31 @@ Sempre contamos quantas partes existem no total.`
 
 // =====================================================================
 // ✅ Banco de Introdução (sem duplicatas)
-// A antiga lista "questoesIntroII" repetia questões já presentes em "questoesIntroI".
-// Para evitar questões repetidas no site, exportamos somente a lista única.
 // =====================================================================
 
 export const questoesIntro = questoesIntroI;
 
 export const questoesComp = [
+  // ✅ NOVA QUESTÃO (1): Pizza 6 partes (5/6 - 1/6)
+  {
+    pergunta: `Uma pizza foi dividida em 6 partes iguais. Ana tinha ${f(5,6)} da pizza, mas deu ${f(1,6)} para sua amiga. Quanto restou da pizza com Ana?`,
+    img: pathComp + "comp16.png",
+    opcoes: [f(6,4), f(2,4), f(4,6), f(1,4)],
+    correta: 2,
+    resolucao: `Como as frações têm o mesmo denominador (6), basta subtrair os numeradores: 5 − 1 = 4.
+Então, restou ${f(4,6)} da pizza com a Ana.`
+  },
+
+  // ✅ NOVA QUESTÃO (2): Moedas (5/7)
+  {
+    pergunta: `Carlos tinha 7 moedas iguais. Ele usou 2 dessas moedas para comprar um doce. Qual fração representa quantas moedas restaram?`,
+    img: pathComp + "comp17.png",
+    opcoes: [f(5,7), f(3,7), f(4,7), f(7,5)],
+    correta: 0,
+    resolucao: `Se ele tinha 7 moedas e usou 2, restaram 5 moedas.
+A fração que representa as moedas restantes é ${f(5,7)}.`
+  },
+
   {
     pergunta: `Um bolo foi dividido em 4 partes iguais. João comeu ${f(1,4)} e Maria comeu ${f(2,4)}. Que fração do bolo foi comida ao todo?`,
     img: pathComp + "comp01.png",
