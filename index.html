@@ -56,7 +56,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            opacity: 1; /* corrigido: evita tela em branco se o JS falhar */
+            opacity: 1;
             transition: opacity 0.5s;
         }
 
@@ -519,12 +519,6 @@
     </style>
 </head>
 <body>
-    <!-- Banner de erro (aparece se o JavaScript de módulos falhar) -->
-    <div id="erroCarregamento" style="display:none; position:fixed; top:0; left:0; right:0; z-index:30000; padding:12px 16px; background:#ffefef; color:#7a0000; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial; border-bottom:1px solid rgba(122,0,0,.2);">
-        <strong>Ops:</strong> o conteúdo principal não carregou. Isso normalmente acontece quando você abre o arquivo por <code>file://</code> ou quando o arquivo <code>banco_questoes.js</code> não está na mesma pasta do <code>index.html</code>.
-        <span style="margin-left:10px; opacity:.85;">Abra usando um servidor (ex.: Live Server) ou publique no GitHub Pages.</span>
-    </div>
-
 
     <div id="telaBloqueio">
         <h1 style="font-size:3rem;color:#ff3b30;margin-bottom:10px">Atividade Pausada</h1>
@@ -538,7 +532,7 @@
     </div>
 
     <!-- MODAL DE IDENTIFICAÇÃO -->
-    <div id="modalLogin" class="modal-overlay visivel">
+    <div id="modalLogin" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-titulo">Identificação</div>
             <div class="modal-desc">Insira seus dados para começar.</div>
@@ -752,6 +746,65 @@
     <!-- ====================================================================== -->
     
     <script>
+
+        // ===== Correção anti-tela-branca (sem imports estáticos) =====
+        // - Carrega banco_questoes.js e Firebase via import() dinâmico.
+        // - Se algo falhar (file://, arquivo faltando, CORS), o site NÃO quebra.
+        let questoesIntro = [];
+        let questoesComp  = [];
+
+        let initializeApp, getDatabase, ref, update, onValue, push;
+        let firebaseAtivo = false;
+        let db = null;
+
+        async function carregarDependencias() {
+            // Banco de questões
+            try {
+                const modQ = await import("./banco_questoes.js");
+                questoesIntro = modQ.questoesIntro ?? [];
+                questoesComp  = modQ.questoesComp  ?? [];
+            } catch (e) {
+                console.warn("Não foi possível carregar ./banco_questoes.js. Verifique se ele está na mesma pasta do index.html.", e);
+                questoesIntro = [];
+                questoesComp  = [];
+            }
+
+            // Firebase (opcional)
+            try {
+                const modApp = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js");
+                const modDb  = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js");
+                initializeApp = modApp.initializeApp;
+                getDatabase   = modDb.getDatabase;
+                ref           = modDb.ref;
+                update        = modDb.update;
+                onValue       = modDb.onValue;
+                push          = modDb.push;
+                firebaseAtivo = true;
+            } catch (e) {
+                console.warn("Firebase não carregou (ok, modo offline).", e);
+                firebaseAtivo = false;
+            }
+        }
+
+        // Wrappers seguros para não explodir se Firebase não carregar
+        async function safeUpdate(r, data) {
+            if (!firebaseAtivo || !update) return;
+            return safeUpdate(r, data);
+        }
+        function safeOnValue(r, cb) {
+            if (!firebaseAtivo || !onValue) return;
+            return safeOnValue(r, cb);
+        }
+        function safePush(r, data) {
+            if (!firebaseAtivo || !push) return null;
+            return safePush(r, data);
+        }
+        function safeRef(database, path) {
+            if (!firebaseAtivo || !ref) return null;
+            return safeRef(database, path);
+        }
+        // =============================================================
+
         // Popup do Painel do Aluno (funciona mesmo se o módulo falhar)
         (function(){
             const SENHA_PROFESSOR = "4241";
@@ -804,53 +857,7 @@
         })();
     </script>
 
-    <script type="module">
-        // Banco de questões (carregado dinamicamente para evitar "tela branca" se o arquivo não estiver disponível)
-        let questoesIntro = [];
-        let questoesComp = [];
-        async function carregarBancoQuestoes() {
-            try {
-                const mod = await import("./banco_questoes.js");
-                questoesIntro = mod.questoesIntro ?? [];
-                questoesComp  = mod.questoesComp  ?? [];
-            } catch (e) {
-                console.error("Falha ao importar banco_questoes.js:", e);
-            }
-        }
-
-        // Firebase (opcional). Se falhar (offline/CORS), o app funciona sem salvar na nuvem.
-        let firebaseOk = false;
-        let db = null;
-        let auth = null;
-
-        async function carregarFirebase() {
-            try {
-                const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
-                const { getAuth, signInAnonymously } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
-                const { getFirestore, doc, getDoc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
-
-                // Expondo helpers usados no resto do código (para evitar crash se Firebase não carregar)
-                window.__fb = { signInAnonymously, doc, getDoc, setDoc };
-
-                // ⚠️ Preencha com seus dados do Firebase (ou deixe assim para modo offline)
-                const firebaseConfig = {
-                    apiKey: "SUA_API_KEY_AQUI",
-                    authDomain: "SEU_AUTH_DOMAIN_AQUI",
-                    projectId: "SEU_PROJECT_ID_AQUI",
-                    storageBucket: "SEU_STORAGE_BUCKET_AQUI",
-                    messagingSenderId: "SEU_SENDER_ID_AQUI",
-                    appId: "SEU_APP_ID_AQUI"
-                };
-
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-                firebaseOk = true;
-            } catch (e) {
-                console.warn("Firebase não carregou (ok, modo offline):", e);
-                firebaseOk = false;
-            }
-        }
+    <script>
 
 
         // =========================================================================
@@ -901,7 +908,7 @@
           appId: "1:873014790580:web:09b340386d10d7f88a4ae1"
         };
 
-        const app = initializeApp(firebaseConfig);
+        const app = (initializeApp ? initializeApp(firebaseConfig) : null);
         const __params = new URLSearchParams(window.location.search);
         window.isPreview = __params.get('preview') === '1';
         const __modoParam = __params.get('modo');      // 'intro' | 'complementar'
@@ -1031,7 +1038,7 @@
             if (nomeSalvo && serieSalva) {
                 aplicarDadosUsuario(nomeSalvo, serieSalva);
                 if (alunoId) {
-                    update(ref(db, 'alunos/' + alunoId), { status: 'reconectado', ultimoAcesso: new Date().toISOString() });
+                    safeUpdate(safeRef(db, 'alunos/' + alunoId), { status: 'reconectado', ultimoAcesso: new Date().toISOString() });
                 }
                 document.getElementById('modalLogin').classList.remove('visivel');
                 mostrarApp();
@@ -1062,12 +1069,12 @@
             aplicarDadosUsuario(nome, serieCompleta);
 
             if (!alunoId) {
-                const novoAlunoRef = push(ref(db, 'alunos'));
+                const novoAlunoRef = safePush(safeRef(db, 'alunos'));
                 alunoId = novoAlunoRef.key;
                 localStorage.setItem('firebaseId', alunoId);
             }
 
-            update(ref(db, 'alunos/' + alunoId), {
+            safeUpdate(safeRef(db, 'alunos/' + alunoId), {
                 nome: nome,
                 serie: serieCompleta,
                 acertos: 0,
@@ -1150,11 +1157,11 @@ function _aplicarPontuacaoQuestaoAtualSeNecessario() {
     const qId = `${window.modoAtual}-${window.indice}`;
     if (acertou) {
         if (!Array.isArray(window.listaAcertos)) window.listaAcertos = [];
-        if (!window.listaAcertos.includes(qId)) window.listaAcertos.push(qId);
+        if (!window.listaAcertos.includes(qId)) window.listaAcertos.safePush(qId);
         if (Array.isArray(window.listaErros)) window.listaErros = window.listaErros.filter(x => x !== qId);
     } else {
         if (!Array.isArray(window.listaErros)) window.listaErros = [];
-        if (!window.listaErros.includes(qId)) window.listaErros.push(qId);
+        if (!window.listaErros.includes(qId)) window.listaErros.safePush(qId);
         if (Array.isArray(window.listaAcertos)) window.listaAcertos = window.listaAcertos.filter(x => x !== qId);
     }
     localStorage.setItem('listaAcertos', JSON.stringify(window.listaAcertos));
@@ -1163,11 +1170,11 @@ function _aplicarPontuacaoQuestaoAtualSeNecessario() {
     // ✅ registra a questão na lista (uma única vez)
     const qId = `${window.modoAtual}-${window.indice}`;
     if (acertou) {
-        if (!window.listaAcertos.includes(qId)) window.listaAcertos.push(qId);
+        if (!window.listaAcertos.includes(qId)) window.listaAcertos.safePush(qId);
         // se por algum motivo estava na lista de erros, remove
         window.listaErros = window.listaErros.filter(x => x !== qId);
     } else {
-        if (!window.listaErros.includes(qId)) window.listaErros.push(qId);
+        if (!window.listaErros.includes(qId)) window.listaErros.safePush(qId);
         window.listaAcertos = window.listaAcertos.filter(x => x !== qId);
     }
 
@@ -1190,7 +1197,7 @@ function _aplicarPontuacaoQuestaoAtualSeNecessario() {
           const errosTotal   = errosIntro + errosComp;
 
           // Mantém compatibilidade: "acertos" e "erros" agora são o TOTAL do aluno no site
-          update(ref(db, 'alunos/' + alunoId), {
+          safeUpdate(safeRef(db, 'alunos/' + alunoId), {
             acertos: acertosTotal,
             erros: errosTotal,
             acertosIntro,
@@ -1344,20 +1351,7 @@ function restaurarEstadoRespostaSeExistir() {
             document.getElementById('barraFill').style.width = (porcentagem > 100 ? 100 : porcentagem) + '%';
         }
 
-        async function carregar() {
-            // Garante que dependências externas não quebrem a página
-            await carregarBancoQuestoes();
-            await carregarFirebase();
-
-            // Se o banco não carregou, avisa no topo (mas mantém o app funcionando)
-            if ((!questoesIntro || questoesIntro.length === 0) && (!questoesComp || questoesComp.length === 0)) {
-                const banner = document.getElementById("erroCarregamento");
-                if (banner) banner.style.display = "block";
-            } else {
-                const banner = document.getElementById("erroCarregamento");
-                if (banner) banner.style.display = "none";
-            }
-
+        function carregar() {
             window.checkLogin();
             atualizarBotoesHeader();
             atualizarPlacarVisual();
@@ -1468,8 +1462,8 @@ function restaurarEstadoRespostaSeExistir() {
         }
 
         // BLOQUEIO/LIBERAÇÃO REMOTA
-        const statusRef = ref(db, 'status_atividade');
-        onValue(statusRef, (snapshot) => {
+        const statusRef = safeRef(db, 'status_atividade');
+        safeOnValue(statusRef, (snapshot) => {
             const dados = snapshot.val();
             if (dados && dados.comando === 'finalizar') {
                 document.getElementById('telaBloqueio').classList.add('visivel');
@@ -1485,7 +1479,7 @@ function restaurarEstadoRespostaSeExistir() {
         });
 
         ativarProtecoes();
-        window.onload = carregar;
+        window.onload = async () => { await carregarDependencias(); carregar(); };
 
     </script>
 
@@ -1516,23 +1510,6 @@ function restaurarEstadoRespostaSeExistir() {
                 if (e.ctrlKey && (key === 'c' || key === 'x')) { e.preventDefault(); e.stopPropagation(); return false; }
             }, { capture: true });
         })();
-    </script>
-
-
-    <script>
-        // Fallback: se o script de módulo falhar, ao menos mostramos o modal e o banner de ajuda.
-        window.addEventListener('load', () => {
-            const modal = document.getElementById('modalLogin');
-            if (modal) modal.classList.add('visivel');
-
-            // Se depois de 800ms o app ainda parece "vazio", mostramos o banner.
-            setTimeout(() => {
-                const banner = document.getElementById('erroCarregamento');
-                const app = document.getElementById('appContainer');
-                const visivel = app ? getComputedStyle(app).opacity !== '0' : true;
-                if (banner && !visivel) banner.style.display = 'block';
-            }, 800);
-        });
     </script>
 
 </body>
