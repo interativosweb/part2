@@ -864,6 +864,14 @@
         window.placarIntro = JSON.parse(localStorage.getItem('placarIntro')) || { acertos: 0, erros: 0 };
         window.placarComp = JSON.parse(localStorage.getItem('placarComp')) || { acertos: 0, erros: 0 };
 
+        // ============================================================
+        // ✅ NOVO: listas de questões acertadas/erradas (para o Painel da Turma)
+        // Formato do ID: "intro-<indice>" ou "complementar-<indice>"
+        // ============================================================
+        window.listaAcertos = JSON.parse(localStorage.getItem('listaAcertos')) || [];
+        window.listaErros   = JSON.parse(localStorage.getItem('listaErros'))   || [];
+
+
         // =========================================================================
         // ACESSO DO PROFESSOR COM POPUP + SENHA
         // =========================================================================
@@ -1082,6 +1090,20 @@ function _aplicarPontuacaoQuestaoAtualSeNecessario() {
     if (acertou) placarAtual.acertos++;
     else placarAtual.erros++;
 
+    // ✅ registra a questão na lista (uma única vez)
+    const qId = `${window.modoAtual}-${window.indice}`;
+    if (acertou) {
+        if (!window.listaAcertos.includes(qId)) window.listaAcertos.push(qId);
+        // se por algum motivo estava na lista de erros, remove
+        window.listaErros = window.listaErros.filter(x => x !== qId);
+    } else {
+        if (!window.listaErros.includes(qId)) window.listaErros.push(qId);
+        window.listaAcertos = window.listaAcertos.filter(x => x !== qId);
+    }
+
+    localStorage.setItem('listaAcertos', JSON.stringify(window.listaAcertos));
+    localStorage.setItem('listaErros', JSON.stringify(window.listaErros));
+
     _setEstadoQuestao(window.modoAtual, window.indice, { scored: true });
 
     salvarProgresso();
@@ -1105,6 +1127,8 @@ function _aplicarPontuacaoQuestaoAtualSeNecessario() {
             errosIntro,
             acertosComp,
             errosComp,
+            listaAcertos: window.listaAcertos || [],
+            listaErros: window.listaErros || [],
             ultimoAcesso: new Date().toISOString()
           });
         })();
