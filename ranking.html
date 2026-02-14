@@ -6,7 +6,7 @@
     <title>Painel do Professor - Ranking</title>
     <style>
         /* =========================================
-           🎨 VARIÁVEIS DE DESIGN (MESMAS DO INDEX)
+           🎨 ESTILO ORIGINAL DO PAINEL (MANTIDO)
            ========================================= */
         :root {
             --bg-page: #f5f5f7;
@@ -14,204 +14,88 @@
             --text-main: #1d1d1f;
             --text-light: #86868b;
             --accent: #0071e3;
-            --success: #34c759; /* Verde pedido */
+            --success: #34c759;
             --warning: #ffcc00;
-            --error: #ff3b30;   /* Vermelho pedido */
+            --silver: #e0e0e0;
+            --bronze: #cd7f32;
+            --error: #ff3b30;
             --radius: 16px;
             --shadow: 0 4px 20px rgba(0,0,0,0.05);
-            --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
             --btn-gray-dark: #8e8e93;
-            --border-light: #e5e5ea;
         }
 
-        /* --- ESTILO DE FRAÇÃO --- */
-        .fracao {
-            display: inline-flex;
-            flex-direction: column;
-            vertical-align: middle;
-            margin: 0 4px;
-            text-align: center;
-            font-size: 0.95em;
-        }
-        .fracao > span { padding: 0 4px; }
-        .fracao > span:first-child { border-bottom: 1.5px solid currentColor; padding-bottom: 1px; }
+        /* Fração */
+        .fracao { display: inline-flex; flex-direction: column; vertical-align: middle; margin: 0 5px; text-align: center; font-size: 0.9em; }
+        .fracao > span { padding: 0 5px; }
+        .fracao > span:first-child { border-bottom: 2px solid currentColor; padding-bottom: 1px; }
 
-        /* --- PROTEÇÃO --- */
         body {
             -webkit-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none;
-        }
-        @media print { html, body { display: block !important; } }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-
-        body {
-            background-color: var(--bg-page);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: 40px 20px;
-            padding-bottom: 100px;
-            overflow-x: hidden;
-            overflow-y: auto;
+            background-color: var(--bg-page); color: var(--text-main); min-height: 100vh;
+            padding: 40px 20px; padding-bottom: 100px; overflow-x: hidden; overflow: auto;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         .container { max-width: 1100px; margin: 0 auto; }
 
-        /* --- HEADER --- */
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px; }
-        .titulo-pagina { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
-        .btn-voltar { text-decoration: none; color: var(--accent); font-weight: 500; display: flex; align-items: center; gap: 6px; transition: opacity 0.2s; font-size: 1rem; margin-bottom: 5px; }
+        /* Header e Filtros (Originais) */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 20px; }
+        .titulo-pagina { font-size: 2rem; font-weight: 700; }
+        .btn-voltar { text-decoration: none; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 5px; transition: opacity 0.2s; font-size: 0.9rem; margin-bottom: 5px; }
         .btn-voltar:hover { opacity: 0.7; }
-        
-        .filtro-data-container { background: white; padding: 8px 16px; border-radius: 12px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 10px; border: 1px solid var(--border-light); }
-        .input-data { border: none; background: transparent; font-size: 0.95rem; color: var(--text-main); font-weight: 500; cursor: pointer; outline: none; }
+        .filtro-data-container { background: white; padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 10px; }
+        .input-data { border: none; background: transparent; font-size: 1rem; color: var(--accent); font-weight: 600; cursor: pointer; outline: none; }
 
-        /* --- FILTROS E AÇÕES --- */
         .area-filtros-topo { display: flex; justify-content: flex-start; align-items: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
-        
-        /* Dropdowns estilo Index */
         .dropdown-wrapper { position: relative; display: inline-block; }
-        .btn-filtro-trigger { background-color: white; color: var(--text-main); padding: 12px 20px; border-radius: 12px; border: 1px solid transparent; font-size: 0.95rem; font-weight: 500; cursor: pointer; box-shadow: var(--shadow); display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; min-width: 160px; justify-content: space-between; }
-        .btn-filtro-trigger:hover { transform: translateY(-1px); box-shadow: var(--shadow-hover); }
-        .btn-filtro-trigger.ativo { border-color: var(--accent); color: var(--accent); }
-        
-        .dropdown-menu { position: absolute; top: 110%; left: 0; width: 100%; min-width: 200px; background-color: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); padding: 8px; z-index: 100; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s ease; border: 1px solid var(--border-light); }
+        .btn-filtro-trigger { background-color: white; color: var(--text-main); padding: 12px 25px; border-radius: 50px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 10px; transition: all 0.3s ease; min-width: 160px; justify-content: space-between; }
+        .btn-filtro-trigger:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.12); }
+        .btn-filtro-trigger.ativo { border: 2px solid var(--accent); color: var(--accent); }
+        .seta-dropdown { width: 14px; height: 14px; fill: var(--text-light); transition: transform 0.3s; }
+        .dropdown-wrapper.aberto .seta-dropdown { transform: rotate(180deg); fill: var(--accent); }
+        .dropdown-menu { position: absolute; top: 120%; left: 0; width: 100%; min-width: 200px; background-color: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 10px; z-index: 100; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1); }
         .dropdown-wrapper.aberto .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
-        .opcao-item { display: block; width: 100%; text-align: left; padding: 10px 12px; background: none; border: none; border-radius: 8px; font-size: 0.9rem; color: var(--text-main); cursor: pointer; font-weight: 500; transition: background 0.2s; }
-        .opcao-item:hover { background-color: #f5f5f7; color: var(--accent); }
-        .opcao-item.selecionado { background-color: var(--bg-page); color: var(--accent); font-weight: 600; }
+        .opcao-item { display: block; width: 100%; text-align: left; padding: 10px 15px; background: none; border: none; border-radius: 8px; font-size: 0.95rem; color: var(--text-main); cursor: pointer; font-weight: 500; transition: background 0.2s; }
+        .opcao-item:hover { background-color: #f2f2f7; color: var(--accent); }
+        .opcao-item.selecionado { background-color: var(--accent); color: white; }
 
-        /* BOTÕES ESPECIAIS */
-        .btn-acao { padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: none; display: flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: var(--shadow); }
-        .btn-acao:hover { transform: translateY(-1px); box-shadow: var(--shadow-hover); }
-        
-        .btn-finalizar { background: white; color: var(--error); border: 1px solid rgba(255, 59, 48, 0.2); }
-        .btn-finalizar:hover { background: var(--error); color: white; border-color: var(--error); }
-        
-        .btn-liberar { background: white; color: var(--success); border: 1px solid rgba(52, 199, 89, 0.2); }
-        .btn-liberar:hover { background: var(--success); color: white; border-color: var(--success); }
+        .btn-finalizar { background-color: white; color: var(--error); border: 1px solid rgba(255, 59, 48, 0.3); }
+        .btn-finalizar:hover { background-color: var(--error); color: white; border-color: var(--error); box-shadow: 0 6px 15px rgba(255, 59, 48, 0.25); }
+        .btn-liberar { background-color: white; color: var(--success); border: 1px solid rgba(52, 199, 89, 0.3); }
+        .btn-liberar:hover { background-color: var(--success); color: white; border-color: var(--success); box-shadow: 0 6px 15px rgba(52, 199, 89, 0.25); }
 
-        /* --- CARDS RESUMO --- */
-        .grid-resumo { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .card-resumo { background: var(--card-bg); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: flex-start; border: 1px solid var(--border-light); }
-        .card-titulo { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 8px; }
-        .card-valor { font-size: 2.2rem; font-weight: 700; color: var(--text-main); letter-spacing: -1px; }
-
-        /* --- TABELA RANKING --- */
-        .painel-ranking { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; min-height: 300px; border: 1px solid var(--border-light); }
-        .tabela-header { display: grid; grid-template-columns: 0.5fr 2fr 1.5fr 0.8fr 0.8fr 1fr; padding: 16px 24px; background-color: #fafafa; border-bottom: 1px solid var(--border-light); font-size: 0.75rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+        /* Cards e Tabela (Originais) */
+        .grid-resumo { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card-resumo { background: var(--card-bg); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: flex-start; }
+        .card-titulo { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .card-valor { font-size: 2rem; font-weight: 700; color: var(--text-main); }
+        .painel-ranking { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; min-height: 300px; }
+        .tabela-header { display: grid; grid-template-columns: 0.5fr 2fr 1.5fr 0.8fr 0.8fr 1fr; padding: 15px 20px; background-color: rgba(0,0,0,0.02); border-bottom: 1px solid #e5e5ea; font-size: 0.8rem; font-weight: 600; color: var(--text-light); text-transform: uppercase; }
         .lista-alunos { list-style: none; }
-        .item-aluno { display: grid; grid-template-columns: 0.5fr 2fr 1.5fr 0.8fr 0.8fr 1fr; padding: 16px 24px; align-items: center; border-bottom: 1px solid var(--border-light); transition: background 0.15s; cursor: pointer; }
+        .item-aluno { display: grid; grid-template-columns: 0.5fr 2fr 1.5fr 0.8fr 0.8fr 1fr; padding: 15px 20px; align-items: center; border-bottom: 1px solid #f5f5f7; transition: background 0.2s; }
         .item-aluno:last-child { border-bottom: none; }
-        .item-aluno:hover { background-color: #f5f5f7; }
-        
-        .posicao { font-weight: 700; color: var(--text-light); font-size: 1rem; }
-        .rank-1 .posicao { font-size: 1.4rem; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .info-nome { font-weight: 600; font-size: 1rem; color: var(--text-main); }
-        .info-serie { display: inline-block; padding: 4px 10px; border-radius: 99px; background-color: #f5f5f7; color: var(--text-light); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .item-aluno:hover { background-color: #fafafa; }
+        .posicao { font-weight: 700; color: var(--text-light); font-size: 1.1rem; }
+        .rank-1 .posicao { color: transparent; text-shadow: 0 0 0 var(--warning); font-size: 1.5rem; }
+        .rank-2 .posicao { color: transparent; text-shadow: 0 0 0 var(--silver); font-size: 1.5rem; }
+        .rank-3 .posicao { color: transparent; text-shadow: 0 0 0 var(--bronze); font-size: 1.5rem; }
+        .info-nome { font-weight: 600; font-size: 1.05rem; }
+        .info-serie { display: inline-block; padding: 4px 12px; border-radius: 20px; background-color: #f2f2f7; color: var(--text-light); font-size: 0.8rem; font-weight: 600; }
         .info-nota { font-weight: 700; color: var(--success); }
         .info-erro { font-weight: 700; color: var(--error); }
-        .info-tempo { font-size: 0.85rem; color: var(--text-light); text-align: right; font-variant-numeric: tabular-nums; }
-
-        /* --- NOTIFICAÇÕES --- */
+        .info-tempo { font-size: 0.9rem; color: var(--text-light); text-align: right; }
+        
+        /* Rodapé e Notificações (Originais) */
         .notificacao-container { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast { background-color: rgba(255,255,255,0.95); backdrop-filter: blur(10px); color: var(--text-main); border: 1px solid var(--border-light); padding: 12px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 10px; animation: slideIn 0.4s ease; max-width: 320px; }
-        .toast svg { stroke: var(--success); }
-        .toast.alerta svg { stroke: var(--error); }
-        .toast.saindo { opacity: 0; transform: translateY(-10px); }
+        .toast { background-color: var(--success); color: white; padding: 12px 20px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 10px; animation: slideIn 0.4s ease; opacity: 1; transition: opacity 0.5s; max-width: 300px; }
+        .toast.alerta { background-color: var(--error); }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .rodape-gestao { margin-top: 50px; text-align: center; border-top: 1px solid #e5e5ea; padding-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .btn-acao-rodape { background-color: var(--btn-gray-dark); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .btn-acao-rodape:hover { background-color: var(--error); transform: scale(1.02); }
+        .texto-creditos { font-size: 0.8rem; color: var(--text-light); }
 
-        /* --- MODAIS (PADRÃO UNIFICADO) --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.4); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); display: none; justify-content: center; align-items: center; z-index: 1000; animation: fadeIn 0.2s ease; }
-        .modal-overlay.visivel { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        /* Caixa do Modal (Estilo Clean) */
-        .modal-box { 
-            background: white; 
-            padding: 32px; 
-            border-radius: 24px; 
-            width: 90%; 
-            max-width: 420px; 
-            text-align: center; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
-            animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
-            border: 1px solid rgba(0,0,0,0.05);
-            position: relative;
-        }
-        @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
-        .modal-titulo { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; color: var(--text-main); letter-spacing: -0.5px; }
-        .modal-sub { font-size: 0.9rem; color: var(--text-light); margin-bottom: 24px; }
-        .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 20px; line-height: 1.5; }
-        
-        .modal-close-abs { position: absolute; top: 20px; right: 20px; background: #f5f5f7; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-light); transition: all 0.2s; }
-        .modal-close-abs:hover { background: #e5e5ea; color: var(--text-main); }
-
-        /* Inputs e Botões do Modal */
-        .input-senha { width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 12px; font-size: 1rem; margin-bottom: 20px; outline: none; text-align: center; transition: border 0.2s, box-shadow 0.2s; background: #fafafa; }
-        .input-senha:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1); }
-        
-        .grid-botoes-reset { display: flex; flex-direction: column; gap: 10px; }
-        .btn-reset-opcao { padding: 14px; border-radius: 12px; border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.2s; background-color: #f5f5f7; color: var(--text-main); }
-        .btn-reset-opcao:hover { transform: scale(1.01); background-color: #e5e5ea; }
-        
-        .btn-cancelar { margin-top: 15px; background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 0.9rem; font-weight: 500; }
-        .btn-cancelar:hover { color: var(--text-main); }
-
-        .botoes-confirmacao { display: flex; gap: 12px; justify-content: center; }
-        .btn-conf-sim { background-color: var(--error); color: white; flex: 1; }
-        .btn-conf-sim:hover { background-color: #d73328; }
-        .btn-conf-liberar { background-color: var(--success); color: white; flex: 1; }
-        .btn-conf-liberar:hover { background-color: #2db14e; }
-        .btn-conf-nao { background-color: #f5f5f7; color: var(--text-main); flex: 1; }
-
-        /* --- ESTILOS ESPECÍFICOS DO MODAL DE ALUNO (Clean) --- */
-        .grid-placar { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .card-placar { 
-            padding: 20px; 
-            border-radius: 16px; 
-            cursor: pointer; 
-            transition: all 0.2s ease; 
-            border: 1px solid transparent; 
-            display: flex; flex-direction: column; align-items: center; gap: 5px;
-        }
-        .card-placar:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-        
-        /* Botões Verde/Vermelho Pedidos */
-        .card-placar.acertos { background-color: rgba(52, 199, 89, 0.1); color: var(--success); }
-        .card-placar.acertos:hover { border-color: var(--success); background-color: rgba(52, 199, 89, 0.15); }
-        
-        .card-placar.erros { background-color: rgba(255, 59, 48, 0.1); color: var(--error); }
-        .card-placar.erros:hover { border-color: var(--error); background-color: rgba(255, 59, 48, 0.15); }
-
-        .placar-valor { font-size: 2rem; font-weight: 800; }
-        .placar-label { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* --- LISTA DE QUESTÕES NO MODAL (Clean) --- */
-        .modal-lista-scroll { max-height: 60vh; overflow-y: auto; text-align: left; padding-right: 5px; margin-top: 10px; }
-        
-        .item-questao {
-            background: white;
-            border: 1px solid var(--border-light);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        /* Hover Verde solicitado */
-        .item-questao:hover {
-            background-color: var(--success);
-            border-color: var(--success);
-            transform: scale(1.02);
-            box-shadow: 0 8px 20px rgba(52, 199, 89, 0.2);
-        }
-        .item-questao:hover * { color: white !important; }
-        
-        .q-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-light); }
-        .q-texto { font-size: 0.95rem; color: var(--text-main); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        /* Responsividade */
+        /* Responsividade (Original) */
         @media (max-width: 700px) {
             .tabela-header { display: none; }
             .item-aluno { grid-template-columns: 40px 1fr auto auto; grid-template-areas: "pos nome nota erro" "pos serie tempo tempo"; gap: 5px; padding: 15px; }
@@ -222,8 +106,110 @@
             .info-serie { grid-area: serie; align-self: start; }
             .info-tempo { grid-area: tempo; text-align: right; font-size: 0.8rem; }
             .area-filtros-topo { gap: 10px; justify-content: center; }
-            .btn-filtro-trigger, .btn-acao { width: 100%; min-width: auto; justify-content: center; }
+            .btn-filtro-trigger, .btn-finalizar, .btn-liberar { width: 100%; min-width: auto; }
         }
+
+        /* =======================================================
+           ✨ NOVO DESIGN DOS MODAIS (CLEAN / APPLE STYLE)
+           ======================================================= */
+        
+        /* Fundo desfocado */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: rgba(255, 255, 255, 0.6); /* Fundo claro */
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); /* Desfoque */
+            display: none; justify-content: center; align-items: center; z-index: 1000; 
+            animation: fadeIn 0.3s ease; 
+        }
+        .modal-overlay.visivel { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Caixa do Modal */
+        .modal-box { 
+            background: white; 
+            padding: 35px; 
+            border-radius: 24px; /* Cantos bem arredondados */
+            width: 90%; 
+            max-width: 440px; 
+            text-align: center; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.1); 
+            animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+        @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* Elementos Comuns dos Modais */
+        .modal-titulo { font-size: 1.5rem; font-weight: 800; margin-bottom: 5px; color: #1d1d1f; }
+        .modal-sub { font-size: 1rem; color: #86868b; margin-bottom: 25px; }
+        .modal-desc { font-size: 0.95rem; color: #6e6e73; margin-bottom: 20px; line-height: 1.5; }
+        
+        /* Botão Fechar (X) */
+        .modal-close-abs { 
+            position: absolute; top: 20px; right: 20px; 
+            background: #f5f5f7; border: none; 
+            width: 36px; height: 36px; border-radius: 50%; 
+            cursor: pointer; color: #86868b; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .modal-close-abs:hover { background: #e5e5ea; color: #1d1d1f; transform: scale(1.05); }
+
+        /* Input Senha */
+        .input-senha { width: 100%; padding: 15px; border: 1px solid #d2d2d7; border-radius: 12px; font-size: 1.1rem; margin-bottom: 20px; outline: none; text-align: center; transition: border 0.2s, background 0.2s; background-color: #fafafa; }
+        .input-senha:focus { border-color: var(--accent); background-color: #fff; }
+
+        /* Botões de Ação nos Modais */
+        .btn-reset-opcao { padding: 15px; border-radius: 14px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.2s; background-color: #f5f5f7; color: #1d1d1f; margin-bottom: 8px; width: 100%; }
+        .btn-reset-opcao:hover { background-color: #e5e5ea; transform: scale(1.01); }
+        .btn-cancelar { margin-top: 15px; background: none; border: none; color: #86868b; cursor: pointer; font-size: 0.9rem; font-weight: 500; }
+        .botoes-confirmacao { display: flex; gap: 10px; justify-content: center; }
+        .btn-conf-sim { background-color: var(--error); color: white; flex: 1; }
+        .btn-conf-liberar { background-color: var(--success); color: white; flex: 1; }
+        .btn-conf-nao { background-color: #f5f5f7; color: #1d1d1f; flex: 1; }
+
+        /* --- DESIGN ESPECÍFICO: MODAL DO ALUNO --- */
+        .grid-placar { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        
+        .card-placar { 
+            padding: 20px; border-radius: 18px; 
+            cursor: pointer; transition: all 0.2s ease; 
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            border: 1px solid transparent;
+        }
+        .card-placar:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+
+        /* Botão Acertos (Verde pedido) */
+        .card-placar.acertos { background-color: rgba(52, 199, 89, 0.1); color: var(--success); }
+        .card-placar.acertos:hover { background-color: var(--success); color: white; }
+        
+        /* Botão Erros (Vermelho pedido) */
+        .card-placar.erros { background-color: rgba(255, 59, 48, 0.1); color: var(--error); }
+        .card-placar.erros:hover { background-color: var(--error); color: white; }
+
+        .placar-valor { font-size: 2.2rem; font-weight: 800; }
+        .placar-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* --- DESIGN ESPECÍFICO: LISTA DE QUESTÕES --- */
+        .modal-lista-scroll { max-height: 50vh; overflow-y: auto; text-align: left; padding-right: 5px; margin-top: 10px; }
+        
+        .item-questao {
+            background: white; border: 1px solid #e5e5ea; 
+            border-radius: 14px; padding: 16px; margin-bottom: 12px; 
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        
+        /* Hover Verde na lista (pedido) */
+        .item-questao:hover {
+            background-color: var(--success);
+            border-color: var(--success);
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(52, 199, 89, 0.3);
+        }
+        .item-questao:hover * { color: white !important; }
+
+        .q-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #86868b; }
+        .q-texto { font-size: 0.95rem; color: #1d1d1f; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
     </style>
 </head>
 <body>
@@ -233,14 +219,14 @@
         <header>
             <div class="titulo-container">
                 <a href="index.html" class="btn-voltar">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-                    Voltar
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                    Voltar para Atividade
                 </a>
                 <h1 class="titulo-pagina">Painel da Turma</h1>
             </div>
 
             <div class="filtro-data-container">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span style="font-size:0.8rem; color:var(--text-light); font-weight:600;">Data:</span>
                 <input type="date" id="filtroData" class="input-data">
             </div>
         </header>
@@ -249,7 +235,7 @@
             <div class="dropdown-wrapper" id="dropAno">
                 <button class="btn-filtro-trigger" onclick="toggleDropdown('dropAno')">
                     <span id="textoAno">Ano: Todos</span>
-                    <svg class="seta-dropdown" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                    <svg class="seta-dropdown" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
                 </button>
                 <div class="dropdown-menu">
                     <button class="opcao-item selecionado" onclick="selecionarOpcao('ano', 'todas', 'Todos', this)">Todos</button>
@@ -263,7 +249,7 @@
             <div class="dropdown-wrapper" id="dropTurma">
                 <button class="btn-filtro-trigger" onclick="toggleDropdown('dropTurma')">
                     <span id="textoTurma">Turma: Todas</span>
-                    <svg class="seta-dropdown" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                    <svg class="seta-dropdown" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
                 </button>
                 <div class="dropdown-menu">
                     <button class="opcao-item selecionado" onclick="selecionarOpcao('turma', 'todas', 'Todas', this)">Todas</button>
@@ -273,14 +259,14 @@
                 </div>
             </div>
 
-            <button class="btn-acao btn-liberar" onclick="abrirModalLiberar()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                Liberar
+            <button class="btn-filtro-trigger btn-liberar" onclick="abrirModalLiberar()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Liberar Atividade
             </button>
 
-            <button class="btn-acao btn-finalizar" onclick="abrirModalFinalizar()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
-                Finalizar
+            <button class="btn-filtro-trigger btn-finalizar" onclick="abrirModalFinalizar()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
+                Finalizar Atividade
             </button>
         </div>
 
@@ -295,7 +281,7 @@
             </div>
             <div class="card-resumo">
                 <span class="card-titulo">Melhor Desempenho</span>
-                <span class="card-valor" id="melhorAluno" style="font-size: 1.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">-</span>
+                <span class="card-valor" id="melhorAluno">-</span>
             </div>
         </div>
 
@@ -314,9 +300,13 @@
         </div>
 
         <div class="rodape-gestao">
-            <button class="btn-acao" style="background:var(--btn-gray-dark); color:white; border:none;" onclick="abrirModalReset()">
+            <button class="btn-acao-rodape" onclick="abrirModalReset()">
                 Gerenciar Histórico
             </button>
+            <div style="display:flex; flex-direction:column; gap:5px;">
+                <span class="texto-creditos">Área restrita ao professor</span>
+                <span class="texto-creditos" style="font-weight:600; color:var(--text-main)">Desenvolvido por Gilberto Fernandes - Matemática</span>
+            </div>
         </div>
     </div>
 
@@ -369,7 +359,7 @@
         <div class="modal-box">
             <div class="modal-titulo">Confirmar</div>
             <div class="modal-desc" id="descSenhaAction">Digite a senha para confirmar.</div>
-            <input type="password" id="inputSenhaAction" class="input-senha" placeholder="Senha" inputmode="numeric">
+            <input type="password" id="inputSenhaAction" class="input-senha" placeholder="Senha do Professor" inputmode="numeric">
             <div class="botoes-confirmacao">
                 <button class="btn-reset-opcao btn-conf-nao" onclick="fecharModalSenhaAction()">Cancelar</button>
                 <button class="btn-reset-opcao btn-conf-sim" onclick="executarResetConfirmado()">Confirmar</button>
@@ -381,7 +371,7 @@
         <div class="modal-box">
             <div class="modal-titulo" style="color:var(--error)">Finalizar Atividade?</div>
             <div class="modal-desc">Isso bloqueará a tela dos alunos.</div>
-            <input type="password" id="inputSenhaFinalizar" class="input-senha" placeholder="Senha" inputmode="numeric">
+            <input type="password" id="inputSenhaFinalizar" class="input-senha" placeholder="Senha do Professor" inputmode="numeric">
             <div class="botoes-confirmacao">
                 <button class="btn-reset-opcao btn-conf-nao" onclick="fecharModalFinalizar()">Cancelar</button>
                 <button class="btn-reset-opcao btn-conf-sim" onclick="confirmarFinalizar()">Finalizar</button>
@@ -393,7 +383,7 @@
         <div class="modal-box">
             <div class="modal-titulo" style="color:var(--success)">Liberar Atividade?</div>
             <div class="modal-desc">Todos poderão acessar novamente.</div>
-            <input type="password" id="inputSenhaLiberar" class="input-senha" placeholder="Senha" inputmode="numeric">
+            <input type="password" id="inputSenhaLiberar" class="input-senha" placeholder="Senha do Professor" inputmode="numeric">
             <div class="botoes-confirmacao">
                 <button class="btn-reset-opcao btn-conf-nao" onclick="fecharModalLiberar()">Cancelar</button>
                 <button class="btn-reset-opcao btn-conf-liberar" onclick="confirmarLiberar()">Liberar</button>
@@ -477,7 +467,6 @@
                     });
                 });
                 
-                // Notificações
                 const agora = new Date().getTime();
                 const ultimosNotificados = JSON.parse(sessionStorage.getItem('notificados')) || [];
                 todosRegistros.forEach(a => {
@@ -514,7 +503,7 @@
             document.getElementById('melhorAluno').innerText = filtrados.length > 0 ? filtrados[0].nome : "-";
 
             listaEl.innerHTML = "";
-            if (filtrados.length === 0) { listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Nenhum dado encontrado.</li>`; return; }
+            if (filtrados.length === 0) { listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Aguardando dados...</li>`; return; }
 
             filtrados.forEach((aluno, index) => {
                 let rankClass = "", iconePosicao = index + 1;
@@ -522,15 +511,14 @@
                 else if (index === 1) { rankClass = "rank-2"; iconePosicao = "🥈"; }
                 else if (index === 2) { rankClass = "rank-3"; iconePosicao = "🥉"; }
                 
-                // Criando elemento com onclick direto
                 const li = document.createElement('li');
                 li.className = `item-aluno ${rankClass}`;
                 li.innerHTML = `
                     <div class="posicao">${iconePosicao}</div>
                     <div class="info-nome">${aluno.nome || '-'}</div>
                     <div><span class="info-serie">${aluno.serie || '-'}</span></div>
-                    <div class="info-nota">${aluno.acertos || 0}</div>
-                    <div class="info-erro">${aluno.erros || 0}</div>
+                    <div class="info-nota">${aluno.acertos || 0} pts</div>
+                    <div class="info-erro">${aluno.erros || 0} err</div>
                     <div class="info-tempo">${aluno.hora || '--:--'}</div>
                 `;
                 li.onclick = () => abrirModalAluno(aluno);
@@ -538,7 +526,7 @@
             });
         }
 
-        /* --- SISTEMA DE MODAIS (GERAL) --- */
+        /* --- SISTEMA DE MODAIS (CLEAN) --- */
         function toggleModal(id, show) {
             const el = document.getElementById(id);
             if(show) el.classList.add('visivel');
@@ -567,7 +555,7 @@
             const [modo, idxStr] = String(qId || "").split("-");
             const idx = Number(idxStr);
             let q = null, titulo = null;
-            if (modo === "intro") { q = (Array.isArray(questoesIntro) ? questoesIntro : [])[idx]; titulo = "Intro"; } 
+            if (modo === "intro") { q = (Array.isArray(questoesIntro) ? questoesIntro : [])[idx]; titulo = "Introdução"; } 
             else if (modo === "complementar") { q = (Array.isArray(questoesComp) ? questoesComp : [])[idx]; titulo = "Complementar"; }
             return { modo, idx, q, titulo };
         }
@@ -582,12 +570,11 @@
             const divLista = document.getElementById('listaQuestoes');
             divLista.innerHTML = "";
             
-            // Esconde modal de aluno e mostra o de lista
             toggleModal('alunoModalOverlay', false);
             toggleModal('listaModalOverlay', true);
 
             if (!Array.isArray(lista) || lista.length === 0){ 
-                divLista.innerHTML = `<div style="padding:20px;color:var(--text-light);text-align:center;">Nenhuma questão registrada.</div>`; 
+                divLista.innerHTML = `<div style="padding:20px;color:#86868b;text-align:center;">Nenhuma questão registrada.</div>`; 
                 return; 
             }
 
@@ -598,7 +585,7 @@
 
             ordenada.forEach((id) => {
                 const info = getQuestaoPorId(id);
-                const texto = info.q?.pergunta ? info.q.pergunta : "Questão antiga (banco mudou).";
+                const texto = info.q?.pergunta ? info.q.pergunta : "Questão não encontrada.";
                 
                 const div = document.createElement('div');
                 div.className = 'item-questao';
@@ -689,7 +676,6 @@
             win.document.close();
         }
 
-
         /* --- OUTRAS AÇÕES (Senha, Reset) --- */
         window.abrirModalFinalizar = () => { document.getElementById('inputSenhaFinalizar').value = ''; toggleModal('modalFinalizar', true); }
         window.fecharModalFinalizar = () => toggleModal('modalFinalizar', false);
@@ -763,7 +749,7 @@
             const toast = document.createElement('div');
             toast.className = 'toast';
             if(tipo === 'alerta') toast.classList.add('alerta');
-            toast.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle>${tipo==='alerta'?'<line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>':'<path d="M8 12l2 2 4-4"/>'}</svg> ${texto}`;
+            toast.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle>${tipo==='alerta'?'<line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>':'<path d="M8 12l2 2 4-4"/>'}</svg> ${texto}`;
             container.appendChild(toast);
             setTimeout(() => { toast.classList.add('saindo'); setTimeout(() => toast.remove(), 500); }, 3000);
         }
