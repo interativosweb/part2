@@ -96,8 +96,7 @@
             cursor: pointer;
         }
 
-        
-        /* --- ✅ CADEADO NA TELA PAUSADA (PAINEL DO ALUNO) --- */
+        /* --- CADEADO NA TELA PAUSADA --- */
         #btnCadeadoPausa {
             margin-top: 38px;
             width: 64px;
@@ -129,7 +128,8 @@
             animation: cadeadoWiggle 0.45s ease-in-out;
             transform: scale(1.08);
         }
-/* --- BARRA DE PROGRESSO --- */
+
+        /* --- BARRA DE PROGRESSO --- */
         .barra-progresso-container {
             width: 100%;
             max-width: 50%;
@@ -326,7 +326,6 @@
             position: relative;
         }
 
-        /* --- AJUSTES DO MODAL DE FASE --- */
         .modal-box-fase {
             margin-top: 80px;
             padding-top: 60px;
@@ -381,25 +380,63 @@
 
         .desc-fase { font-size: 1.1rem; color: var(--text-light); margin-bottom: 25px; line-height: 1.4; }
 
-        .input-generico {
+        .input-login {
             width: 100%;
             padding: 12px;
+            margin-bottom: 15px;
             border: 1px solid #d2d2d7;
             border-radius: 8px;
             font-size: 1rem;
-            margin-bottom: 5px;
             outline: none;
+            transition: border-color 0.2s;
             text-align: center;
-            transition: border 0.2s;
         }
-        .input-generico:focus { border-color: var(--accent); }
+        .input-login:focus { border-color: var(--accent); }
 
-        .modal-botoes { display: flex; gap: 10px; justify-content: center; }
+        .grupo-selecao {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .grupo-selecao label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #d2d2d7;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+        .grupo-selecao label:hover { background-color: #f2f2f7; }
+        .grupo-selecao input[type="radio"] { accent-color: var(--accent); transform: scale(1.2); }
+
+        .erro-msg { color: var(--error); font-size: 0.9rem; margin-bottom: 15px; min-height: 20px; }
+
+        .btn-fechar-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .botoes-modal { display: flex; gap: 10px; justify-content: center; }
 
         .btn-modal { flex: 1; padding: 12px; border-radius: 8px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; }
         .btn-cancelar { background-color: #f2f2f7; color: var(--text-main); }
         .btn-confirmar { background-color: var(--accent); color: white; }
-
+        
         .btn-fase {
             background-color: var(--success);
             color: white;
@@ -419,92 +456,13 @@
         .historico-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #e5e5ea; }
         .historico-row:last-child { border-bottom: none; }
         .hist-label { font-weight: 600; color: var(--text-main); text-align: left; }
-        .hist-val { font-family: monospace; font-size: 1.1rem; }
+        .hist-val { font-family: monospace; font-weight: 700; font-size: 1.1rem; }
         .val-verde { color: var(--success); }
         .val-vermelho { color: var(--error); }
 
-        .grupo-selecao { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .grupo-selecao input[type="radio"] { display: none; }
-        .grupo-selecao label {
-            padding: 10px 15px; border: 1px solid #d2d2d7; border-radius: 8px; cursor: pointer;
-            transition: all 0.3s; color: var(--text-light); font-weight: 600; font-size: 0.9rem; background: white;
-        }
-        .grupo-selecao label:hover {
-            background-color: var(--accent); color: white; border-color: var(--accent);
-            transform: scale(1.1); box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3);
-        }
-        .grupo-selecao input[type="radio"]:checked + label {
-            background-color: var(--accent); color: white; border-color: var(--accent);
-            transform: scale(1.05); box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .aviso-erro { color: var(--error); font-size: 0.8rem; margin-top: 5px; min-height: 1.2em; font-weight: 600; }
-
-        .btn-fechar-modal {
-            position: absolute; top: 10px; right: 15px;
-            background: none; border: none; font-size: 1.5rem; color: var(--text-light); cursor: pointer;
-        }
-
-        /* Botão discreto no rodapé (professor) */
-        .btn-prof-discreto-rodape {
-            margin-top: 6px;
-            background: transparent;
-            border: none;
-            color: #c9c9ce;
-            font-size: 0.72rem;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .btn-prof-discreto-rodape:hover { color: #aeb0b5; text-decoration: underline; }
-
-        /* ✅ NOVO: Botão "Área do Professor" no popup de identificação */
-        .btn-area-prof-login {
-            width: 100%;
-            margin-top: 10px;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #d2d2d7;
-            background: #e5e5ea;        /* cinza claro */
-            color: #6e6e73;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.15s ease, background 0.15s ease;
-        }
-        .btn-area-prof-login:hover {
-            background: #d1d1d6;
-            transform: translateY(-1px);
-        }
-
-        @media (max-width: 900px) {
-            .secao-pergunta { flex-direction: column; }
-            .grid-opcoes { grid-template-columns: repeat(4, 1fr); }
-            .barra-progresso-container { max-width: 80%; }
-            .img-atividade {
-            max-width: 100%;
-            max-height: 550px;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: var(--radius);
-            pointer-events: none;
-            display: block;
-            margin: 0 auto 30px auto;
-        }
-        }
         @media (max-width: 600px) {
             .grid-opcoes { grid-template-columns: repeat(2, 1fr); }
-            .img-atividade {
-            max-width: 100%;
-            max-height: 550px;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: var(--radius);
-            pointer-events: none;
-            display: block;
-            margin: 0 auto 30px auto;
-        }
+            .img-atividade { max-width: 100%; max-height: 550px; width: auto; height: auto; object-fit: contain; border-radius: var(--radius); pointer-events: none; display: block; margin: 0 auto 30px auto; }
             .grupo-selecao { gap: 5px; }
             .grupo-selecao label { padding: 8px 10px; font-size: 0.8rem; }
             .header-unificado { gap: 10px; }
@@ -521,87 +479,112 @@
 <body>
 
     <div id="telaBloqueio">
+        <div style="font-size: 4rem; margin-bottom: 20px;">🔒</div>
         <h1 style="font-size:3rem;color:#ff3b30;margin-bottom:10px">Atividade Pausada</h1>
         <p style="font-size:1.5rem;color:#86868b">Aguarde a liberação do professor.</p>
-        <button id="btnCadeadoPausa" type="button" onclick="abrirModalPainelAluno()" aria-label="Abrir painel do aluno">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/>
-            </svg>
+        
+        <button id="btnCadeadoPausa" onclick="abrirModalPainelAluno()" title="Área do Aluno / Professor">
+            <svg viewBox="0 0 24 24"><path d="M12 17a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M8 7a4 4 0 118 0v3h1a2 2 0 012 2v8a2 2 0 01-2 2H7a2 2 0 01-2-2v-8a2 2 0 012-2h1V7zm4-2a2 2 0 00-2 2v3h4V7a2 2 0 00-2-2z" clip-rule="evenodd"/></svg>
         </button>
-
     </div>
 
-    <!-- MODAL DE IDENTIFICAÇÃO -->
-    <div id="modalLogin" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-titulo">Identificação</div>
-            <div class="modal-desc">Insira seus dados para começar.</div>
-
-            <input type="text" id="inputNomeAluno" class="input-generico" placeholder="Qual o seu nome?" maxlength="15">
-
-            <div class="modal-subtitulo">Qual seu ano?</div>
-            <div class="grupo-selecao">
-                <input type="radio" id="ano6" name="ano" value="6º Ano"><label for="ano6">6º Ano</label>
-                <input type="radio" id="ano7" name="ano" value="7º Ano"><label for="ano7">7º Ano</label>
-                <input type="radio" id="ano8" name="ano" value="8º Ano"><label for="ano8">8º Ano</label>
-                <input type="radio" id="ano9" name="ano" value="9º Ano"><label for="ano9">9º Ano</label>
+    <div id="appContainer" class="app-container">
+        
+        <div class="header-unificado">
+            <div class="top-item bg-cinza-claro hover-red" onclick="window.location.reload()">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                Início
             </div>
-
-            <div class="modal-subtitulo">Qual sua turma?</div>
-            <div class="grupo-selecao">
-                <input type="radio" id="serieA" name="serie" value="A"><label for="serieA">A</label>
-                <input type="radio" id="serieB" name="serie" value="B"><label for="serieB">B</label>
-                <input type="radio" id="serieC" name="serie" value="C"><label for="serieC">C</label>
+            <div class="top-item bg-verde-ativo" id="badgeNome">Aluno</div>
+            <div class="top-item bg-verde-ativo" id="badgeSerie">Série</div>
+            <div class="top-item bg-cinza-claro" onclick="abrirModalPainelAluno()" style="cursor:pointer">
+                <span id="scoreC" style="color:var(--success); margin-right:5px">0</span>
+                <span style="margin:0 5px; opacity:0.3">|</span>
+                <span id="scoreE" style="color:var(--error); margin-left:5px">0</span>
             </div>
+        </div>
 
-            <div id="erroNome" class="aviso-erro"></div>
-            <button class="btn-modal btn-confirmar" style="width:100%; margin-top:10px" onclick="realizarLogin()">Entrar</button>
+        <div class="barra-progresso-container">
+            <div id="barraFill" class="barra-progresso-fill"></div>
+        </div>
 
-            <button class="btn-area-prof-login" type="button" onclick="abrirModalAcessoProfessor()">
-                Área do Professor
-            </button>
+        <div class="secao-pergunta">
+            <div class="coluna-imagem">
+                <img id="imgAtividade" class="img-atividade" src="" alt="Atividade">
+            </div>
+            <div class="coluna-conteudo">
+                <div class="topo-info">
+                    <span id="labelQuestao">QUESTÃO 1</span>
+                </div>
+                <div class="enunciado" id="textoEnunciado"></div>
+                
+                <div class="grid-opcoes" id="containerOpcoes"></div>
+
+                <div class="area-botao-proximo">
+                    <button id="btnProximo" class="btn-proximo" onclick="proximaQuestao()">Próxima Questão</button>
+                </div>
+                
+                <div id="feedbackResposta" class="secao-resposta">
+                    <span id="tituloFeedback" class="titulo-feedback"></span>
+                    <div id="textoResolucao" class="texto-resolucao"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rodape">
+            <div class="botoes-rodape-container">
+                <button class="btn-acao-rodape" onclick="abrirModalHistorico()">Ver Histórico</button>
+                <button class="btn-acao-rodape" onclick="window.location.reload()">Sair / Trocar Aluno</button>
+            </div>
+            <span class="texto-creditos">Matemática Fundamental</span>
         </div>
     </div>
 
-    <!-- MODAL DE FASE -->
+    <div id="modalLogin" class="modal-overlay visivel">
+        <div class="modal-box">
+            <div class="modal-titulo">Bem-vindo(a)</div>
+            <div class="modal-desc">Digite seu nome e selecione sua turma para começar.</div>
+            
+            <input type="text" id="inputNome" class="input-login" placeholder="Seu nome (ex: João Silva)" autocomplete="off">
+            
+            <div class="grupo-selecao">
+                <label><input type="radio" name="serie" value="6º Ano"> 6º Ano</label>
+                <label><input type="radio" name="serie" value="7º Ano"> 7º Ano</label>
+                <label><input type="radio" name="serie" value="8º Ano"> 8º Ano</label>
+                <label><input type="radio" name="serie" value="9º Ano"> 9º Ano</label>
+            </div>
+
+            <div class="grupo-selecao">
+                <label><input type="radio" name="turma" value="A"> Turma A</label>
+                <label><input type="radio" name="turma" value="B"> Turma B</label>
+                <label><input type="radio" name="turma" value="C"> Turma C</label>
+            </div>
+
+            <div id="erroLogin" class="erro-msg"></div>
+            <button class="btn-fase" onclick="iniciarApp()">Entrar</button>
+        </div>
+    </div>
+
     <div id="modalFase" class="modal-overlay">
         <div class="modal-box modal-box-fase">
-            <video class="animacao-foguinho" autoplay loop muted playsinline>
-                <source src="https://interativosweb.github.io/part2/animacao/foguinho.webm" type="video/webm">
-            </video>
-
-            <div class="titulo-fase">
-                Parabéns,<br>
-                <span id="nomeAlunoFase" class="nome-destaque">Aluno</span>
-            </div>
-
+            <img src="https://cdn-icons-png.flaticon.com/512/744/744922.png" alt="Foguinho" class="animacao-foguinho">
+            <div class="titulo-fase">Mandou bem,<br><span id="nomeAlunoFase" class="nome-destaque">Aluno</span>!</div>
             <div class="desc-fase">
-                Você concluiu a <b>Introdução I</b> com sucesso!
-                <br>Agora vamos para a parte da atividade.
+                Você concluiu a Introdução.<br>
+                Prepare-se para o nível Complementar.
             </div>
-
-            <button class="btn-fase" onclick="avancarFase()">Parte 2</button>
+            <button class="btn-fase" onclick="irParaComplementar()">Continuar</button>
         </div>
     </div>
 
-    <!-- MODAL FINAL -->
     <div id="modalFinal" class="modal-overlay">
         <div class="modal-box modal-box-fase">
-            <video class="animacao-trofeu" autoplay loop muted playsinline>
-                <source src="https://interativosweb.github.io/part2/animacao/trofeuu.webm" type="video/webm">
-            </video>
-
-            <div class="titulo-fase" style="margin-bottom:10px;">
-                ATIVIDADE CONCLUÍDA!
-            </div>
-
-            <span id="nomeAlunoFinal" class="nome-gigante-final">ALUNO</span>
-
+            <img src="https://cdn-icons-png.flaticon.com/512/3112/3112946.png" alt="Troféu" class="animacao-trofeu">
+            <div class="titulo-fase">Parabéns,<br><span id="nomeAlunoFinal" class="nome-gigante-final">Aluno</span>!</div>
             <div class="desc-fase">
                 Você finalizou todo o percurso.<br>
                 Seu desempenho na etapa final:
             </div>
-
             <div style="display:flex; justify-content:center; gap:30px; margin-bottom:30px;">
                 <div style="text-align:center">
                     <div style="font-size:2rem; font-weight:700; color:var(--success)" id="finalAcertos">0</div>
@@ -615,12 +598,11 @@
         </div>
     </div>
 
-    <!-- MODAL HISTÓRICO -->
     <div id="modalHistorico" class="modal-overlay">
         <div class="modal-box">
             <button class="btn-fechar-modal" onclick="fecharModalHistorico()">&times;</button>
             <div class="modal-titulo">Histórico das atividades</div>
-
+            
             <div class="modal-subtitulo" style="text-align:left; color:var(--success)">INTRODUÇÃO I e II</div>
             <div class="historico-row">
                 <span class="hist-label">Acertos</span>
@@ -643,204 +625,28 @@
         </div>
     </div>
 
-    <div id="appContainer" class="app-container">
-
-        <div class="header-unificado">
-            <div class="top-item" id="btnIntro">Introdução I</div>
-            <div class="top-item" id="btnComplementar">Atividade complementar</div>
-            <div id="badgeNome" class="top-item bg-cinza-claro hover-red">Aluno</div>
-            <div id="badgeSerie" class="top-item bg-cinza-claro hover-red">Série</div>
-        </div>
-
-        <div class="barra-progresso-container">
-            <div id="barraFill" class="barra-progresso-fill"></div>
-        </div>
-
-        <section class="secao-pergunta">
-            <div class="coluna-imagem">
-                <img id="imgQuestao" class="img-atividade" src="" alt="Atividade">
-            </div>
-
-            <div class="coluna-conteudo">
-                <div class="topo-info">
-                    <div>
-                        <span style="color:var(--success)">Acertos: <span id="scoreC">0</span></span>
-                        <span style="margin:0 10px; color:#ddd">|</span>
-                        <span style="color:var(--error)">Erros: <span id="scoreE">0</span></span>
-                    </div>
-                </div>
-
-                <div id="textoPergunta" class="enunciado">Carregando...</div>
-                <div id="containerOpcoes" class="grid-opcoes"></div>
-
-                <div class="area-botao-proximo">
-                    <button id="btnProximo" class="btn-proximo" onclick="proximaQuestao()">Próxima Questão</button>
-                </div>
-            </div>
-        </section>
-
-        <section class="secao-resposta" id="areaResposta">
-            <span id="tituloFeedback" class="titulo-feedback"></span>
-            <div id="textoResolucao" class="texto-resolucao"></div>
-        </section>
-
-        <div class="rodape">
-            <div class="botoes-rodape-container">
-                <button class="btn-acao-rodape" onclick="abrirModalReset()">Resetar Histórico</button>
-                <button class="btn-acao-rodape" onclick="abrirModalHistorico()">Ver Histórico</button>
-            </div>
-
-            <span class="texto-creditos">Desenvolvido por Gilberto Fernandes - Matemática [Atividade Professora Simone Vieira]</span>
-
-            <button class="btn-prof-discreto-rodape" type="button" onclick="abrirModalAcessoProfessor()">
-                Acesso do Professor
-            </button>
-        </div>
-
-    </div>
-
-    <!-- MODAL RESET -->
-    <div id="modalReset" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-titulo">Resetar Histórico</div>
-            <div class="modal-desc">Digite a senha do professor para apagar todo o progresso.</div>
-            <input type="password" id="inputSenha" class="input-generico" placeholder="Senha" inputmode="numeric">
-            <div class="modal-botoes">
-                <button class="btn-modal btn-cancelar" onclick="fecharModalReset()">Cancelar</button>
-                <button class="btn-modal btn-confirmar" onclick="confirmarReset()">Confirmar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ✅ MODAL ACESSO DO PROFESSOR (igual ao reset) -->
-    <div id="modalAcessoProfessor" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-titulo">Acesso do Professor</div>
-            <div class="modal-desc">Digite a senha para acessar o painel.</div>
-            <input type="password" id="inputSenhaProfessor" class="input-generico" placeholder="Senha" inputmode="numeric">
-            <div id="erroSenhaProfessor" class="aviso-erro"></div>
-            <div class="modal-botoes">
-                <button class="btn-modal btn-cancelar" onclick="fecharModalAcessoProfessor()">Cancelar</button>
-                <button class="btn-modal btn-confirmar" onclick="confirmarAcessoProfessor()">Confirmar</button>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ✅ MODAL PAINEL DO ALUNO (tela pausada) -->
     <div id="modalPainelAluno" class="modal-overlay">
         <div class="modal-box">
-            <div class="modal-titulo">Painel do aluno</div>
-            <div class="modal-desc">Digite a senha do professor para liberar o acesso.</div>
-            <input type="password" id="inputSenhaPainelAluno" class="input-generico" placeholder="Senha" inputmode="numeric">
-            <div id="erroSenhaPainelAluno" class="aviso-erro"></div>
-            <div class="modal-botoes">
+            <div class="modal-titulo">Área Restrita</div>
+            <div class="modal-desc">Digite a senha do professor para acessar o Painel.</div>
+            <input type="password" id="inputSenhaPainelAluno" class="input-login" placeholder="Senha" inputmode="numeric">
+            <div id="erroSenhaPainelAluno" class="erro-msg"></div>
+            <div class="botoes-modal">
                 <button class="btn-modal btn-cancelar" onclick="fecharModalPainelAluno()">Cancelar</button>
                 <button class="btn-modal btn-confirmar" onclick="confirmarPainelAluno()">Confirmar</button>
             </div>
         </div>
     </div>
 
-    <!-- ====================================================================== -->
-    <!-- SCRIPT PRINCIPAL (IMPORTA AS QUESTÕES DO banco_questoes.js)            -->
-    <!-- ====================================================================== -->
-    
-    <script>
-        // Popup do Painel do Aluno (funciona mesmo se o módulo falhar)
-        (function(){
-            const SENHA_PROFESSOR = "4241";
-            const URL_PAINEL_ALUNO = "./ranking.html"; // ajuste se necessário
-
-            window.abrirModalPainelAluno = function() {
-                const modal = document.getElementById('modalPainelAluno');
-                const input = document.getElementById('inputSenhaPainelAluno');
-                const erro = document.getElementById('erroSenhaPainelAluno');
-                if (!modal || !input) return;
-                if (erro) erro.innerText = "";
-                input.value = "";
-                modal.classList.add('visivel');
-                setTimeout(() => input.focus(), 50);
-            };
-
-            window.fecharModalPainelAluno = function() {
-                const modal = document.getElementById('modalPainelAluno');
-                if (modal) modal.classList.remove('visivel');
-            };
-
-            window.confirmarPainelAluno = function() {
-                const input = document.getElementById('inputSenhaPainelAluno');
-                const erro = document.getElementById('erroSenhaPainelAluno');
-                const senha = (input && input.value ? input.value : "").trim();
-
-                if (senha !== SENHA_PROFESSOR) {
-                    if (erro) erro.innerText = "Senha incorreta.";
-                    return;
-                }
-
-                window.fecharModalPainelAluno();
-                window.open(URL_PAINEL_ALUNO, "_blank");
-            };
-
-            document.addEventListener('keydown', (e) => {
-                const modal = document.getElementById('modalPainelAluno');
-                const visivel = modal && modal.classList.contains('visivel');
-                if (visivel && e.key === 'Enter') {
-                    e.preventDefault();
-                    window.confirmarPainelAluno();
-                }
-            }, { capture: true });
-
-            document.addEventListener('click', (e) => {
-                if (e.target && e.target.id === 'modalPainelAluno') {
-                    window.fecharModalPainelAluno();
-                }
-            }, true);
-        })();
-    </script>
-
     <script type="module">
-        import { questoesIntro, questoesComp } from "./banco_questoes.js";
-
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, onValue, set, update, get, child, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        
+        // Importa as questões do arquivo externo
+        import { questoesIntro, questoesComp } from "./banco_questoes (23).js";
 
         // =========================================================================
-        // PROTEÇÕES ANTI-CÓPIA
-        // =========================================================================
-        const ativarProtecoes = () => {
-            document.addEventListener('contextmenu', (e) => e.preventDefault(), { capture: true });
-            document.addEventListener('selectstart', (e) => e.preventDefault(), { capture: true });
-            document.addEventListener('dragstart', (e) => e.preventDefault(), { capture: true });
-            document.addEventListener('copy', (e) => e.preventDefault(), { capture: true });
-            document.addEventListener('cut', (e) => e.preventDefault(), { capture: true });
-            document.addEventListener('paste', (e) => e.preventDefault(), { capture: true });
-
-            document.addEventListener('keydown', (e) => {
-                const key = (e.key || '').toLowerCase();
-                // ✅ Bloqueio de recarregar
-                if (e.key === 'F5') { e.preventDefault(); e.stopPropagation(); return false; }
-                if ((e.ctrlKey || e.metaKey) && key === 'r') { e.preventDefault(); e.stopPropagation(); return false; }
-                // ✅ Bloqueio de recarregar (não é 100% garantido em todos os navegadores, mas reduz bastante)
-                if (e.key === 'F5') { e.preventDefault(); e.stopPropagation(); return false; }
-                if ((e.ctrlKey || e.metaKey) && key === 'r') { e.preventDefault(); e.stopPropagation(); return false; }
-
-                if (e.key === 'F12') { e.preventDefault(); e.stopPropagation(); return false; }
-                if (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) { e.preventDefault(); e.stopPropagation(); return false; }
-                if (e.ctrlKey && key === 'u') { e.preventDefault(); e.stopPropagation(); return false; }
-                if (e.ctrlKey && key === 's') { e.preventDefault(); e.stopPropagation(); return false; }
-                if (e.ctrlKey && key === 'p') { e.preventDefault(); e.stopPropagation(); return false; }
-                if (e.ctrlKey && (key === 'c' || key === 'x')) { e.preventDefault(); e.stopPropagation(); return false; }
-            }, { capture: true });
-        };
-
-        // =========================================================================
-        // QUESTÕES DO BANCO
-        // =========================================================================
-        window.questoesIntro = questoesIntro;
-        window.questoesComp  = questoesComp;
-
-        // =========================================================================
-        // FIREBASE (MANTIDO)
+        // FIREBASE CONFIG
         // =========================================================================
         const firebaseConfig = {
           apiKey: "AIzaSyCHfcVVxma4M1LbYO5M-oMX4fnlaNUPi24",
@@ -854,175 +660,154 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        let alunoId = localStorage.getItem('firebaseId');
-
-        const iconCadeadoAberto = `<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>`;
-        const iconCadeadoFechado = `<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>`;
-
-        window.modoAtual = localStorage.getItem('modoAtual') || 'intro';
-        window.indice = parseInt(localStorage.getItem('indice')) || 0;
-        window.placarIntro = JSON.parse(localStorage.getItem('placarIntro')) || { acertos: 0, erros: 0 };
-        window.placarComp = JSON.parse(localStorage.getItem('placarComp')) || { acertos: 0, erros: 0 };
-
-        // ============================================================
-        // ✅ NOVO: listas de questões acertadas/erradas (para o Painel da Turma)
-        // Formato do ID: "intro-<indice>" ou "complementar-<indice>"
-        // ============================================================
-        window.listaAcertos = JSON.parse(localStorage.getItem('listaAcertos')) || [];
-        window.listaErros   = JSON.parse(localStorage.getItem('listaErros'))   || [];
-
 
         // =========================================================================
-        // ACESSO DO PROFESSOR COM POPUP + SENHA
+        // VARIÁVEIS GLOBAIS
         // =========================================================================
-        const SENHA_PROFESSOR = "4241";
-        const URL_PAINEL_PROF = "./ranking.html"; // ajuste se seu painel tiver outro nome
+        window.modoAtual = 'intro'; 
+        window.indice = 0;
+        window.placarIntro = { acertos: 0, erros: 0 };
+        window.placarComp = { acertos: 0, erros: 0 };
+        
+        // Listas para salvar QUAIS questões o aluno acertou/errou
+        window.listaAcertos = [];
+        window.listaErros = [];
 
-        window.abrirModalAcessoProfessor = function() {
-            const modal = document.getElementById('modalAcessoProfessor');
-            const input = document.getElementById('inputSenhaProfessor');
-            const erro = document.getElementById('erroSenhaProfessor');
-            erro.innerText = "";
-            input.value = "";
-            modal.classList.add('visivel');
-            setTimeout(() => input.focus(), 50);
-        };
+        // Identidade
+        let alunoId = localStorage.getItem('aluno_id');
+        let bloqueioIndividualAtivo = false; // Flag para prioridade de bloqueio
 
-        window.fecharModalAcessoProfessor = function() {
-            document.getElementById('modalAcessoProfessor').classList.remove('visivel');
-        };
+        // =========================================================================
+        // ✅ MONITORAMENTO DE BLOQUEIO (GLOBAL E INDIVIDUAL)
+        // =========================================================================
+        
+        // 1. Monitoramento GLOBAL (Status da Turma)
+        const statusRef = ref(db, 'status_atividade');
+        onValue(statusRef, (snapshot) => {
+            // Se houver um bloqueio/liberação individual explícito, ignoramos o global
+            if (bloqueioIndividualAtivo) return;
 
-        window.confirmarAcessoProfessor = function() {
-            const senha = (document.getElementById('inputSenhaProfessor').value || "").trim();
-            const erro = document.getElementById('erroSenhaProfessor');
+            const val = snapshot.val();
+            const tela = document.getElementById('telaBloqueio');
+            const h1 = tela.querySelector('h1');
+            const p = tela.querySelector('p');
 
-            if (senha !== SENHA_PROFESSOR) {
-                erro.innerText = "Senha incorreta.";
-                return;
+            if (val && val.comando === 'finalizar') {
+                tela.classList.add('visivel');
+                h1.innerText = "Atividade Pausada";
+                h1.style.color = "#ff3b30";
+                p.innerText = "Aguarde a liberação do professor.";
+            } else {
+                tela.classList.remove('visivel');
             }
-
-            window.fecharModalAcessoProfessor();
-            window.open(URL_PAINEL_PROF, "_blank");
-
-        };
-
-        // =========================================================================
-        // ✅ CADEADO NA TELA PAUSADA -> ABRE PAINEL DO ALUNO (SENHA DO PROFESSOR)
-        // =========================================================================
-        const URL_PAINEL_ALUNO = "./ranking.html"; // ajuste se seu painel do aluno tiver outro caminho
-
-        window.abrirModalPainelAluno = function() {
-            const modal = document.getElementById('modalPainelAluno');
-            const input = document.getElementById('inputSenhaPainelAluno');
-            const erro = document.getElementById('erroSenhaPainelAluno');
-            erro.innerText = "";
-            input.value = "";
-            modal.classList.add('visivel');
-            setTimeout(() => input.focus(), 50);
-        };
-
-        window.fecharModalPainelAluno = function() {
-            document.getElementById('modalPainelAluno').classList.remove('visivel');
-        };
-
-        window.confirmarPainelAluno = function() {
-            const senha = (document.getElementById('inputSenhaPainelAluno').value || "").trim();
-            const erro = document.getElementById('erroSenhaPainelAluno');
-
-            if (senha !== SENHA_PROFESSOR) {
-                erro.innerText = "Senha incorreta.";
-                return;
-            }
-
-            window.fecharModalPainelAluno();
-            window.open(URL_PAINEL_ALUNO, "_blank");
-        };
-
-        // Enter no modal do painel do aluno
-        document.addEventListener('keydown', (e) => {
-            const modalVisivel = document.getElementById('modalPainelAluno').classList.contains('visivel');
-            if (modalVisivel && e.key === 'Enter') {
-                e.preventDefault();
-                window.confirmarPainelAluno();
-            }
-        }, { capture: true });
-
-        // Fechar modal do painel do aluno clicando no fundo
-        document.getElementById('modalPainelAluno').addEventListener('click', (e) => {
-            if (e.target.id === 'modalPainelAluno') window.fecharModalPainelAluno();
         });
 
+        // 2. Monitoramento INDIVIDUAL (Status do Aluno)
+        function iniciarMonitoramentoIndividual() {
+            if (!alunoId) return;
+            const alunoStatusRef = ref(db, `alunos/${alunoId}/status_individual`);
+            
+            onValue(alunoStatusRef, (snapshot) => {
+                const status = snapshot.val();
+                const tela = document.getElementById('telaBloqueio');
+                const h1 = tela.querySelector('h1');
+                const p = tela.querySelector('p');
 
-        // Enter no modal do professor
-        document.addEventListener('keydown', (e) => {
-            const modalVisivel = document.getElementById('modalAcessoProfessor').classList.contains('visivel');
-            if (modalVisivel && e.key === 'Enter') {
-                e.preventDefault();
-                window.confirmarAcessoProfessor();
-            }
-        }, { capture: true });
-
-        // Fechar modal clicando no fundo
-        document.getElementById('modalAcessoProfessor').addEventListener('click', (e) => {
-            if (e.target.id === 'modalAcessoProfessor') window.fecharModalAcessoProfessor();
-        });
+                if (status === 'finalizado') {
+                    // Bloqueio Individual (Prioridade Alta)
+                    bloqueioIndividualAtivo = true;
+                    tela.classList.add('visivel');
+                    h1.innerText = "Atividade Encerrada";
+                    h1.style.color = "#ff3b30";
+                    p.innerText = "O professor finalizou sua atividade.";
+                } else if (status === 'liberado') {
+                    // Liberação Individual (Prioridade Alta)
+                    bloqueioIndividualAtivo = true;
+                    tela.classList.remove('visivel');
+                } else {
+                    // Sem status individual definido, volta a obedecer o global
+                    bloqueioIndividualAtivo = false;
+                    // Verificamos o global agora para atualizar estado
+                    get(child(ref(db), 'status_atividade')).then((snapGlobal) => {
+                        const valGlobal = snapGlobal.val();
+                        if (valGlobal && valGlobal.comando === 'finalizar') {
+                            tela.classList.add('visivel');
+                            h1.innerText = "Atividade Pausada";
+                            h1.style.color = "#ff3b30";
+                            p.innerText = "Aguarde a liberação do professor.";
+                        } else {
+                            tela.classList.remove('visivel');
+                        }
+                    });
+                }
+            });
+        }
 
         // =========================================================================
-        // LOGIN
+        // LÓGICA DE LOGIN E INICIALIZAÇÃO
         // =========================================================================
         window.checkLogin = function() {
-            const nomeSalvo = localStorage.getItem('alunoNome');
-            const serieSalva = localStorage.getItem('alunoSerie');
-            if (nomeSalvo && serieSalva) {
-                aplicarDadosUsuario(nomeSalvo, serieSalva);
-                if (alunoId) {
-                    update(ref(db, 'alunos/' + alunoId), { status: 'reconectado', ultimoAcesso: new Date().toISOString() });
-                }
+            const savedId = localStorage.getItem('aluno_id');
+            const savedNome = localStorage.getItem('aluno_nome');
+            const savedSerie = localStorage.getItem('aluno_serie');
+
+            if (savedId && savedNome && savedSerie) {
+                alunoId = savedId;
+                iniciarMonitoramentoIndividual(); // Inicia monitoramento
+                
+                aplicarDadosUsuario(savedNome, savedSerie);
+                
+                // Restaura estado
+                window.modoAtual = localStorage.getItem('modoAtual') || 'intro';
+                window.indice = Number(localStorage.getItem('indice')) || 0;
+                window.placarIntro = JSON.parse(localStorage.getItem('placarIntro')) || { acertos: 0, erros: 0 };
+                window.placarComp = JSON.parse(localStorage.getItem('placarComp')) || { acertos: 0, erros: 0 };
+
                 document.getElementById('modalLogin').classList.remove('visivel');
                 mostrarApp();
+                renderizarQuestao();
             } else {
                 document.getElementById('modalLogin').classList.add('visivel');
             }
         };
 
-        window.realizarLogin = function() {
-            const inputNome = document.getElementById('inputNomeAluno');
-            const aviso = document.getElementById('erroNome');
-            let nome = inputNome.value.trim();
-            aviso.innerText = "";
+        window.iniciarApp = function() {
+            const nome = document.getElementById('inputNome').value.trim();
+            const serieEl = document.querySelector('input[name="serie"]:checked');
+            const turmaEl = document.querySelector('input[name="turma"]:checked');
+            const erro = document.getElementById('erroLogin');
 
-            if (!nome) { aviso.innerText = "Por favor, digite seu nome."; return; }
-            if (nome.includes(" ")) { aviso.innerText = "Digite apenas o primeiro nome."; return; }
-            if (nome.length > 15) { aviso.innerText = "O nome deve ter no máximo 15 letras."; return; }
-
-            nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
-
-            const anoSelecionado = document.querySelector('input[name="ano"]:checked');
-            const turmaSelecionada = document.querySelector('input[name="serie"]:checked');
-            if (!anoSelecionado || !turmaSelecionada) { aviso.innerText = "Selecione Ano e Turma."; return; }
-
-            const serieCompleta = `${anoSelecionado.value} ${turmaSelecionada.value}`;
-            localStorage.setItem('alunoNome', nome);
-            localStorage.setItem('alunoSerie', serieCompleta);
-            aplicarDadosUsuario(nome, serieCompleta);
-
-            if (!alunoId) {
-                const novoAlunoRef = push(ref(db, 'alunos'));
-                alunoId = novoAlunoRef.key;
-                localStorage.setItem('firebaseId', alunoId);
+            if (!nome || !serieEl || !turmaEl) {
+                erro.innerText = "Preencha o nome, ano e turma.";
+                return;
             }
 
+            const serieCompleta = `${serieEl.value} ${turmaEl.value}`; // Ex: "6º Ano A"
+            
+            // Cria novo ID no Firebase
+            const novoRef = push(ref(db, 'alunos'));
+            alunoId = novoRef.key;
+
+            localStorage.setItem('aluno_id', alunoId);
+            localStorage.setItem('aluno_nome', nome);
+            localStorage.setItem('aluno_serie', serieCompleta);
+
+            aplicarDadosUsuario(nome, serieCompleta);
+            iniciarMonitoramentoIndividual(); // Inicia monitoramento
+
+            // Salva dados iniciais no DB
             update(ref(db, 'alunos/' + alunoId), {
                 nome: nome,
                 serie: serieCompleta,
                 acertos: 0,
                 erros: 0,
                 entrouEm: new Date().toISOString(),
-                status: 'online'
+                status_individual: 'jogando' // Default
             });
 
             document.getElementById('modalLogin').classList.remove('visivel');
             mostrarApp();
+            renderizarQuestao();
         };
 
         function aplicarDadosUsuario(nome, serie) {
@@ -1043,396 +828,208 @@
             localStorage.setItem('placarComp', JSON.stringify(window.placarComp));
         }
 
-// =========================================================================
-// ✅ ESTADO DAS QUESTÕES (não perde ao recarregar)
-// - Salva a alternativa escolhida por questão (mesmo se recarregar)
-// - NÃO contabiliza acerto/erro nem avança barra até clicar em "Próxima Questão"
-// =========================================================================
-const STORAGE_ESTADO_KEY = 'estadoQuestoes_v2';
+        // =========================================================================
+        // RENDERIZAÇÃO DAS QUESTÕES
+        // =========================================================================
+        function renderizarQuestao() {
+            const lista = window.modoAtual === 'intro' ? questoesIntro : questoesComp;
+            
+            // Verifica fim da fase
+            if (window.indice >= lista.length) {
+                if (window.modoAtual === 'intro') {
+                    // Fim da intro -> Modal de transição
+                    document.getElementById('modalFase').classList.add('visivel');
+                } else {
+                    // Fim do jogo -> Modal Final
+                    document.getElementById('finalAcertos').innerText = window.placarComp.acertos;
+                    document.getElementById('finalErros').innerText = window.placarComp.erros;
+                    document.getElementById('modalFinal').classList.add('visivel');
+                }
+                return;
+            }
 
-function _lerEstadoQuestoes() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_ESTADO_KEY)) || {}; }
-    catch (e) { return {}; }
-}
-function _salvarEstadoQuestoes(obj) {
-    localStorage.setItem(STORAGE_ESTADO_KEY, JSON.stringify(obj || {}));
-}
-function _getEstadoQuestao(modo, indice) {
-    const base = _lerEstadoQuestoes();
-    return (base[modo] && base[modo][indice]) ? base[modo][indice] : null;
-}
-function _setEstadoQuestao(modo, indice, estado) {
-    const base = _lerEstadoQuestoes();
-    if (!base[modo]) base[modo] = {};
-    base[modo][indice] = Object.assign({}, base[modo][indice] || {}, estado);
-    _salvarEstadoQuestoes(base);
-}
-function _limparEstadoQuestoes() {
-    localStorage.removeItem(STORAGE_ESTADO_KEY);
-}
+            const q = lista[window.indice];
+            
+            // Reseta UI
+            document.getElementById('btnProximo').style.display = 'none';
+            document.getElementById('feedbackResposta').style.display = 'none';
+            document.getElementById('textoEnunciado').innerHTML = q.pergunta;
+            document.getElementById('labelQuestao').innerText = (window.modoAtual === 'intro' ? "INTRODUÇÃO" : "COMPLEMENTAR") + " • QUESTÃO " + (window.indice + 1);
 
-// Aplica pontuação UMA ÚNICA VEZ, somente quando o aluno clica em "Próxima Questão".
-function _aplicarPontuacaoQuestaoAtualSeNecessario() {
-    const listaQuestao = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
-    const q = listaQuestao[window.indice];
-    if (!q) return;
+            // Imagem
+            const imgEl = document.getElementById('imgAtividade');
+            if (q.img) {
+                imgEl.src = q.img;
+                imgEl.style.display = 'block';
+            } else {
+                imgEl.style.display = 'none';
+            }
 
-    const estado = _getEstadoQuestao(window.modoAtual, window.indice);
-    if (!estado || typeof estado.choice === 'undefined' || estado.choice === null) return;
+            // Opções
+            const container = document.getElementById('containerOpcoes');
+            container.innerHTML = '';
+            
+            q.opcoes.forEach((textoOpcao, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-opcao';
+                btn.innerHTML = textoOpcao;
+                btn.onclick = () => verificarResposta(idx, btn);
+                container.appendChild(btn);
+            });
 
-    // Já pontuou? não pontua de novo.
-    if (estado.scored === true) return;
-
-    const corretas = Array.isArray(q.correta) ? q.correta : [q.correta];
-    const acertou = corretas.includes(Number(estado.choice));
-
-    let placarAtual = window.modoAtual === 'intro' ? window.placarIntro : window.placarComp;
-    if (acertou) placarAtual.acertos++;
-    else placarAtual.erros++;
-
-    // ✅ registra a questão na lista (uma única vez)
-    const qId = `${window.modoAtual}-${window.indice}`;
-    if (acertou) {
-        if (!window.listaAcertos.includes(qId)) window.listaAcertos.push(qId);
-        // se por algum motivo estava na lista de erros, remove
-        window.listaErros = window.listaErros.filter(x => x !== qId);
-    } else {
-        if (!window.listaErros.includes(qId)) window.listaErros.push(qId);
-        window.listaAcertos = window.listaAcertos.filter(x => x !== qId);
-    }
-
-    localStorage.setItem('listaAcertos', JSON.stringify(window.listaAcertos));
-    localStorage.setItem('listaErros', JSON.stringify(window.listaErros));
-
-    _setEstadoQuestao(window.modoAtual, window.indice, { scored: true });
-
-    salvarProgresso();
-    atualizarPlacarVisual();
-
-    if (alunoId) {
-        (() => {
-          const acertosIntro = (window.placarIntro && window.placarIntro.acertos) ? window.placarIntro.acertos : 0;
-          const errosIntro   = (window.placarIntro && window.placarIntro.erros)   ? window.placarIntro.erros   : 0;
-          const acertosComp  = (window.placarComp && window.placarComp.acertos)  ? window.placarComp.acertos  : 0;
-          const errosComp    = (window.placarComp && window.placarComp.erros)    ? window.placarComp.erros    : 0;
-
-          const acertosTotal = acertosIntro + acertosComp;
-          const errosTotal   = errosIntro + errosComp;
-
-          // Mantém compatibilidade: "acertos" e "erros" agora são o TOTAL do aluno no site
-          update(ref(db, 'alunos/' + alunoId), {
-            acertos: acertosTotal,
-            erros: errosTotal,
-            acertosIntro,
-            errosIntro,
-            acertosComp,
-            errosComp,
-            listaAcertos: window.listaAcertos || [],
-            listaErros: window.listaErros || [],
-            ultimoAcesso: new Date().toISOString()
-          });
-        })();
-    }
-}
-
-function restaurarEstadoRespostaSeExistir() {
-    const listaQuestao = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
-    const q = listaQuestao[window.indice];
-    if (!q) return;
-
-    const estado = _getEstadoQuestao(window.modoAtual, window.indice);
-    if (!estado || typeof estado.choice === 'undefined' || estado.choice === null) return;
-
-    const todos = document.querySelectorAll('.btn-opcao');
-    if (!todos || !todos.length) return;
-
-    // Desabilita tudo e aplica feedback
-    todos.forEach(b => b.disabled = true);
-
-    const corretas = Array.isArray(q.correta) ? q.correta : [q.correta];
-    const acertou = corretas.includes(Number(estado.choice));
-
-    const btnEscolhido = todos[Number(estado.choice)];
-    if (btnEscolhido) {
-        if (acertou) btnEscolhido.classList.add('certo');
-        else btnEscolhido.classList.add('errado');
-    }
-    if (!acertou) {
-        corretas.forEach((idx) => {
-            if (todos[idx]) todos[idx].classList.add('certo');
-        });
-    }
-
-    // Reexibe área de feedback + botão próximo
-    document.getElementById('btnProximo').style.display = 'block';
-    document.getElementById('areaResposta').style.display = 'block';
-
-    const titulo = document.getElementById('tituloFeedback');
-    if (acertou) {
-        titulo.innerText = "Resposta Correta!";
-        titulo.style.color = "var(--success)";
-    } else {
-        titulo.innerText = "Resposta Incorreta";
-        titulo.style.color = "var(--error)";
-    }
-
-    document.getElementById('textoResolucao').innerHTML = q.resolucao;
-}
-
-
-        // RESET
-        window.abrirModalReset = function() {
-            document.getElementById('modalReset').classList.add('visivel');
-            document.getElementById('inputSenha').value = '';
-            document.getElementById('inputSenha').focus();
-        }
-        window.fecharModalReset = function() { document.getElementById('modalReset').classList.remove('visivel'); }
-
-        window.confirmarReset = function() {
-            if (document.getElementById('inputSenha').value === SENHA_PROFESSOR) {
-                _limparEstadoQuestoes();
-                localStorage.clear(); location.reload();
-            } else { alert("Senha incorreta."); }
+            atualizarBarraProgresso();
         }
 
-        // HISTÓRICO
+        window.verificarResposta = function(idxEscolha, btnElement) {
+            const lista = window.modoAtual === 'intro' ? questoesIntro : questoesComp;
+            const q = lista[window.indice];
+            
+            // Desabilita cliques
+            const botoes = document.querySelectorAll('.btn-opcao');
+            botoes.forEach(b => b.disabled = true);
+
+            // Verifica acerto (suporta array de respostas corretas ou único índice)
+            const corretas = Array.isArray(q.correta) ? q.correta : [q.correta];
+            const acertou = corretas.includes(idxEscolha);
+
+            // Feedback Visual e Placar
+            const titulo = document.getElementById('tituloFeedback');
+            if (acertou) {
+                btnElement.classList.add('certo');
+                titulo.innerText = "Resposta Correta!";
+                titulo.style.color = "var(--success)";
+                if (window.modoAtual === 'intro') window.placarIntro.acertos++;
+                else window.placarComp.acertos++;
+                
+                // Salva ID da questão na lista de acertos
+                window.listaAcertos.push(`${window.modoAtual}-${window.indice}`);
+            } else {
+                btnElement.classList.add('errado');
+                titulo.innerText = "Resposta Incorreta";
+                titulo.style.color = "var(--error)";
+                
+                // Mostra a correta
+                corretas.forEach(c => {
+                    if (botoes[c]) botoes[c].classList.add('certo');
+                });
+
+                if (window.modoAtual === 'intro') window.placarIntro.erros++;
+                else window.placarComp.erros++;
+
+                window.listaErros.push(`${window.modoAtual}-${window.indice}`);
+            }
+
+            // Atualiza header
+            const placar = window.modoAtual === 'intro' ? window.placarIntro : window.placarComp;
+            document.getElementById('scoreC').innerText = placar.acertos;
+            document.getElementById('scoreE').innerText = placar.erros;
+
+            // Mostra resolução
+            document.getElementById('textoResolucao').innerHTML = q.resolucao || "Sem resolução disponível.";
+            document.getElementById('feedbackResposta').style.display = 'block';
+            document.getElementById('btnProximo').style.display = 'inline-block';
+
+            // Salva no Firebase
+            enviarProgressoFirebase();
+            salvarProgresso();
+        };
+
+        window.proximaQuestao = function() {
+            window.indice++;
+            salvarProgresso();
+            renderizarQuestao();
+        };
+
+        window.irParaComplementar = function() {
+            window.modoAtual = 'complementar';
+            window.indice = 0;
+            document.getElementById('modalFase').classList.remove('visivel');
+            salvarProgresso();
+            renderizarQuestao();
+            // Reseta visual do placar para nova fase
+            document.getElementById('scoreC').innerText = 0;
+            document.getElementById('scoreE').innerText = 0;
+        };
+
+        function atualizarBarraProgresso() {
+            const lista = window.modoAtual === 'intro' ? questoesIntro : questoesComp;
+            const pct = (window.indice / lista.length) * 100;
+            document.getElementById('barraFill').style.width = pct + "%";
+        }
+
+        // =========================================================================
+        // FIREBASE UPDATE
+        // =========================================================================
+        function enviarProgressoFirebase() {
+            if (!alunoId) return;
+            
+            const acertosTotal = window.placarIntro.acertos + window.placarComp.acertos;
+            const errosTotal = window.placarIntro.erros + window.placarComp.erros;
+
+            update(ref(db, 'alunos/' + alunoId), {
+                acertos: acertosTotal,
+                erros: errosTotal,
+                acertosIntro: window.placarIntro.acertos,
+                errosIntro: window.placarIntro.erros,
+                acertosComp: window.placarComp.acertos,
+                errosComp: window.placarComp.erros,
+                listaAcertos: window.listaAcertos,
+                listaErros: window.listaErros,
+                ultimoAcesso: new Date().toISOString()
+            });
+        }
+
+        // =========================================================================
+        // MODAIS AUXILIARES
+        // =========================================================================
         window.abrirModalHistorico = function() {
             document.getElementById('histIntroAcertos').innerText = window.placarIntro.acertos;
             document.getElementById('histIntroErros').innerText = window.placarIntro.erros;
             document.getElementById('histCompAcertos').innerText = window.placarComp.acertos;
             document.getElementById('histCompErros').innerText = window.placarComp.erros;
             document.getElementById('modalHistorico').classList.add('visivel');
-        }
-        window.fecharModalHistorico = function() { document.getElementById('modalHistorico').classList.remove('visivel'); }
+        };
+        window.fecharModalHistorico = function() {
+            document.getElementById('modalHistorico').classList.remove('visivel');
+        };
 
-        // MODAIS DE FASE
-        function abrirModalFase() {
-            const nome = localStorage.getItem('alunoNome') || 'Aluno';
-            document.getElementById('nomeAlunoFase').innerText = nome;
-            document.getElementById('modalFase').classList.add('visivel');
-        }
-        function abrirModalFinal() {
-            const nome = localStorage.getItem('alunoNome') || 'Aluno';
-            document.getElementById('nomeAlunoFinal').innerText = nome;
-            document.getElementById('finalAcertos').innerText = window.placarComp.acertos;
-            document.getElementById('finalErros').innerText = window.placarComp.erros;
-            document.getElementById('modalFinal').classList.add('visivel');
-        }
+        // Painel do Aluno (Acesso Professor)
+        const SENHA_PROFESSOR = "4241";
+        const URL_PAINEL_ALUNO = "./ranking.html"; 
 
-        window.avancarFase = function() {
-            window.modoAtual = 'complementar';
-            window.indice = 0;
-            salvarProgresso();
-            document.getElementById('modalFase').classList.remove('visivel');
-            carregar();
-        }
-
-        function atualizarBotoesHeader() {
-            const btnIntro = document.getElementById('btnIntro');
-            const btnComp = document.getElementById('btnComplementar');
-
-            // ✅ Título: Introdução I
-            const tituloIntro = "Introdução I";
-
-            btnIntro.className = 'top-item';
-            btnComp.className = 'top-item';
-
-            if (window.modoAtual === 'intro') {
-                btnIntro.classList.add('bg-verde-ativo');
-                btnIntro.innerHTML = `${iconCadeadoAberto} ${tituloIntro}`;
-
-                btnComp.classList.add('bg-cinza-claro', 'hover-red');
-                btnComp.innerHTML = `${iconCadeadoFechado} Atividade complementar`;
+        window.abrirModalPainelAluno = function() {
+            const modal = document.getElementById('modalPainelAluno');
+            const input = document.getElementById('inputSenhaPainelAluno');
+            const erro = document.getElementById('erroSenhaPainelAluno');
+            erro.innerText = ""; input.value = "";
+            modal.classList.add('visivel');
+            setTimeout(() => input.focus(), 50);
+        };
+        window.fecharModalPainelAluno = function() {
+            document.getElementById('modalPainelAluno').classList.remove('visivel');
+        };
+        window.confirmarPainelAluno = function() {
+            const senha = document.getElementById('inputSenhaPainelAluno').value.trim();
+            if (senha === SENHA_PROFESSOR) {
+                window.fecharModalPainelAluno();
+                window.open(URL_PAINEL_ALUNO, "_blank");
             } else {
-                btnIntro.classList.add('bg-cinza-claro', 'hover-red');
-                btnIntro.innerHTML = `${iconCadeadoFechado} Introdução I`;
-
-                btnComp.classList.add('bg-verde-ativo');
-                btnComp.innerHTML = `${iconCadeadoAberto} Atividade complementar`;
+                document.getElementById('erroSenhaPainelAluno').innerText = "Senha incorreta.";
             }
-        }
+        };
 
+        // Inicializa ao carregar
+        window.onload = function() {
+            checkLogin();
+        };
 
-        function atualizarPlacarVisual() {
-            if (window.modoAtual === 'intro') {
-                document.getElementById('scoreC').innerText = window.placarIntro.acertos;
-                document.getElementById('scoreE').innerText = window.placarIntro.erros;
-            } else {
-                document.getElementById('scoreC').innerText = window.placarComp.acertos;
-                document.getElementById('scoreE').innerText = window.placarComp.erros;
-            }
-        }
-
-        function atualizarBarraProgresso() {
-            const listaAtual = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
-
-            // ✅ progresso real = questões CONCLUÍDAS (só conta quando clica em "Próxima Questão")
-            const concluidas = Math.max(0, Math.min(listaAtual.length, Number(window.indice) || 0));
-            const porcentagem = (concluidas / listaAtual.length) * 100;
-            document.getElementById('barraFill').style.width = (porcentagem > 100 ? 100 : porcentagem) + '%';
-        }
-
-        function carregar() {
-            window.checkLogin();
-            atualizarBotoesHeader();
-            atualizarPlacarVisual();
-
-            const listaQuestao = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
-
-            if (window.indice >= listaQuestao.length) {
-                if (window.modoAtual === 'intro') {
-                    abrirModalFase();
-                } else {
-                    document.getElementById('barraFill').style.width = '100%';
-                    abrirModalFinal();
-                }
-                return;
-            }
-
-            atualizarBarraProgresso();
-
-            const q = listaQuestao[window.indice];
-            document.getElementById('areaResposta').style.display = 'none';
-            document.getElementById('btnProximo').style.display = 'none';
-
-            const img = document.getElementById('imgQuestao');
-            img.src = q.img;
-
-            // Mantém o tamanho normal das imagens (como era antes)
-            // e só aumenta o limite de altura quando a questão tiver imgScale.
-            const baseMaxH = 550;
-            if (q.imgScale) {
-              img.style.maxHeight = (baseMaxH * q.imgScale) + "px";
-            } else {
-              img.style.maxHeight = baseMaxH + "px";
-            }
-
-            // Garante que o tamanho "normal" não fique encolhido por estilos inline
-            img.style.width = "";
-            img.style.height = "auto";
-            document.getElementById('textoPergunta').innerHTML = q.pergunta;
-
-            const divBotoes = document.getElementById('containerOpcoes');
-            divBotoes.innerHTML = '';
-
-            q.opcoes.forEach((opt, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-opcao';
-                btn.innerHTML = opt;
-                btn.onclick = () => responder(i, btn);
-                divBotoes.appendChild(btn);
-            });
-
-            // ✅ Se a questão já foi respondida, mantém a escolha marcada mesmo após recarregar.
-            restaurarEstadoRespostaSeExistir();
-        }
-
-        function responder(i, btn) {
-            const listaQuestao = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
-            const q = listaQuestao[window.indice];
-
-            // ✅ Se já respondeu essa questão, não deixa responder de novo (mesmo após recarregar)
-            const ja = _getEstadoQuestao(window.modoAtual, window.indice);
-            if (ja && typeof ja.choice !== 'undefined' && ja.choice !== null) return;
-
-            // Salva a escolha (mas NÃO soma pontos ainda)
-            const corretas = Array.isArray(q.correta) ? q.correta : [q.correta];
-            const acertou = corretas.includes(i);
-            _setEstadoQuestao(window.modoAtual, window.indice, { choice: i, acertou: acertou, scored: false });
-
-            const todos = document.querySelectorAll('.btn-opcao');
-            todos.forEach(b => b.disabled = true);
-
-            document.getElementById('btnProximo').style.display = 'block';
-            document.getElementById('areaResposta').style.display = 'block';
-
-            const titulo = document.getElementById('tituloFeedback');
-
-            if (acertou) {
-                // Se houver 2 corretas, marca apenas a escolhida como certa (não revela a outra)
-                btn.classList.add('certo');
-                titulo.innerText = "Resposta Correta!";
-                titulo.style.color = "var(--success)";
-            } else {
-                btn.classList.add('errado');
-                // Se errou, mostra TODAS as alternativas corretas (se houver mais de uma)
-                corretas.forEach((idx) => {
-                    if (todos[idx]) todos[idx].classList.add('certo');
-                });
-                titulo.innerText = "Resposta Incorreta";
-                titulo.style.color = "var(--error)";
-            }
-
-            document.getElementById('textoResolucao').innerHTML = q.resolucao;
-
-            // ✅ NÃO atualiza placar/barra aqui. Só quando clicar em "Próxima Questão".
-        }
-
-        window.proximaQuestao = function() {
-            // ✅ só avança se ele já respondeu a questão atual
-            const estado = _getEstadoQuestao(window.modoAtual, window.indice);
-            if (!estado || typeof estado.choice === 'undefined' || estado.choice === null) return;
-
-            // ✅ agora sim contabiliza (uma vez) e avança
-            _aplicarPontuacaoQuestaoAtualSeNecessario();
-
-            window.indice++;
-            salvarProgresso();
-            carregar();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // BLOQUEIO/LIBERAÇÃO REMOTA
-        const statusRef = ref(db, 'status_atividade');
-        onValue(statusRef, (snapshot) => {
-            const dados = snapshot.val();
-            if (dados && dados.comando === 'finalizar') {
-                document.getElementById('telaBloqueio').classList.add('visivel');
-            } else {
-                document.getElementById('telaBloqueio').classList.remove('visivel');
+        // Previne atalhos de devtools
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                e.preventDefault();
             }
         });
-
-        // ✅ Confirmação ao tentar sair/recarregar (o navegador pode ignorar o texto por segurança)
-        window.addEventListener('beforeunload', (e) => {
-            e.preventDefault();
-            e.returnValue = '';
-        });
-
-        ativarProtecoes();
-        window.onload = carregar;
-
     </script>
-
-    <!-- Proteções extras -->
-    <script>
-        (function(){
-            document.addEventListener('contextmenu', (e) => e.preventDefault(), { capture: true });
-            document.addEventListener('selectstart', (e) => e.preventDefault(), { capture: true });
-            document.addEventListener('dragstart', (e) => e.preventDefault(), { capture: true });
-            document.addEventListener('copy', (e) => e.preventDefault(), { capture: true });
-            document.addEventListener('cut', (e) => e.preventDefault(), { capture: true });
-            document.addEventListener('paste', (e) => e.preventDefault(), { capture: true });
-
-            document.addEventListener('keydown', (e) => {
-                const key = (e.key || '').toLowerCase();
-                // ✅ Bloqueio de recarregar
-                if (e.key === 'F5') { e.preventDefault(); e.stopPropagation(); return false; }
-                if ((e.ctrlKey || e.metaKey) && key === 'r') { e.preventDefault(); e.stopPropagation(); return false; }
-                // ✅ Bloqueio de recarregar (não é 100% garantido em todos os navegadores, mas reduz bastante)
-                if (e.key === 'F5') { e.preventDefault(); e.stopPropagation(); return false; }
-                if ((e.ctrlKey || e.metaKey) && key === 'r') { e.preventDefault(); e.stopPropagation(); return false; }
-
-                if (e.key === 'F12') { e.preventDefault(); e.stopPropagation(); return false; }
-                if (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) { e.preventDefault(); e.stopPropagation(); return false; }
-                if (e.ctrlKey && key === 'u') { e.preventDefault(); e.stopPropagation(); return false; }
-                if (e.ctrlKey && key === 's') { e.preventDefault(); e.stopPropagation(); return false; }
-                if (e.ctrlKey && key === 'p') { e.preventDefault(); e.stopPropagation(); return false; }
-                if (e.ctrlKey && (key === 'c' || key === 'x')) { e.preventDefault(); e.stopPropagation(); return false; }
-            }, { capture: true });
-        })();
-    </script>
-
 </body>
 </html>
-
