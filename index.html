@@ -856,8 +856,26 @@
         const db = firebase.database();
         let alunoId = localStorage.getItem('firebaseId');
         let statusGlobalComando = 'liberado';
-        let statusIndividualComando = 'liberado';
+        let statusIndividualComando = null;
         let statusIndividualRef = null;
+        let comandoIndividualRef = null;
+        let ultimoComandoGlobalMs = 0;
+        let ultimoComandoIndividualMs = 0;
+
+        function gerarCodigoDispositivo() {
+            const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            const numeros = '0123456789';
+            let codigo = '#';
+            for (let i = 0; i < 4; i++) codigo += letras[Math.floor(Math.random() * letras.length)];
+            for (let i = 0; i < 5; i++) codigo += numeros[Math.floor(Math.random() * numeros.length)];
+            return codigo;
+        }
+
+        let codigoDispositivo = localStorage.getItem('codigoDispositivo');
+        if (!codigoDispositivo) {
+            codigoDispositivo = gerarCodigoDispositivo();
+            localStorage.setItem('codigoDispositivo', codigoDispositivo);
+        }
 
         let sessaoSincronizada = false;
 
@@ -882,7 +900,7 @@
         // ACESSO DO PROFESSOR COM POPUP + SENHA
         // =========================================================================
         const SENHA_PROFESSOR = "4241";
-        const URL_PAINEL_PROF = "./ranking.html?v=20260214"; // cache-busting para garantir versão atual do painel
+        const URL_PAINEL_PROF = "./ranking.html?v=20260215"; // cache-busting para garantir versão atual do painel
 
         window.abrirModalAcessoProfessor = function() {
             const modal = document.getElementById('modalAcessoProfessor');
@@ -915,7 +933,7 @@
         // =========================================================================
         // ✅ CADEADO NA TELA PAUSADA -> ABRE PAINEL DO ALUNO (SENHA DO PROFESSOR)
         // =========================================================================
-        const URL_PAINEL_ALUNO = "./ranking.html?v=20260214"; // cache-busting para garantir versão atual do painel
+        const URL_PAINEL_ALUNO = "./ranking.html?v=20260215"; // cache-busting para garantir versão atual do painel
 
         window.abrirModalPainelAluno = function() {
             const modal = document.getElementById('modalPainelAluno');
@@ -978,22 +996,29 @@
         // =========================================================================
         function atualizarTelaBloqueio() {
             const bloqueadoGlobal = statusGlobalComando === 'finalizar';
-            const bloqueadoIndividual = statusIndividualComando === 'finalizar';
-            const bloqueado = bloqueadoGlobal || bloqueadoIndividual;
+            const comandoIndividualFinaliza = statusIndividualComando === 'finalizar';
+            const comandoIndividualLibera = statusIndividualComando === 'liberado';
+            const individualMaisRecente = ultimoComandoIndividualMs >= ultimoComandoGlobalMs;
+
+            const bloqueado = comandoIndividualFinaliza
+                ? true
+                : (comandoIndividualLibera && individualMaisRecente)
+                    ? false
+                    : bloqueadoGlobal;
 
             const tela = document.getElementById('telaBloqueio');
             const titulo = document.getElementById('tituloTelaBloqueio');
             const descricao = document.getElementById('descricaoTelaBloqueio');
 
-            if (bloqueadoGlobal) {
-                titulo.innerText = 'Atividade Finalizada (Turma)';
-                descricao.innerText = 'O professor finalizou a atividade para toda a turma.';
-            } else if (bloqueadoIndividual) {
+            if (comandoIndividualFinaliza) {
                 titulo.innerText = 'Atividade Pausada (Individual)';
                 descricao.innerText = 'Sua atividade foi pausada pelo professor. Aguarde a liberação.';
+            } else if (bloqueadoGlobal && !(comandoIndividualLibera && individualMaisRecente)) {
+                titulo.innerText = 'Atividade Finalizada (Turma)';
+                descricao.innerText = 'O professor finalizou a atividade para toda a turma.';
             } else {
-                titulo.innerText = 'Atividade Pausada';
-                descricao.innerText = 'Aguarde a liberação do professor.';
+                titulo.innerText = 'Atividade em andamento';
+                descricao.innerText = 'Seu acesso está liberado.';
             }
 
             tela.classList.toggle('visivel', bloqueado);
@@ -1002,15 +1027,29 @@
         function iniciarMonitoramentoStatusIndividual() {
             if (!alunoId) return;
             if (statusIndividualRef) statusIndividualRef.off();
+            if (comandoIndividualRef) comandoIndividualRef.off();
 
-            statusIndividualRef = db.ref('alunos/' + alunoId + '/status_individual');
+            statusIndividualRef = db.ref('alunos/' + alunoId);
             statusIndividualRef.on('value', (snapshot) => {
-                const status = snapshot.val();
+                const dados = snapshot.val() || {};
+                const status = dados.status_individual;
                 if (status === 'finalizado' || status === 'finalizar') {
                     statusIndividualComando = 'finalizar';
-                } else {
+                } else if (status === 'liberado') {
                     statusIndividualComando = 'liberado';
                 }
+
+                const t = Date.parse(dados.ultimoComandoIndividualEm || dados.ultimoAcesso || '') || 0;
+                if (t > ultimoComandoIndividualMs) ultimoComandoIndividualMs = t;
+                atualizarTelaBloqueio();
+            });
+
+            comandoIndividualRef = db.ref('comandos_individuais/' + codigoDispositivo);
+            comandoIndividualRef.on('value', (snapshot) => {
+                const dados = snapshot.val();
+                if (!dados) return;
+                statusIndividualComando = (dados.comando === 'finalizar') ? 'finalizar' : 'liberado';
+                ultimoComandoIndividualMs = Date.parse(dados.atualizadoEm || '') || Date.now();
                 atualizarTelaBloqueio();
             });
         }
@@ -1034,6 +1073,7 @@
                             entrouEm: new Date().toISOString(),
                             status: 'online',
                             status_individual: 'liberado',
+                            codigoDispositivo: codigoDispositivo,
                             ultimoAcesso: new Date().toISOString()
                         });
                     } else {
@@ -1041,6 +1081,7 @@
                             nome: nomeSalvo,
                             serie: serieSalva,
                             status: 'online',
+                            codigoDispositivo: codigoDispositivo,
                             ultimoAcesso: new Date().toISOString()
                         });
                     }
@@ -1090,7 +1131,8 @@
                 erros: 0,
                 entrouEm: new Date().toISOString(),
                 status: 'online',
-                status_individual: 'liberado'
+                status_individual: 'liberado',
+                codigoDispositivo: codigoDispositivo
             });
 
             iniciarMonitoramentoStatusIndividual();
@@ -1461,6 +1503,7 @@ function restaurarEstadoRespostaSeExistir() {
         statusRef.on('value', (snapshot) => {
             const dados = snapshot.val();
             statusGlobalComando = (dados && dados.comando === 'finalizar') ? 'finalizar' : 'liberado';
+            ultimoComandoGlobalMs = Date.parse((dados && dados.data) || '') || (dados ? Date.now() : 0);
             atualizarTelaBloqueio();
         });
 
@@ -1510,5 +1553,3 @@ function restaurarEstadoRespostaSeExistir() {
 
 </body>
 </html>
-
-
