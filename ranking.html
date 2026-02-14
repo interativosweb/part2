@@ -841,6 +841,7 @@
         // ============================================================
         // ✅ Modal do aluno: ver lista de acertos/erros em tempo real
         // ============================================================
+        window.addEventListener('DOMContentLoaded', () => {
         const overlay = document.getElementById('alunoModalOverlay');
         const modalNome = document.getElementById('alunoModalNome');
         const modalInfo = document.getElementById('alunoModalInfo');
@@ -978,6 +979,8 @@
           const aluno = (todosRegistros || []).find(x => x.id === id);
           if (aluno) abrirModalAluno(aluno);
         });
+        });
+
 </script>
 
     <!-- =======================
