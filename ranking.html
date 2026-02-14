@@ -6,7 +6,7 @@
     <title>Painel do Professor - Ranking</title>
     <style>
         /* =========================================
-           🎨 ESTILO ORIGINAL DO PAINEL (MANTIDO)
+           🎨 ESTILO GERAL (CLEAN / APPLE STYLE)
            ========================================= */
         :root {
             --bg-page: #f5f5f7;
@@ -16,15 +16,14 @@
             --accent: #0071e3;
             --success: #34c759;
             --warning: #ffcc00;
-            --silver: #e0e0e0;
-            --bronze: #cd7f32;
             --error: #ff3b30;
             --radius: 16px;
             --shadow: 0 4px 20px rgba(0,0,0,0.05);
             --btn-gray-dark: #8e8e93;
+            --border-light: #e5e5ea;
         }
 
-        /* Fração */
+        /* Fração Vertical */
         .fracao { display: inline-flex; flex-direction: column; vertical-align: middle; margin: 0 5px; text-align: center; font-size: 0.9em; }
         .fracao > span { padding: 0 5px; }
         .fracao > span:first-child { border-bottom: 2px solid currentColor; padding-bottom: 1px; }
@@ -38,9 +37,9 @@
 
         .container { max-width: 1100px; margin: 0 auto; }
 
-        /* Header e Filtros (Originais) */
+        /* Header e Filtros */
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 20px; }
-        .titulo-pagina { font-size: 2rem; font-weight: 700; }
+        .titulo-pagina { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
         .btn-voltar { text-decoration: none; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 5px; transition: opacity 0.2s; font-size: 0.9rem; margin-bottom: 5px; }
         .btn-voltar:hover { opacity: 0.7; }
         .filtro-data-container { background: white; padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 10px; }
@@ -64,15 +63,15 @@
         .btn-liberar { background-color: white; color: var(--success); border: 1px solid rgba(52, 199, 89, 0.3); }
         .btn-liberar:hover { background-color: var(--success); color: white; border-color: var(--success); box-shadow: 0 6px 15px rgba(52, 199, 89, 0.25); }
 
-        /* Cards e Tabela (Originais) */
+        /* Cards e Tabela */
         .grid-resumo { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .card-resumo { background: var(--card-bg); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: flex-start; }
-        .card-titulo { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 5px; }
-        .card-valor { font-size: 2rem; font-weight: 700; color: var(--text-main); }
+        .card-resumo { background: var(--card-bg); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: flex-start; }
+        .card-titulo { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .card-valor { font-size: 2.2rem; font-weight: 700; color: var(--text-main); letter-spacing: -1px; }
         .painel-ranking { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; min-height: 300px; }
         .tabela-header { display: grid; grid-template-columns: 0.5fr 2fr 1.5fr 0.8fr 0.8fr 1fr; padding: 15px 20px; background-color: rgba(0,0,0,0.02); border-bottom: 1px solid #e5e5ea; font-size: 0.8rem; font-weight: 600; color: var(--text-light); text-transform: uppercase; }
         .lista-alunos { list-style: none; }
-        .item-aluno { display: grid; grid-template-columns: 0.5fr 2fr 1.5fr 0.8fr 0.8fr 1fr; padding: 15px 20px; align-items: center; border-bottom: 1px solid #f5f5f7; transition: background 0.2s; }
+        .item-aluno { display: grid; grid-template-columns: 0.5fr 2fr 1.5fr 0.8fr 0.8fr 1fr; padding: 15px 20px; align-items: center; border-bottom: 1px solid #f5f5f7; transition: background 0.2s; cursor: pointer; }
         .item-aluno:last-child { border-bottom: none; }
         .item-aluno:hover { background-color: #fafafa; }
         .posicao { font-weight: 700; color: var(--text-light); font-size: 1.1rem; }
@@ -85,17 +84,18 @@
         .info-erro { font-weight: 700; color: var(--error); }
         .info-tempo { font-size: 0.9rem; color: var(--text-light); text-align: right; }
         
-        /* Rodapé e Notificações (Originais) */
+        /* Notificações */
         .notificacao-container { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { background-color: var(--success); color: white; padding: 12px 20px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 10px; animation: slideIn 0.4s ease; opacity: 1; transition: opacity 0.5s; max-width: 300px; }
         .toast.alerta { background-color: var(--error); }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
         .rodape-gestao { margin-top: 50px; text-align: center; border-top: 1px solid #e5e5ea; padding-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .btn-acao-rodape { background-color: var(--btn-gray-dark); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .btn-acao-rodape:hover { background-color: var(--error); transform: scale(1.02); }
         .texto-creditos { font-size: 0.8rem; color: var(--text-light); }
 
-        /* Responsividade (Original) */
+        /* Responsividade */
         @media (max-width: 700px) {
             .tabela-header { display: none; }
             .item-aluno { grid-template-columns: 40px 1fr auto auto; grid-template-areas: "pos nome nota erro" "pos serie tempo tempo"; gap: 5px; padding: 15px; }
@@ -110,66 +110,20 @@
         }
 
         /* =======================================================
-           ✨ NOVO DESIGN DOS MODAIS (CLEAN / APPLE STYLE)
+           ✨ DESIGN DOS MODAIS UNIFICADOS
            ======================================================= */
         
-        /* Fundo desfocado */
         .modal-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background-color: rgba(255, 255, 255, 0.6); /* Fundo claro */
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); /* Desfoque */
+            background-color: rgba(255, 255, 255, 0.6); 
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             display: none; justify-content: center; align-items: center; z-index: 1000; 
             animation: fadeIn 0.3s ease; 
         }
         .modal-overlay.visivel { display: flex; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Caixa do Modal */
-        .modal-box { 
-            background: white; 
-            padding: 35px; 
-            border-radius: 24px; /* Cantos bem arredondados */
-            width: 90%; 
-            max-width: 440px; 
-            text-align: center; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.1); 
-            animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-        }
-        @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        /* Elementos Comuns dos Modais */
-        .modal-titulo { font-size: 1.5rem; font-weight: 800; margin-bottom: 5px; color: #1d1d1f; }
-        .modal-sub { font-size: 1rem; color: #86868b; margin-bottom: 25px; }
-        .modal-desc { font-size: 0.95rem; color: #6e6e73; margin-bottom: 20px; line-height: 1.5; }
-        
-        /* Botão Fechar (X) */
-        .modal-close-abs { 
-            position: absolute; top: 20px; right: 20px; 
-            background: #f5f5f7; border: none; 
-            width: 36px; height: 36px; border-radius: 50%; 
-            cursor: pointer; color: #86868b; font-size: 1.2rem;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
-        }
-        .modal-close-abs:hover { background: #e5e5ea; color: #1d1d1f; transform: scale(1.05); }
-
-        /* Input Senha */
-        .input-senha { width: 100%; padding: 15px; border: 1px solid #d2d2d7; border-radius: 12px; font-size: 1.1rem; margin-bottom: 20px; outline: none; text-align: center; transition: border 0.2s, background 0.2s; background-color: #fafafa; }
-        .input-senha:focus { border-color: var(--accent); background-color: #fff; }
-
-        /* Botões de Ação nos Modais */
-        .btn-reset-opcao { padding: 15px; border-radius: 14px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.2s; background-color: #f5f5f7; color: #1d1d1f; margin-bottom: 8px; width: 100%; }
-        .btn-reset-opcao:hover { background-color: #e5e5ea; transform: scale(1.01); }
-        .btn-cancelar { margin-top: 15px; background: none; border: none; color: #86868b; cursor: pointer; font-size: 0.9rem; font-weight: 500; }
-        .botoes-confirmacao { display: flex; gap: 10px; justify-content: center; }
-        .btn-conf-sim { background-color: var(--error); color: white; flex: 1; }
-        .btn-conf-liberar { background-color: var(--success); color: white; flex: 1; }
-        .btn-conf-nao { background-color: #f5f5f7; color: #1d1d1f; flex: 1; }
-
-        /* --- DESIGN ESPECÍFICO: MODAL DO ALUNO E LISTA LADO A LADO --- */
-        
-        /* Wrapper para centralizar ambos os modais na tela */
+        /* Wrapper para modais lado a lado */
         .modais-wrapper {
             display: flex;
             align-items: flex-start;
@@ -177,59 +131,89 @@
             gap: 20px;
             width: 100%;
             max-width: 900px;
-            pointer-events: none; /* Deixa passar clique no fundo */
+            pointer-events: none; 
+            padding: 20px;
         }
         
         .modal-box-aluno, .modal-box-lista {
             background: white; 
-            padding: 35px; 
+            padding: 30px; 
             border-radius: 24px; 
             text-align: center; 
             box-shadow: 0 25px 50px rgba(0,0,0,0.1); 
-            pointer-events: auto; /* Reativa clique */
+            pointer-events: auto; 
             position: relative;
+            border: 1px solid rgba(0,0,0,0.05);
+            animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        .modal-box-aluno { width: 320px; flex-shrink: 0; }
-        .modal-box-lista { width: 400px; display: none; /* Começa oculto */ height: 450px; display: flex; flex-direction: column; }
+        .modal-box-aluno { width: 340px; flex-shrink: 0; }
+        .modal-box-lista { width: 420px; display: none; height: 500px; display: flex; flex-direction: column; }
         .modal-box-lista.ativo { display: flex; }
 
-        /* Botões Estilo "Liberar Atividade" (Pílula branca com borda) */
+        .modal-titulo { font-size: 1.4rem; font-weight: 800; margin-bottom: 5px; color: #1d1d1f; letter-spacing: -0.5px; }
+        .modal-sub { font-size: 0.95rem; color: #86868b; margin-bottom: 20px; }
+        
+        .modal-close-abs { 
+            position: absolute; top: 15px; right: 15px; 
+            background: #f5f5f7; border: none; 
+            width: 32px; height: 32px; border-radius: 50%; 
+            cursor: pointer; color: #86868b; font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .modal-close-abs:hover { background: #e5e5ea; color: #1d1d1f; }
+
+        /* --- BOTÕES PÍLULA (Estilo Liberar/Finalizar) --- */
         .btn-pilula-acao {
             background-color: white; 
             color: var(--text-main); 
-            padding: 12px 25px; 
+            padding: 12px 20px; 
             border-radius: 50px; 
-            border: 1px solid transparent; /* Será sobrescrito pela cor */
-            font-size: 1rem; 
+            border: 1px solid #e5e5ea; 
+            font-size: 0.95rem; 
             font-weight: 600; 
             cursor: pointer; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
             gap: 10px; 
-            transition: all 0.3s ease; 
+            transition: all 0.2s ease; 
             width: 100%;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
-        .btn-pilula-acao:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.12); }
+        .btn-pilula-acao:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         
-        /* Cores Específicas */
-        .btn-pilula-acao.acerto { color: var(--success); border: 1px solid rgba(52, 199, 89, 0.3); }
-        .btn-pilula-acao.acerto:hover { background-color: var(--success); color: white; border-color: var(--success); box-shadow: 0 6px 15px rgba(52, 199, 89, 0.25); }
+        /* Cores Específicas Visualização */
+        .btn-pilula-acao.acerto { color: var(--success); border-color: rgba(52, 199, 89, 0.3); }
+        .btn-pilula-acao.acerto:hover { background-color: var(--success); color: white; border-color: var(--success); }
 
-        .btn-pilula-acao.erro { color: var(--error); border: 1px solid rgba(255, 59, 48, 0.3); }
-        .btn-pilula-acao.erro:hover { background-color: var(--error); color: white; border-color: var(--error); box-shadow: 0 6px 15px rgba(255, 59, 48, 0.25); }
+        .btn-pilula-acao.erro { color: var(--error); border-color: rgba(255, 59, 48, 0.3); }
+        .btn-pilula-acao.erro:hover { background-color: var(--error); color: white; border-color: var(--error); }
         
+        /* Cores Específicas Ação Individual */
+        .btn-pilula-acao.acao-extra { border-style: dashed; }
+        .btn-pilula-acao.acao-extra:hover { border-style: solid; }
+
         .badge-count { 
             background: rgba(0,0,0,0.05); 
             padding: 4px 10px; 
             border-radius: 20px; 
-            font-size: 0.9rem; 
+            font-size: 0.85rem; 
             font-weight: 700;
         }
         .btn-pilula-acao:hover .badge-count { background: rgba(255,255,255,0.3); color: white; }
+
+        /* Divisor */
+        .modal-divisor {
+            height: 1px; background-color: #f0f0f5; width: 100%; margin: 20px 0; position: relative;
+        }
+        .modal-divisor span {
+            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            background: white; padding: 0 10px; color: #c7c7cc; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+        }
 
         /* Lista de Questões */
         .modal-lista-scroll { flex: 1; overflow-y: auto; text-align: left; padding-right: 5px; margin-top: 15px; }
@@ -251,9 +235,24 @@
         .q-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #86868b; }
         .q-texto { font-size: 0.95rem; color: #1d1d1f; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
+        /* Modais Admin */
+        .modal-box-admin {
+            background: white; padding: 30px; border-radius: 24px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 90%; max-width: 400px;
+        }
+        .input-senha { width: 100%; padding: 15px; border: 1px solid #d2d2d7; border-radius: 12px; font-size: 1.1rem; margin-bottom: 20px; outline: none; text-align: center; transition: border 0.2s; background-color: #fafafa; }
+        .input-senha:focus { border-color: var(--accent); background: white; }
+        
+        .btn-reset-opcao { padding: 15px; border-radius: 14px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.2s; background-color: #f5f5f7; color: #1d1d1f; margin-bottom: 8px; width: 100%; }
+        .btn-reset-opcao:hover { background-color: #e5e5ea; }
+        
+        .botoes-confirmacao { display: flex; gap: 10px; justify-content: center; }
+        .btn-conf-sim { background-color: var(--error); color: white; flex: 1; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; }
+        .btn-conf-liberar { background-color: var(--success); color: white; flex: 1; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; }
+        .btn-conf-nao { background-color: #f5f5f7; color: #1d1d1f; flex: 1; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; }
+
         @media (max-width: 800px) {
-            .modais-wrapper { flex-direction: column; align-items: center; }
-            .modal-box-lista { width: 320px; }
+            .modais-wrapper { flex-direction: column; align-items: center; padding-top: 60px; overflow-y: auto; max-height: 100vh; justify-content: flex-start; }
+            .modal-box-lista { width: 340px; }
         }
 
     </style>
@@ -364,22 +363,42 @@
                 <div class="modal-titulo" id="alunoModalNome">Nome</div>
                 <div class="modal-sub" id="alunoModalInfo">Turma • Ano</div>
 
-                <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <button id="btnAcertosAluno" class="btn-pilula-acao acerto">
-                        <span>Ver Acertos</span>
-                        <span id="btnAcertosAlunoNum" class="badge-count">0</span>
-                    </button>
+                <button id="btnAcertosAluno" class="btn-pilula-acao acerto">
+                    <span style="display:flex; align-items:center; gap:8px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                        Ver Acertos
+                    </span>
+                    <span id="btnAcertosAlunoNum" class="badge-count">0</span>
+                </button>
 
-                    <button id="btnErrosAluno" class="btn-pilula-acao erro">
-                        <span>Ver Erros</span>
-                        <span id="btnErrosAlunoNum" class="badge-count">0</span>
-                    </button>
-                </div>
+                <button id="btnErrosAluno" class="btn-pilula-acao erro">
+                    <span style="display:flex; align-items:center; gap:8px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        Ver Erros
+                    </span>
+                    <span id="btnErrosAlunoNum" class="badge-count">0</span>
+                </button>
+
+                <div class="modal-divisor"><span>AÇÕES INDIVIDUAIS</span></div>
+
+                <button id="btnLiberarIndividual" class="btn-pilula-acao acao-extra" onclick="acaoIndividual('liberado')">
+                    <span style="display:flex; align-items:center; gap:8px; color:var(--success);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Liberar Aluno
+                    </span>
+                </button>
+
+                <button id="btnFinalizarIndividual" class="btn-pilula-acao acao-extra" onclick="acaoIndividual('finalizado')">
+                    <span style="display:flex; align-items:center; gap:8px; color:var(--error);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
+                        Finalizar Aluno
+                    </span>
+                </button>
             </div>
 
-            <div id="painelLista" class="modal-box-lista" style="display:none;">
+            <div id="painelLista" class="modal-box-lista">
                 <div class="modal-titulo" id="listaModalTitulo">Questões</div>
-                <div class="modal-sub">Clique para ver detalhes</div>
+                <div class="modal-sub">Clique na questão para abrir a imagem</div>
                 <div id="listaQuestoes" class="modal-lista-scroll"></div>
             </div>
 
@@ -387,7 +406,7 @@
     </div>
 
     <div id="modalReset" class="modal-overlay">
-        <div class="modal-box">
+        <div class="modal-box-admin">
             <div class="modal-titulo">Limpar Dados</div>
             <div class="modal-desc">Selecione o período para apagar.</div>
             <div class="grid-botoes-reset">
@@ -400,7 +419,7 @@
     </div>
 
     <div id="modalSenhaAction" class="modal-overlay">
-        <div class="modal-box">
+        <div class="modal-box-admin">
             <div class="modal-titulo">Confirmar</div>
             <div class="modal-desc" id="descSenhaAction">Digite a senha para confirmar.</div>
             <input type="password" id="inputSenhaAction" class="input-senha" placeholder="Senha do Professor" inputmode="numeric">
@@ -412,7 +431,7 @@
     </div>
 
     <div id="modalFinalizar" class="modal-overlay">
-        <div class="modal-box">
+        <div class="modal-box-admin">
             <div class="modal-titulo" style="color:var(--error)">Finalizar Atividade?</div>
             <div class="modal-desc">Isso bloqueará a tela dos alunos.</div>
             <input type="password" id="inputSenhaFinalizar" class="input-senha" placeholder="Senha do Professor" inputmode="numeric">
@@ -424,7 +443,7 @@
     </div>
 
     <div id="modalLiberar" class="modal-overlay">
-        <div class="modal-box">
+        <div class="modal-box-admin">
             <div class="modal-titulo" style="color:var(--success)">Liberar Atividade?</div>
             <div class="modal-desc">Todos poderão acessar novamente.</div>
             <input type="password" id="inputSenhaLiberar" class="input-senha" placeholder="Senha do Professor" inputmode="numeric">
@@ -437,7 +456,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, onValue, set, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         
         const firebaseConfig = {
           apiKey: "AIzaSyCHfcVVxma4M1LbYO5M-oMX4fnlaNUPi24",
@@ -587,7 +606,7 @@
             document.getElementById('btnAcertosAlunoNum').textContent = aluno.acertos;
             document.getElementById('btnErrosAlunoNum').textContent = aluno.erros;
             
-            // Reseta lista
+            // Reseta lista (oculta até clicar)
             document.getElementById('painelLista').style.display = 'none';
             
             toggleModal('modalUnificadoOverlay', true);
@@ -597,9 +616,23 @@
             toggleModal('modalUnificadoOverlay', false);
         }
 
-        // Botões de ação no modal aluno
+        // Botões de Visualização
         document.getElementById('btnAcertosAluno').onclick = () => renderListaQuestoes('acertos');
         document.getElementById('btnErrosAluno').onclick = () => renderListaQuestoes('erros');
+
+        // Botões de Ação Individual
+        window.acaoIndividual = function(novoStatus) {
+            if(!alunoSelecionado || !alunoSelecionado.id) return;
+            
+            // Atualiza status no Firebase para ESSE aluno
+            update(ref(db, 'alunos/' + alunoSelecionado.id), {
+                status_individual: novoStatus
+            }).then(() => {
+                mostrarNotificacao(`Aluno ${novoStatus} com sucesso!`);
+            }).catch((e) => {
+                alert("Erro ao atualizar: " + e.message);
+            });
+        }
 
         function getQuestaoPorId(qId){
             const [modo, idxStr] = String(qId || "").split("-");
@@ -621,7 +654,7 @@
             const divLista = document.getElementById('listaQuestoes');
             divLista.innerHTML = "";
             
-            // Exibe a lista ao lado (sem fechar o principal)
+            // Exibe a lista ao lado
             document.getElementById('painelLista').style.display = 'flex';
 
             if (!Array.isArray(lista) || lista.length === 0){ 
