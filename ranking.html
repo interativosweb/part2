@@ -639,13 +639,19 @@
                 return;
             }
 
+            const codigoChave = String(codigo).replace(/^#/, '');
+            if (!codigoChave) {
+                alert('Código de dispositivo inválido para enviar comando.');
+                return;
+            }
+
             const acao = comando === 'finalizar' ? 'finalizar acesso de' : 'liberar acesso de';
             if (!confirm(`Confirma ${acao} o aluno ${alunoSelecionado.nome}?
 Código: ${codigo}`)) return;
 
             const agora = new Date().toISOString();
             Promise.all([
-                set(ref(db, 'comandos_individuais/' + codigo), {
+                set(ref(db, 'comandos_individuais/' + codigoChave), {
                     comando,
                     alunoId: alunoSelecionado.id,
                     nome: alunoSelecionado.nome || '',
