@@ -369,6 +369,37 @@
         let filtroAnoAtual = "todas";
         let filtroTurmaAtual = "todas";
         let tipoResetPendente = null;
+        // ============================================================
+        // ✅ NOVO: cálculo de acertos/erros TOTAL (Intro + Complementar)
+        // Compatível com versões antigas:
+        // - se existir acertosIntro/acertosComp -> soma
+        // - se existir acertosTotal -> usa
+        // - senão usa acertos/erros (legado)
+        // ============================================================
+        function getAcertosTotal(aluno){
+            const aT = Number(aluno.acertosTotal);
+            if (!Number.isNaN(aT) && aluno.acertosTotal !== undefined) return aT;
+
+            const aI = Number(aluno.acertosIntro);
+            const aC = Number(aluno.acertosComp);
+            if (!Number.isNaN(aI) || !Number.isNaN(aC)) return (Number.isNaN(aI)?0:aI) + (Number.isNaN(aC)?0:aC);
+
+            const a = Number(aluno.acertos);
+            return Number.isNaN(a) ? 0 : a;
+        }
+
+        function getErrosTotal(aluno){
+            const eT = Number(aluno.errosTotal);
+            if (!Number.isNaN(eT) && aluno.errosTotal !== undefined) return eT;
+
+            const eI = Number(aluno.errosIntro);
+            const eC = Number(aluno.errosComp);
+            if (!Number.isNaN(eI) || !Number.isNaN(eC)) return (Number.isNaN(eI)?0:eI) + (Number.isNaN(eC)?0:eC);
+
+            const e = Number(aluno.erros);
+            return Number.isNaN(e) ? 0 : e;
+        }
+
 
         const alunosRef = ref(db, 'alunos');
 
@@ -388,8 +419,8 @@
                         id: key,
                         nome: aluno.nome,
                         serie: aluno.serie,
-                        acertos: aluno.acertos || 0,
-                        erros: aluno.erros || 0,
+                        acertos: getAcertosTotal(aluno),
+                        erros: getErrosTotal(aluno),
                         data: aluno.entrouEm ? aluno.entrouEm.split('T')[0] : '',
                         hora: horaFormatada,
                         timestamp: aluno.entrouEm ? new Date(aluno.entrouEm).getTime() : 0,
