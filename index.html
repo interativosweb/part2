@@ -180,6 +180,8 @@
 
         .img-atividade {
             max-width: 100%;
+            max-height: 550px;
+            width: auto;
             height: auto;
             object-fit: contain;
             border-radius: var(--radius);
@@ -480,6 +482,8 @@
             .barra-progresso-container { max-width: 80%; }
             .img-atividade {
             max-width: 100%;
+            max-height: 550px;
+            width: auto;
             height: auto;
             object-fit: contain;
             border-radius: var(--radius);
@@ -492,6 +496,8 @@
             .grid-opcoes { grid-template-columns: repeat(2, 1fr); }
             .img-atividade {
             max-width: 100%;
+            max-height: 550px;
+            width: auto;
             height: auto;
             object-fit: contain;
             border-radius: var(--radius);
@@ -1252,8 +1258,18 @@ function restaurarEstadoRespostaSeExistir() {
 
             const img = document.getElementById('imgQuestao');
             img.src = q.img;
-            const scale = q.imgScale || 1;
-            img.style.width = Math.min(100, 65 * scale) + "%";
+
+            // Mantém o tamanho normal das imagens (como era antes)
+            // e só aumenta o limite de altura quando a questão tiver imgScale.
+            const baseMaxH = 550;
+            if (q.imgScale) {
+              img.style.maxHeight = (baseMaxH * q.imgScale) + "px";
+            } else {
+              img.style.maxHeight = baseMaxH + "px";
+            }
+
+            // Garante que o tamanho "normal" não fique encolhido por estilos inline
+            img.style.width = "";
             img.style.height = "auto";
             document.getElementById('textoPergunta').innerHTML = q.pergunta;
 
