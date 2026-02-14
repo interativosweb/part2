@@ -365,7 +365,6 @@
     </style>
 </head>
 <body>
-    <!-- BLOQUEIOS (F12 / SALVAR / INSPECIONAR / ETC) -->
     <script>
         (function () {
             const block = (e) => {
@@ -582,19 +581,28 @@
         const db = getDatabase(app);
 
         // ============================================================
-        // ✅ Banco de questões (carregado de forma segura)
-        // Se o arquivo ./banco_questoes.js não estiver no mesmo diretório do ranking,
-        // o painel continua funcionando (só não mostra o texto completo da questão).
+        // ✅ FUNÇÕES AUXILIARES (MOVIDAS PARA O ESCOPO GLOBAL)
+        // ============================================================
+        function normalizarLista(v){
+            if (Array.isArray(v)) return v;
+            if (!v) return [];
+            if (typeof v === 'string') return [v];
+            if (typeof v === 'object') {
+                try { return Object.values(v).filter(x=>x!==null && x!==undefined); } catch(e) { return []; }
+            }
+            return [];
+        }
+
+        function _escapeHTML(s){
+            return String(s ?? "").replace(/[&<>"]/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[c]));
+        }
+
+        // ============================================================
+        // ✅ Banco de questões
         // ============================================================
         let questoesIntro = [];
         let questoesComp = [];
 
-        // ============================================================
-        // ✅ Banco de questões (carregado de forma segura)
-        // Tenta vários nomes comuns, inclusive os que o Windows cria ao baixar:
-        //   - banco_questoes.js
-        //   - banco_questoes (21).js
-        // ============================================================
         (async () => {
             const candidatos = [
                 "./banco_questoes.js",
@@ -613,28 +621,20 @@
                     // tenta o próximo
                 }
             }
-
-            console.warn("Não foi possível carregar o banco de questões. Coloque o arquivo banco_questoes.js (ou similar) no mesmo diretório do ranking.html.");
+            console.warn("Não foi possível carregar o banco de questões.");
         })();
-let todosRegistros = [];
+
+        let todosRegistros = [];
         let filtroAnoAtual = "todas";
         let filtroTurmaAtual = "todas";
         let tipoResetPendente = null;
-        // ============================================================
-        // ✅ NOVO: cálculo de acertos/erros TOTAL (Intro + Complementar)
-        // Compatível com versões antigas:
-        // - se existir acertosIntro/acertosComp -> soma
-        // - se existir acertosTotal -> usa
-        // - senão usa acertos/erros (legado)
-        // ============================================================
+
         function getAcertosTotal(aluno){
             const aT = Number(aluno.acertosTotal);
             if (!Number.isNaN(aT) && aluno.acertosTotal !== undefined) return aT;
-
             const aI = Number(aluno.acertosIntro);
             const aC = Number(aluno.acertosComp);
             if (!Number.isNaN(aI) || !Number.isNaN(aC)) return (Number.isNaN(aI)?0:aI) + (Number.isNaN(aC)?0:aC);
-
             const a = Number(aluno.acertos);
             return Number.isNaN(a) ? 0 : a;
         }
@@ -642,15 +642,12 @@ let todosRegistros = [];
         function getErrosTotal(aluno){
             const eT = Number(aluno.errosTotal);
             if (!Number.isNaN(eT) && aluno.errosTotal !== undefined) return eT;
-
             const eI = Number(aluno.errosIntro);
             const eC = Number(aluno.errosComp);
             if (!Number.isNaN(eI) || !Number.isNaN(eC)) return (Number.isNaN(eI)?0:eI) + (Number.isNaN(eC)?0:eC);
-
             const e = Number(aluno.erros);
             return Number.isNaN(e) ? 0 : e;
         }
-
 
         const alunosRef = ref(db, 'alunos');
 
@@ -672,6 +669,7 @@ let todosRegistros = [];
                         serie: aluno.serie,
                         acertos: getAcertosTotal(aluno),
                         erros: getErrosTotal(aluno),
+                        // Agora a função normalizarLista está visível aqui!
                         listaAcertos: normalizarLista(aluno.listaAcertos),
                         listaErros: normalizarLista(aluno.listaErros),
                         data: aluno.entrouEm ? aluno.entrouEm.split('T')[0] : '',
@@ -690,10 +688,11 @@ let todosRegistros = [];
                 });
                 sessionStorage.setItem('notificados', JSON.stringify(ultimosNotificados));
             }
+            
+            // Chama o render
             if (typeof window.renderizarRanking === 'function') {
                 window.renderizarRanking();
             } else {
-                // garante que a função exista antes de renderizar
                 setTimeout(() => { if (typeof window.renderizarRanking === 'function') window.renderizarRanking(); }, 0);
             }
         });
@@ -862,151 +861,133 @@ let todosRegistros = [];
         }
     
         // ============================================================
-        // ✅ Modal do aluno: ver lista de acertos/erros em tempo real
+        // ✅ Modal do aluno: Lógica de UI
         // ============================================================
         window.addEventListener('DOMContentLoaded', () => {
-        const overlay = document.getElementById('alunoModalOverlay');
-        const modalNome = document.getElementById('alunoModalNome');
-        const modalInfo = document.getElementById('alunoModalInfo');
-        const btnFechar = document.getElementById('alunoModalFechar');
-        const btnAcertos = document.getElementById('btnAcertosAluno');
-        const btnErros = document.getElementById('btnErrosAluno');
-        const btnAcertosNum = document.getElementById('btnAcertosAlunoNum');
-        const btnErrosNum = document.getElementById('btnErrosAlunoNum');
+            const overlay = document.getElementById('alunoModalOverlay');
+            const modalNome = document.getElementById('alunoModalNome');
+            const modalInfo = document.getElementById('alunoModalInfo');
+            const btnFechar = document.getElementById('alunoModalFechar');
+            const btnAcertos = document.getElementById('btnAcertosAluno');
+            const btnErros = document.getElementById('btnErrosAluno');
+            const btnAcertosNum = document.getElementById('btnAcertosAlunoNum');
+            const btnErrosNum = document.getElementById('btnErrosAlunoNum');
 
-        const listaModal = document.getElementById('listaModal');
-        const listaTitulo = document.getElementById('listaModalTitulo');
-        const listaFechar = document.getElementById('listaModalFechar');
-        const listaQuestoesDiv = document.getElementById('listaQuestoes');
+            const listaModal = document.getElementById('listaModal');
+            const listaTitulo = document.getElementById('listaModalTitulo');
+            const listaFechar = document.getElementById('listaModalFechar');
+            const listaQuestoesDiv = document.getElementById('listaQuestoes');
 
-        let alunoSelecionado = null;
+            let alunoSelecionado = null;
 
-        function normalizarLista(v){
-  if (Array.isArray(v)) return v;
-  if (!v) return [];
-  if (typeof v === 'string') return [v];
-  if (typeof v === 'object') {
-    // Firebase RTDB pode devolver arrays como objetos {0:...,1:...}
-    try { return Object.values(v).filter(x=>x!==null && x!==undefined); } catch(e) { return []; }
-  }
-  return [];
-}
+            function abrirModalAluno(aluno){
+                alunoSelecionado = aluno;
+                modalNome.textContent = aluno.nome || "Aluno(a)";
+                const turma = aluno.turma ? `Turma: ${aluno.turma}` : "Turma: —";
+                const ano = aluno.ano ? `Ano: ${aluno.ano}` : "Ano: —";
+                modalInfo.textContent = `${turma} • ${ano}`;
 
-function _escapeHTML(s){
-          return String(s ?? "").replace(/[&<>"]/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[c]));
-        }
+                btnAcertosNum.textContent = aluno.acertos ?? 0;
+                btnErrosNum.textContent = aluno.erros ?? 0;
 
-        function abrirModalAluno(aluno){
-          alunoSelecionado = aluno;
-          modalNome.textContent = aluno.nome || "Aluno(a)";
-          const turma = aluno.turma ? `Turma: ${aluno.turma}` : "Turma: —";
-          const ano = aluno.ano ? `Ano: ${aluno.ano}` : "Ano: —";
-          modalInfo.textContent = `${turma} • ${ano}`;
+                overlay.style.display = "flex";
+                listaModal.style.display = "none";
+                listaQuestoesDiv.innerHTML = "";
+            }
 
-          btnAcertosNum.textContent = aluno.acertos ?? 0;
-          btnErrosNum.textContent = aluno.erros ?? 0;
+            function fecharModalAluno(){
+                overlay.style.display = "none";
+                listaModal.style.display = "none";
+                alunoSelecionado = null;
+            }
 
-          overlay.style.display = "flex";
-          listaModal.style.display = "none";
-          listaQuestoesDiv.innerHTML = "";
-        }
+            btnFechar.addEventListener('click', fecharModalAluno);
+            overlay.addEventListener('click', (e)=>{
+                if (e.target === overlay) fecharModalAluno();
+            });
+            document.addEventListener('keydown', (e)=>{
+                if (e.key === "Escape" && overlay.style.display !== "none") fecharModalAluno();
+            });
 
-        function fecharModalAluno(){
-          overlay.style.display = "none";
-          listaModal.style.display = "none";
-          alunoSelecionado = null;
-        }
+            listaFechar.addEventListener('click', ()=>{
+                listaModal.style.display = "none";
+                listaQuestoesDiv.innerHTML = "";
+            });
 
-        btnFechar.addEventListener('click', fecharModalAluno);
-        overlay.addEventListener('click', (e)=>{
-          if (e.target === overlay) fecharModalAluno();
-        });
-        document.addEventListener('keydown', (e)=>{
-          if (e.key === "Escape" && overlay.style.display !== "none") fecharModalAluno();
-        });
+            function getQuestaoPorId(qId){
+                const [modo, idxStr] = String(qId || "").split("-");
+                const idx = Number(idxStr);
+                let q = null;
+                let titulo = null;
 
-        listaFechar.addEventListener('click', ()=>{
-          listaModal.style.display = "none";
-          listaQuestoesDiv.innerHTML = "";
-        });
+                if (modo === "intro") {
+                    q = (Array.isArray(questoesIntro) ? questoesIntro : [])[idx];
+                    titulo = "Introdução";
+                } else if (modo === "complementar") {
+                    q = (Array.isArray(questoesComp) ? questoesComp : [])[idx];
+                    titulo = "Complementar";
+                }
 
-        function getQuestaoPorId(qId){
-          const [modo, idxStr] = String(qId || "").split("-");
-          const idx = Number(idxStr);
-          let q = null;
-          let titulo = null;
+                return { modo, idx, q, titulo };
+            }
 
-          if (modo === "intro") {
-            q = (Array.isArray(questoesIntro) ? questoesIntro : [])[idx];
-            titulo = "Introdução";
-          } else if (modo === "complementar") {
-            q = (Array.isArray(questoesComp) ? questoesComp : [])[idx];
-            titulo = "Complementar";
-          }
+            function renderListaQuestoes(tipo){
+                if (!alunoSelecionado) return;
 
-          return { modo, idx, q, titulo };
-        }
+                const lista = (tipo === "acertos")
+                    ? (alunoSelecionado.listaAcertos || [])
+                    : (alunoSelecionado.listaErros || []);
 
-        function renderListaQuestoes(tipo){
-          if (!alunoSelecionado) return;
+                listaTitulo.textContent = (tipo === "acertos") ? "Questões acertadas" : "Questões erradas";
+                listaModal.style.display = "block";
 
-          const lista = (tipo === "acertos")
-            ? (alunoSelecionado.listaAcertos || [])
-            : (alunoSelecionado.listaErros || []);
+                if (!Array.isArray(lista) || lista.length === 0){
+                    listaQuestoesDiv.innerHTML = `<div style="padding:10px;color:#6b7280;">Nenhuma questão registrada ainda.</div>`;
+                    return;
+                }
 
-          listaTitulo.textContent = (tipo === "acertos") ? "Questões acertadas" : "Questões erradas";
-          listaModal.style.display = "block";
+                // Ordena por modo e índice
+                const ordenada = [...lista].sort((a,b)=>{
+                    const [ma,ia]=String(a).split("-");
+                    const [mb,ib]=String(b).split("-");
+                    if (ma !== mb) return ma.localeCompare(mb);
+                    return (Number(ia)||0) - (Number(ib)||0);
+                });
 
-          if (!Array.isArray(lista) || lista.length === 0){
-            listaQuestoesDiv.innerHTML = `<div style="padding:10px;color:#6b7280;">Nenhuma questão registrada ainda.</div>`;
-            return;
-          }
+                const itens = ordenada.map((id)=>{
+                    const info = getQuestaoPorId(id);
+                    const label = info.titulo ? `${info.titulo} • Q${(info.idx ?? 0)+1}` : `Q${(info.idx ?? 0)+1}`;
+                    const texto = info.q?.pergunta ? _escapeHTML(info.q.pergunta) : "Questão não encontrada (banco mudou).";
+                    const chip = `<span class="chip">${label}</span>`;
+                    return `
+                    <div class="item-questao">
+                        <div class="linha1">
+                        ${chip}
+                        </div>
+                        <div class="txt-curto">${texto}</div>
+                    </div>
+                    `;
+                }).join("");
 
-          // Ordena por modo e índice
-          const ordenada = [...lista].sort((a,b)=>{
-            const [ma,ia]=String(a).split("-");
-            const [mb,ib]=String(b).split("-");
-            if (ma !== mb) return ma.localeCompare(mb);
-            return (Number(ia)||0) - (Number(ib)||0);
-          });
+                listaQuestoesDiv.innerHTML = itens;
+            }
 
-          const itens = ordenada.map((id)=>{
-            const info = getQuestaoPorId(id);
-            const label = info.titulo ? `${info.titulo} • Q${(info.idx ?? 0)+1}` : `Q${(info.idx ?? 0)+1}`;
-            const texto = info.q?.pergunta ? _escapeHTML(info.q.pergunta) : "Questão não encontrada (banco mudou).";
-            const chip = `<span class="chip">${label}</span>`;
-            return `
-              <div class="item-questao">
-                <div class="linha1">
-                  ${chip}
-                </div>
-                <div class="txt-curto">${texto}</div>
-              </div>
-            `;
-          }).join("");
+            btnAcertos.addEventListener('click', ()=>renderListaQuestoes("acertos"));
+            btnErros.addEventListener('click', ()=>renderListaQuestoes("erros"));
 
-          listaQuestoesDiv.innerHTML = itens;
-}
+            // Clique em aluno no ranking -> abre modal
+            document.addEventListener('click', (e)=>{
+                const li = e.target.closest('li.item-aluno');
+                if (!li || !li.dataset || !li.dataset.alunoId) return;
 
-        btnAcertos.addEventListener('click', ()=>renderListaQuestoes("acertos"));
-        btnErros.addEventListener('click', ()=>renderListaQuestoes("erros"));
-
-        // Clique em aluno no ranking -> abre modal
-        document.addEventListener('click', (e)=>{
-          const li = e.target.closest('li.item-aluno');
-          if (!li || !li.dataset || !li.dataset.alunoId) return;
-
-          const id = li.dataset.alunoId;
-          const aluno = (todosRegistros || []).find(x => x.id === id);
-          if (aluno) abrirModalAluno(aluno);
-        });
+                const id = li.dataset.alunoId;
+                const aluno = (todosRegistros || []).find(x => x.id === id);
+                if (aluno) abrirModalAluno(aluno);
+            });
         });
 
 </script>
 
-    <!-- =======================
-         ✅ Modal do aluno (Tempo real)
-         ======================= -->
     <div id="alunoModalOverlay" class="aluno-modal-overlay" style="display:none;">
       <div id="alunoModal" class="aluno-modal" role="dialog" aria-modal="true" aria-label="Detalhes do aluno">
         <div class="aluno-modal-header">
