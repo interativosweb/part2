@@ -37,18 +37,20 @@ const resolucaoCompImgHTML = (n, scale = 1) => {
 
 const questoesIntroI = [
   {
-    pergunta: "Isso está inteiro ou dividido?",
+    pergunta: "A melancia está inteira ou dividia?",
     img: pathIntro + "img07intro.png",
     opcoes: ["Inteiro", "Dividido"],
     correta: 0,
-    resolucao: `A figura mostrada não está separada em partes diferentes. Ela está inteira.`
+    resolucao: `Está inteiro porque não foi dividido em partes.
+Quando não há divisão, temos um todo completo.`
   },
   {
-    pergunta: "Em quantas partes foi dividido?",
+    pergunta: "Em quantas partes a melancia foi dividida?",
     img: pathIntro + "img08intro.png",
     opcoes: ["1", "2", "3", "6"],
     correta: 1,
-    resolucao: `A figura foi dividida em <b>2</b> partes iguais.`
+    resolucao: `A melancia foi dividida em 2 partes iguais.
+Sempre contamos quantas partes existem no total.`
   },
   {
     pergunta: `Na fração ${f(4,9)}, qual é o denominador?`,
@@ -302,3 +304,4 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(14, 1.4)
   }
 ];
+
