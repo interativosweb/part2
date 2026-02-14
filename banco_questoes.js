@@ -125,60 +125,14 @@ Sempre contamos quantas partes existem no total.`
   }
 ];
 
-// Questões que já existiam na introdução (antiga "Introdução II")
-const questoesIntroII = [
-  {
-      pergunta: "Uma fração é uma forma de representar uma parte de um todo, quando esse todo é dividido em partes iguais. Comer um pedaço dessa pizza representa em fração:",
-      img: pathIntro + "img01intro.png",
-      opcoes: [f(1,4), f(1,6), f(7,1), f(1,7)],
-      correta: 3,
-      resolucao: `A pizza inteira foi dividida em 7 partes iguais. Como comemos apenas 1 dessas partes, a fração é ${f(1,7)}.`
-    },
-    {
-      pergunta: "Pedi uma pizza e comi apenas a parte pintada em verde, represente em fração quantos pedaços eu comi:",
-      img: pathIntro + "img02intro.png",
-      opcoes: [f(3,7), f(5,6), f(7,3), f(7,2)],
-      correta: 0,
-      resolucao: `Contamos 7 pedaços no total e 3 pintados de verde. A fração é ${f(3,7)}.`
-    },
-    {
-      pergunta: "Um copo cheio de suco é dividido em 2 partes iguais. Se alguém bebe uma dessas partes, temos:",
-      img: pathIntro + "img03intro.png",
-      opcoes: [f(2,5), f(2,1), f(1,4), f(1,2)],
-      correta: 3,
-      resolucao: `Isso representa metade do copo: ${f(1,2)}.`
-    },
-  
-    // ✅ ALTERADO: opções e correta = 3/4
-    {
-      pergunta: "Qual fração representa o círculo vermelho?",
-      img: pathIntro + "img04intro.png",
-      opcoes: [f(3,4), f(1,4), f(4,3), f(2,3)],
-      correta: 0,
-      resolucao: `Observe o total de partes do círculo e quantas estão em vermelho. Aqui, a parte vermelha representa ${f(3,4)} do círculo.`
-    },
-  
-    // ✅ ALTERADO: resolução com explicação breve e simples
-    {
-      pergunta: `Uma barra de chocolate tem 5 pedaços iguais, se eu comer ${f(1,5)}, quantos ainda me restam?`,
-      img: pathIntro + "img05intro.png",
-      opcoes: ["1", f(2,5), f(4,5), f(3,5)],
-      correta: 2,
-      resolucao: `Se a barra tem 5 pedaços e eu comi 1, restam 4 pedaços. Em fração, fica ${f(4,5)}.`
-    },
-  
-    // ✅ MODIFICADO: 4º dia usando o celular da mãe (gabarito definido: 1/5)
-    {
-      pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)} e, no terceiro dia, eu não usei o celular. No 4º dia eu usei o celular da minha mãe. Quanto eu usei da bateria dela?`,
-      img: pathIntro + "img06intro.png",
-      opcoes: [f(1,5), f(4,5), f(3,5), f(1,6)],
-      correta: 0,
-      resolucao: `No 4º dia, o uso foi no celular da mãe. Como o enunciado não informa o gasto exato, nesta atividade consideramos como correta a alternativa ${f(1,5)}.`
-    }
-];
+// =====================================================================
+// ✅ Banco de Introdução (sem duplicatas)
+// A antiga lista "questoesIntroII" repetia questões já presentes em "questoesIntroI".
+// Para evitar questões repetidas no site, exportamos somente a lista única.
+// =====================================================================
 
+export const questoesIntro = questoesIntroI;
 
-export const questoesIntro = [...questoesIntroI, ...questoesIntroII];
 export const questoesComp = [
   {
     pergunta: `Um bolo foi dividido em 4 partes iguais. João comeu ${f(1,4)} e Maria comeu ${f(2,4)}. Que fração do bolo foi comida ao todo?`,
@@ -304,5 +258,3 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(14, 1.4)
   }
 ];
-
-
