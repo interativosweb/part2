@@ -882,7 +882,7 @@
         // ACESSO DO PROFESSOR COM POPUP + SENHA
         // =========================================================================
         const SENHA_PROFESSOR = "4241";
-        const URL_PAINEL_PROF = "./ranking.html"; // ajuste se seu painel tiver outro nome
+        const URL_PAINEL_PROF = "./ranking.html?v=20260214"; // cache-busting para garantir versão atual do painel
 
         window.abrirModalAcessoProfessor = function() {
             const modal = document.getElementById('modalAcessoProfessor');
@@ -915,7 +915,7 @@
         // =========================================================================
         // ✅ CADEADO NA TELA PAUSADA -> ABRE PAINEL DO ALUNO (SENHA DO PROFESSOR)
         // =========================================================================
-        const URL_PAINEL_ALUNO = "./ranking.html"; // ajuste se seu painel do aluno tiver outro caminho
+        const URL_PAINEL_ALUNO = "./ranking.html?v=20260214"; // cache-busting para garantir versão atual do painel
 
         window.abrirModalPainelAluno = function() {
             const modal = document.getElementById('modalPainelAluno');

@@ -206,6 +206,12 @@
         }
         .btn-pilula-acao:hover .badge-count { background: rgba(255,255,255,0.3); color: white; }
 
+        /* Defesa extra: se HTML antigo/cacheado ainda tiver os botões individuais, não exibe */
+        #btnLiberarIndividual,
+        #btnFinalizarIndividual {
+            display: none !important;
+        }
+
         /* Divisor */
         .modal-divisor {
             height: 1px; background-color: #f0f0f5; width: 100%; margin: 20px 0; position: relative;
@@ -781,6 +787,13 @@
             wrapper.classList.remove('aberto');
             renderizarRanking();
         }
+
+
+        // Defesa extra para versões cacheadas: remove botões individuais se existirem no DOM.
+        ;['btnLiberarIndividual', 'btnFinalizarIndividual'].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        });
 
         function mostrarNotificacao(texto, tipo = 'sucesso') {
             const container = document.getElementById('containerNotificacoes');
