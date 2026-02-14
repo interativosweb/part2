@@ -854,176 +854,155 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        let alunoId = localStorage.getItem('firebaseId');
-
-        const iconCadeadoAberto = `<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>`;
-        const iconCadeadoFechado = `<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>`;
-
-        window.modoAtual = localStorage.getItem('modoAtual') || 'intro';
-        window.indice = parseInt(localStorage.getItem('indice')) || 0;
-        window.placarIntro = JSON.parse(localStorage.getItem('placarIntro')) || { acertos: 0, erros: 0 };
-        window.placarComp = JSON.parse(localStorage.getItem('placarComp')) || { acertos: 0, erros: 0 };
-
-        // ============================================================
-        // ✅ NOVO: listas de questões acertadas/erradas (para o Painel da Turma)
-        // Formato do ID: "intro-<indice>" ou "complementar-<indice>"
-        // ============================================================
-        window.listaAcertos = JSON.parse(localStorage.getItem('listaAcertos')) || [];
-        window.listaErros   = JSON.parse(localStorage.getItem('listaErros'))   || [];
-
-
         // =========================================================================
-        // ACESSO DO PROFESSOR COM POPUP + SENHA
-        // =========================================================================
-        const SENHA_PROFESSOR = "4241";
-        const URL_PAINEL_PROF = "./ranking.html"; // ajuste se seu painel tiver outro nome
+    // VARIÁVEIS GLOBAIS
+    // =========================================================================
+    window.modoAtual = 'intro'; 
+    window.indice = 0;
+    window.placarIntro = { acertos: 0, erros: 0 };
+    window.placarComp = { acertos: 0, erros: 0 };
+    
+    // Listas para salvar QUAIS questões o aluno acertou/errou
+    window.listaAcertos = [];
+    window.listaErros = [];
 
-        window.abrirModalAcessoProfessor = function() {
-            const modal = document.getElementById('modalAcessoProfessor');
-            const input = document.getElementById('inputSenhaProfessor');
-            const erro = document.getElementById('erroSenhaProfessor');
-            erro.innerText = "";
-            input.value = "";
-            modal.classList.add('visivel');
-            setTimeout(() => input.focus(), 50);
-        };
+    // Identidade
+    let meuId = localStorage.getItem('aluno_id'); 
+    let bloqueioIndividualAtivo = false; // NOVA VARIÁVEL IMPORTANTE
 
-        window.fecharModalAcessoProfessor = function() {
-            document.getElementById('modalAcessoProfessor').classList.remove('visivel');
-        };
+    // =========================================================================
+    // ✅ MONITORAMENTO DE BLOQUEIO (GLOBAL E INDIVIDUAL)
+    // =========================================================================
+    
+    // 1. Monitoramento GLOBAL (Status da Turma)
+    const statusRef = ref(db, 'status_atividade');
+    onValue(statusRef, (snapshot) => {
+        // Se houver um bloqueio/liberação individual explícito, ignoramos o comando geral
+        if (bloqueioIndividualAtivo) return;
 
-        window.confirmarAcessoProfessor = function() {
-            const senha = (document.getElementById('inputSenhaProfessor').value || "").trim();
-            const erro = document.getElementById('erroSenhaProfessor');
+        const val = snapshot.val();
+        const tela = document.getElementById('telaBloqueio');
+        const h1 = tela.querySelector('h1');
+        const p = tela.querySelector('p');
 
-            if (senha !== SENHA_PROFESSOR) {
-                erro.innerText = "Senha incorreta.";
-                return;
-            }
+        if (val && val.comando === 'finalizar') {
+            tela.classList.add('visivel');
+            h1.innerText = "Atividade Pausada";
+            h1.style.color = "#ff3b30";
+            p.innerText = "Aguarde a liberação do professor.";
+        } else {
+            tela.classList.remove('visivel');
+        }
+    });
 
-            window.fecharModalAcessoProfessor();
-            window.open(URL_PAINEL_PROF, "_blank");
+    // 2. NOVA FUNÇÃO: Monitoramento INDIVIDUAL (Status do Aluno)
+    function iniciarMonitoramentoIndividual() {
+        if (!meuId) return;
+        const alunoStatusRef = ref(db, `alunos/${meuId}/status_individual`);
+        
+        onValue(alunoStatusRef, (snapshot) => {
+            const status = snapshot.val();
+            const tela = document.getElementById('telaBloqueio');
+            const h1 = tela.querySelector('h1');
+            const p = tela.querySelector('p');
 
-        };
-
-        // =========================================================================
-        // ✅ CADEADO NA TELA PAUSADA -> ABRE PAINEL DO ALUNO (SENHA DO PROFESSOR)
-        // =========================================================================
-        const URL_PAINEL_ALUNO = "./ranking.html"; // ajuste se seu painel do aluno tiver outro caminho
-
-        window.abrirModalPainelAluno = function() {
-            const modal = document.getElementById('modalPainelAluno');
-            const input = document.getElementById('inputSenhaPainelAluno');
-            const erro = document.getElementById('erroSenhaPainelAluno');
-            erro.innerText = "";
-            input.value = "";
-            modal.classList.add('visivel');
-            setTimeout(() => input.focus(), 50);
-        };
-
-        window.fecharModalPainelAluno = function() {
-            document.getElementById('modalPainelAluno').classList.remove('visivel');
-        };
-
-        window.confirmarPainelAluno = function() {
-            const senha = (document.getElementById('inputSenhaPainelAluno').value || "").trim();
-            const erro = document.getElementById('erroSenhaPainelAluno');
-
-            if (senha !== SENHA_PROFESSOR) {
-                erro.innerText = "Senha incorreta.";
-                return;
-            }
-
-            window.fecharModalPainelAluno();
-            window.open(URL_PAINEL_ALUNO, "_blank");
-        };
-
-        // Enter no modal do painel do aluno
-        document.addEventListener('keydown', (e) => {
-            const modalVisivel = document.getElementById('modalPainelAluno').classList.contains('visivel');
-            if (modalVisivel && e.key === 'Enter') {
-                e.preventDefault();
-                window.confirmarPainelAluno();
-            }
-        }, { capture: true });
-
-        // Fechar modal do painel do aluno clicando no fundo
-        document.getElementById('modalPainelAluno').addEventListener('click', (e) => {
-            if (e.target.id === 'modalPainelAluno') window.fecharModalPainelAluno();
-        });
-
-
-        // Enter no modal do professor
-        document.addEventListener('keydown', (e) => {
-            const modalVisivel = document.getElementById('modalAcessoProfessor').classList.contains('visivel');
-            if (modalVisivel && e.key === 'Enter') {
-                e.preventDefault();
-                window.confirmarAcessoProfessor();
-            }
-        }, { capture: true });
-
-        // Fechar modal clicando no fundo
-        document.getElementById('modalAcessoProfessor').addEventListener('click', (e) => {
-            if (e.target.id === 'modalAcessoProfessor') window.fecharModalAcessoProfessor();
-        });
-
-        // =========================================================================
-        // LOGIN
-        // =========================================================================
-        window.checkLogin = function() {
-            const nomeSalvo = localStorage.getItem('alunoNome');
-            const serieSalva = localStorage.getItem('alunoSerie');
-            if (nomeSalvo && serieSalva) {
-                aplicarDadosUsuario(nomeSalvo, serieSalva);
-                if (alunoId) {
-                    update(ref(db, 'alunos/' + alunoId), { status: 'reconectado', ultimoAcesso: new Date().toISOString() });
-                }
-                document.getElementById('modalLogin').classList.remove('visivel');
-                mostrarApp();
+            if (status === 'finalizado') {
+                // Bloqueio Individual (Tem prioridade sobre o geral)
+                bloqueioIndividualAtivo = true;
+                tela.classList.add('visivel');
+                h1.innerText = "Atividade Encerrada";
+                h1.style.color = "#ff3b30";
+                p.innerText = "O professor finalizou sua atividade.";
+            } else if (status === 'liberado') {
+                // Liberação Individual (Tem prioridade sobre o geral)
+                bloqueioIndividualAtivo = true;
+                tela.classList.remove('visivel');
             } else {
-                document.getElementById('modalLogin').classList.add('visivel');
+                // Sem status individual definido, volta a obedecer o global
+                bloqueioIndividualAtivo = false;
+                
+                // Verifica o status global imediatamente para não ficar no estado errado
+                get(child(ref(db), 'status_atividade')).then((snapGlobal) => {
+                    const valGlobal = snapGlobal.val();
+                    if (valGlobal && valGlobal.comando === 'finalizar') {
+                        tela.classList.add('visivel');
+                        h1.innerText = "Atividade Pausada";
+                        h1.style.color = "#ff3b30";
+                        p.innerText = "Aguarde a liberação do professor.";
+                    } else {
+                        tela.classList.remove('visivel');
+                    }
+                });
             }
-        };
+        });
+    }
 
-        window.realizarLogin = function() {
-            const inputNome = document.getElementById('inputNomeAluno');
-            const aviso = document.getElementById('erroNome');
-            let nome = inputNome.value.trim();
-            aviso.innerText = "";
+    // =========================================================================
+    // LÓGICA DE LOGIN E INICIALIZAÇÃO (ATUALIZADA)
+    // =========================================================================
+    window.checkLogin = function() {
+        const savedId = localStorage.getItem('aluno_id');
+        const savedNome = localStorage.getItem('aluno_nome');
+        const savedSerie = localStorage.getItem('aluno_serie');
 
-            if (!nome) { aviso.innerText = "Por favor, digite seu nome."; return; }
-            if (nome.includes(" ")) { aviso.innerText = "Digite apenas o primeiro nome."; return; }
-            if (nome.length > 15) { aviso.innerText = "O nome deve ter no máximo 15 letras."; return; }
-
-            nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
-
-            const anoSelecionado = document.querySelector('input[name="ano"]:checked');
-            const turmaSelecionada = document.querySelector('input[name="serie"]:checked');
-            if (!anoSelecionado || !turmaSelecionada) { aviso.innerText = "Selecione Ano e Turma."; return; }
-
-            const serieCompleta = `${anoSelecionado.value} ${turmaSelecionada.value}`;
-            localStorage.setItem('alunoNome', nome);
-            localStorage.setItem('alunoSerie', serieCompleta);
-            aplicarDadosUsuario(nome, serieCompleta);
-
-            if (!alunoId) {
-                const novoAlunoRef = push(ref(db, 'alunos'));
-                alunoId = novoAlunoRef.key;
-                localStorage.setItem('firebaseId', alunoId);
-            }
-
-            update(ref(db, 'alunos/' + alunoId), {
-                nome: nome,
-                serie: serieCompleta,
-                acertos: 0,
-                erros: 0,
-                entrouEm: new Date().toISOString(),
-                status: 'online'
-            });
+        if (savedId && savedNome && savedSerie) {
+            meuId = savedId;
+            iniciarMonitoramentoIndividual(); // <--- CHAMADA ADICIONADA AQUI
+            
+            aplicarDadosUsuario(savedNome, savedSerie);
+            
+            // Restaura estado
+            window.modoAtual = localStorage.getItem('modoAtual') || 'intro';
+            window.indice = Number(localStorage.getItem('indice')) || 0;
+            window.placarIntro = JSON.parse(localStorage.getItem('placarIntro')) || { acertos: 0, erros: 0 };
+            window.placarComp = JSON.parse(localStorage.getItem('placarComp')) || { acertos: 0, erros: 0 };
 
             document.getElementById('modalLogin').classList.remove('visivel');
             mostrarApp();
-        };
+            renderizarQuestao();
+        } else {
+            document.getElementById('modalLogin').classList.add('visivel');
+        }
+    };
+
+    window.iniciarApp = function() {
+        const nome = document.getElementById('inputNome').value.trim();
+        const serieEl = document.querySelector('input[name="serie"]:checked');
+        const turmaEl = document.querySelector('input[name="turma"]:checked');
+        const erro = document.getElementById('erroLogin');
+
+        if (!nome || !serieEl || !turmaEl) {
+            erro.innerText = "Preencha o nome, ano e turma.";
+            return;
+        }
+
+        const serieCompleta = `${serieEl.value} ${turmaEl.value}`; 
+        
+        // Cria novo ID no Firebase
+        const novoRef = push(ref(db, 'alunos'));
+        meuId = novoRef.key;
+
+        localStorage.setItem('aluno_id', meuId);
+        localStorage.setItem('aluno_nome', nome);
+        localStorage.setItem('aluno_serie', serieCompleta);
+
+        aplicarDadosUsuario(nome, serieCompleta);
+        iniciarMonitoramentoIndividual(); // <--- CHAMADA ADICIONADA AQUI
+
+        // Salva dados iniciais no DB
+        update(ref(db, 'alunos/' + meuId), {
+            nome: nome,
+            serie: serieCompleta,
+            acertos: 0,
+            erros: 0,
+            entrouEm: new Date().toISOString(),
+            status_individual: 'jogando'
+        });
+
+        document.getElementById('modalLogin').classList.remove('visivel');
+        mostrarApp();
+        renderizarQuestao();
+    };
 
         function aplicarDadosUsuario(nome, serie) {
             document.getElementById('badgeNome').innerText = nome;
@@ -1435,4 +1414,5 @@ function restaurarEstadoRespostaSeExistir() {
 
 </body>
 </html>
+
 
