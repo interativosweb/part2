@@ -64,7 +64,7 @@ Sempre contamos quantas partes existem no total.`
     img: pathIntro + "img10intro.png",
     opcoes: [f(3,3), f(3,2), f(2,3), f(6,9)],
     correta: 2,
-    resolucao: `O numerador indica quantas partes temos (2) e o denominador indica em quantas partes o todo foi dividido (3). Portanto, a fração é ${f(2,3)}.`
+    resolucao: `O numerador indica quantas partes temos 2 e o denominador indica em quantas partes o todo foi dividido 3. Portanto, a fração é ${f(2,3)}.`
   },
   {
     pergunta: "Qual fração representa a última figura?",
@@ -304,4 +304,5 @@ export const questoesComp = [
     resolucao: resolucaoCompImgHTML(14, 1.4)
   }
 ];
+
 
