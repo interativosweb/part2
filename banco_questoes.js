@@ -31,8 +31,6 @@ const resolucaoCompImgHTML = (n, scale = 1) => {
 
 // =====================================================================
 // ✅ INTRODUÇÃO (única) — chamada no site como "Introdução I"
-// - Inclui as 5 novas questões (img07intro a img11intro)
-// - Mantém as questões que já existiam (img01intro a img06intro)
 // =====================================================================
 
 const questoesIntroI = [
@@ -55,6 +53,7 @@ Sempre contamos quantas partes existem no total.`
   {
     pergunta: `Na fração ${f(4,9)}, qual é o denominador?`,
     img: pathIntro + "img09intro.png",
+    imgScale: 1.3, // ✅ 30% maior
     opcoes: ["4", "9", "2", "5"],
     correta: 1,
     resolucao: `Em uma fração, o denominador é o número de baixo. Em ${f(4,9)}, o denominador é <b>9</b>.`
@@ -62,6 +61,7 @@ Sempre contamos quantas partes existem no total.`
   {
     pergunta: "Se você tem 2 parte de 3, qual é a fração?",
     img: pathIntro + "img10intro.png",
+    imgScale: 1.3, // ✅ 30% maior
     opcoes: [f(3,3), f(3,2), f(2,3), f(6,9)],
     correta: 2,
     resolucao: `O numerador indica quantas partes temos 2 e o denominador indica em quantas partes o todo foi dividido 3. Portanto, a fração é ${f(2,3)}.`
@@ -74,7 +74,6 @@ Sempre contamos quantas partes existem no total.`
     resolucao: `A figura tem 5 partes iguais ao todo e 4 estão pintadas. Logo, a fração é ${f(4,5)}.`
   },
 
-  // Questões que já existiam no site (antiga introdução)
   {
     pergunta: "Uma fração é uma forma de representar uma parte de um todo, quando esse todo é dividido em partes iguais. Comer um pedaço dessa pizza representa em fração:",
     img: pathIntro + "img01intro.png",
@@ -96,8 +95,6 @@ Sempre contamos quantas partes existem no total.`
     correta: 3,
     resolucao: `Isso representa metade do copo: ${f(1,2)}.`
   },
-
-  // ✅ Mantido como estava na sua versão mais recente (correta: 3/4)
   {
     pergunta: "Qual fração representa o círculo vermelho?",
     img: pathIntro + "img04intro.png",
@@ -105,8 +102,6 @@ Sempre contamos quantas partes existem no total.`
     correta: 0,
     resolucao: `Observe o total de partes do círculo e quantas estão em vermelho. Aqui, a parte vermelha representa ${f(3,4)} do círculo.`
   },
-
-  // ✅ Mantido como estava na sua versão mais recente
   {
     pergunta: `Uma barra de chocolate tem 5 pedaços iguais, se eu comer ${f(1,5)}, quantos ainda me restam?`,
     img: pathIntro + "img05intro.png",
@@ -114,8 +109,6 @@ Sempre contamos quantas partes existem no total.`
     correta: 2,
     resolucao: `Se a barra tem 5 pedaços e eu comi 1, restam 4 pedaços. Em fração, fica ${f(4,5)}.`
   },
-
-  // ✅ Mantido como estava na sua versão mais recente
   {
     pergunta: `Ganhei de presente um celular dos meus pais. No primeiro dia gastei ${f(1,4)} da bateria, no segundo dia ${f(3,4)} e, no terceiro dia, eu não usei o celular. No 4º dia eu usei o celular da minha mãe. Quanto eu usei da bateria dela?`,
     img: pathIntro + "img06intro.png",
@@ -125,27 +118,25 @@ Sempre contamos quantas partes existem no total.`
   }
 ];
 
-// =====================================================================
-// ✅ Banco de Introdução (sem duplicatas)
-// =====================================================================
-
 export const questoesIntro = questoesIntroI;
 
 export const questoesComp = [
-  // ✅ NOVA QUESTÃO (1): Pizza 6 partes (5/6 - 1/6)
+  // ✅ comp16 — imagem 40% maior
   {
     pergunta: `Uma pizza foi dividida em 6 partes iguais. Ana tinha ${f(5,6)} da pizza, mas deu ${f(1,6)} para sua amiga. Quanto restou da pizza com Ana?`,
     img: pathComp + "comp16.png",
+    imgScale: 1.4,
     opcoes: [f(6,4), f(2,4), f(4,6), f(1,4)],
     correta: 2,
     resolucao: `Como as frações têm o mesmo denominador (6), basta subtrair os numeradores: 5 − 1 = 4.
 Então, restou ${f(4,6)} da pizza com a Ana.`
   },
 
-  // ✅ NOVA QUESTÃO (2): Moedas (5/7)
+  // ✅ comp17 — imagem 40% maior
   {
     pergunta: `Carlos tinha 7 moedas iguais. Ele usou 2 dessas moedas para comprar um doce. Qual fração representa quantas moedas restaram?`,
     img: pathComp + "comp17.png",
+    imgScale: 1.4,
     opcoes: [f(5,7), f(3,7), f(4,7), f(7,5)],
     correta: 0,
     resolucao: `Se ele tinha 7 moedas e usou 2, restaram 5 moedas.
@@ -166,8 +157,6 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     correta: 3,
     resolucao: resolucaoCompImgHTML(2)
   },
-
-  // ✅ Chocolate: imagem 40% maior
   {
     pergunta: `Um chocolate foi dividido em 8 pedaços iguais. Pedro comeu ${f(3,8)}. Que fração do chocolate sobrou?`,
     img: pathComp + "comp03.png",
@@ -175,8 +164,6 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     correta: 1,
     resolucao: resolucaoCompImgHTML(3, 1.4)
   },
-
-  // ✅ fita dividida em 6 partes: corretas 3/6 e 1/3
   {
     pergunta: `Em uma fita dividida em 6 partes iguais, foram usadas ${f(2,6)} para um trabalho e ${f(1,6)} para outro. Qual fração da fita foi usada ao todo?`,
     img: pathComp + "comp04.png",
@@ -184,8 +171,6 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     correta: [1, 2],
     resolucao: resolucaoCompImgHTML(4)
   },
-
-  // ✅ bolo dividido em 10 partes: imagem 40% maior (corretas 6/10 e 3/5)
   {
     pergunta: `Um bolo foi dividido em 10 partes iguais. Foram comidas ${f(4,10)} depois do almoço. Que fração do bolo ainda resta?`,
     img: pathComp + "comp05.png",
@@ -193,8 +178,6 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     correta: [1, 3],
     resolucao: resolucaoCompImgHTML(5, 1.4)
   },
-
-  // ✅ 2 formas de gelo: MODIFICADA conforme pedido (corretas 12/8 e 3/2)
   {
     pergunta: `Havia 2 formas de gelo, cada uma com 8 cubos. Durante o dia, foi usado ${f(4,8)} de uma forma de gelo. Quantas formas de gelo restaram ao todo?`,
     img: pathComp + "comp06.png",
@@ -202,8 +185,6 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     correta: [0, 1],
     resolucao: resolucaoCompImgHTML(6, 1.4)
   },
-
-  // ✅ PEDIDO: imagem da resposta 40% maior (rep07)
   {
     pergunta: `Em uma caixa de lápis, ${f(1,4)} foi usado na aula de Matemática e ${f(1,6)} na aula de Artes. Que fração da caixa de lápis foi usada ao todo?`,
     img: pathComp + "comp07.png",
@@ -211,8 +192,6 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     correta: 2,
     resolucao: resolucaoCompImgHTML(7, 1.4)
   },
-
-  // ✅ Caixa de suco: imagem 40% maior
   {
     pergunta: `Uma caixa estava cheia de suco. Após o almoço, foram consumidos ${f(2,3)} da caixa. Que fração do suco restou?`,
     img: pathComp + "comp08.png",
@@ -220,9 +199,6 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     correta: 3,
     resolucao: resolucaoCompImgHTML(8, 1.4)
   },
-
-  // ✅ PEDIDO: imagem da resposta 40% maior (rep09)
-  // ✅ Carlo caminhou: corretas 5/10 e 1/2
   {
     pergunta: `Carlo caminhou ${f(2,5)} de sua meta diária pela manhã e ${f(1,10)} à tarde. Que fração do percurso ele caminhou ao todo?`,
     img: pathComp + "comp09.png",
@@ -230,8 +206,6 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     correta: [1, 2],
     resolucao: resolucaoCompImgHTML(9, 1.4)
   },
-
-  // ✅ pacote 15 bolachas (correta 9/15)
   {
     pergunta: `Um pacote tinha 15 bolachas. Durante o lanche, João comeu ${f(6,15)} das bolachas e Maria comeu ${f(3,15)}. Que fração das bolachas eles comeram ao todo?`,
     img: pathComp + "comp10.png",
@@ -239,8 +213,6 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     correta: 3,
     resolucao: resolucaoCompImgHTML(10)
   },
-
-  // ✅ PEDIDO: imagem da resposta 40% maior (rep11)
   {
     pergunta: `Um tanque de água teve ${f(1,3)} de sua capacidade usada pela manhã e ${f(1,4)} à tarde. Que fração da água foi utilizada no total?`,
     img: pathComp + "comp11.png",
@@ -248,8 +220,6 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     correta: 1,
     resolucao: resolucaoCompImgHTML(11, 1.4)
   },
-
-  // ✅ Criança com R$10: imagem 40% maior
   {
     pergunta: `Uma criança tinha R$ 10,00, divididos em 10 partes iguais. Ela gastou ${f(3,10)} desse dinheiro comprando um lanche. Que fração do dinheiro ainda restou?`,
     img: pathComp + "comp12.png",
@@ -257,8 +227,6 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     correta: 1,
     resolucao: resolucaoCompImgHTML(12, 1.4)
   },
-
-  // ✅ PEDIDO: imagem da resposta 40% maior (rep13)
   {
     pergunta: `Em uma prova, Maria acertou ${f(3,5)} das questões na primeira parte e ${f(1,10)} na segunda parte. Ao juntar as duas partes, quantas questões Maria acertou no total?`,
     img: pathComp + "comp13.png",
@@ -266,8 +234,6 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     correta: 2,
     resolucao: resolucaoCompImgHTML(13, 1.4)
   },
-
-  // ✅ PEDIDO: imagem da resposta 40% maior (rep14)
   {
     pergunta: `Ana percorreu ${f(1,4)} do caminho pela manhã e ${f(1,2)} à tarde. Que fração do caminho ela percorreu ao todo?`,
     img: pathComp + "comp14.png",
