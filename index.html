@@ -521,8 +521,8 @@
 <body>
 
     <div id="telaBloqueio">
-        <h1 style="font-size:3rem;color:#ff3b30;margin-bottom:10px">Atividade Pausada</h1>
-        <p style="font-size:1.5rem;color:#86868b">Aguarde a liberação do professor.</p>
+        <h1 id="tituloTelaBloqueio" style="font-size:3rem;color:#ff3b30;margin-bottom:10px">Atividade Pausada</h1>
+        <p id="descricaoTelaBloqueio" style="font-size:1.5rem;color:#86868b">Aguarde a liberação do professor.</p>
         <button id="btnCadeadoPausa" type="button" onclick="abrirModalPainelAluno()" aria-label="Abrir painel do aluno">
             <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/>
@@ -798,11 +798,11 @@
         })();
     </script>
 
-    <script type="module">
-        import { questoesIntro, questoesComp } from "./banco_questoes.js";
+    <script src="./banco_questoes.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    <script>
 
         // =========================================================================
         // PROTEÇÕES ANTI-CÓPIA
@@ -836,8 +836,8 @@
         // =========================================================================
         // QUESTÕES DO BANCO
         // =========================================================================
-        window.questoesIntro = questoesIntro;
-        window.questoesComp  = questoesComp;
+        window.questoesIntro = window.questoesIntro || [];
+        window.questoesComp  = window.questoesComp || [];
 
         // =========================================================================
         // FIREBASE (MANTIDO)
@@ -852,9 +852,15 @@
           appId: "1:873014790580:web:09b340386d10d7f88a4ae1"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
         let alunoId = localStorage.getItem('firebaseId');
+        let statusGlobalComando = 'liberado';
+        let statusIndividualComando = 'liberado';
+        let statusIndividualRef = null;
+
+        let sessaoSincronizada = false;
+
 
         const iconCadeadoAberto = `<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>`;
         const iconCadeadoFechado = `<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2-2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>`;
@@ -970,14 +976,79 @@
         // =========================================================================
         // LOGIN
         // =========================================================================
+        function atualizarTelaBloqueio() {
+            const bloqueadoGlobal = statusGlobalComando === 'finalizar';
+            const bloqueadoIndividual = statusIndividualComando === 'finalizar';
+            const bloqueado = bloqueadoGlobal || bloqueadoIndividual;
+
+            const tela = document.getElementById('telaBloqueio');
+            const titulo = document.getElementById('tituloTelaBloqueio');
+            const descricao = document.getElementById('descricaoTelaBloqueio');
+
+            if (bloqueadoGlobal) {
+                titulo.innerText = 'Atividade Finalizada (Turma)';
+                descricao.innerText = 'O professor finalizou a atividade para toda a turma.';
+            } else if (bloqueadoIndividual) {
+                titulo.innerText = 'Atividade Pausada (Individual)';
+                descricao.innerText = 'Sua atividade foi pausada pelo professor. Aguarde a liberação.';
+            } else {
+                titulo.innerText = 'Atividade Pausada';
+                descricao.innerText = 'Aguarde a liberação do professor.';
+            }
+
+            tela.classList.toggle('visivel', bloqueado);
+        }
+
+        function iniciarMonitoramentoStatusIndividual() {
+            if (!alunoId) return;
+            if (statusIndividualRef) statusIndividualRef.off();
+
+            statusIndividualRef = db.ref('alunos/' + alunoId + '/status_individual');
+            statusIndividualRef.on('value', (snapshot) => {
+                const status = snapshot.val();
+                if (status === 'finalizado' || status === 'finalizar') {
+                    statusIndividualComando = 'finalizar';
+                } else {
+                    statusIndividualComando = 'liberado';
+                }
+                atualizarTelaBloqueio();
+            });
+        }
+
         window.checkLogin = function() {
             const nomeSalvo = localStorage.getItem('alunoNome');
             const serieSalva = localStorage.getItem('alunoSerie');
             if (nomeSalvo && serieSalva) {
                 aplicarDadosUsuario(nomeSalvo, serieSalva);
-                if (alunoId) {
-                    update(ref(db, 'alunos/' + alunoId), { status: 'reconectado', ultimoAcesso: new Date().toISOString() });
+
+                // ✅ Faz sincronização apenas uma vez por sessão (carregar() chama checkLogin várias vezes).
+                if (!sessaoSincronizada) {
+                    if (!alunoId) {
+                        const novoAlunoRef = db.ref('alunos').push();
+                        alunoId = novoAlunoRef.key;
+                        localStorage.setItem('firebaseId', alunoId);
+
+                        db.ref('alunos/' + alunoId).update({
+                            nome: nomeSalvo,
+                            serie: serieSalva,
+                            entrouEm: new Date().toISOString(),
+                            status: 'online',
+                            status_individual: 'liberado',
+                            ultimoAcesso: new Date().toISOString()
+                        });
+                    } else {
+                        db.ref('alunos/' + alunoId).update({
+                            nome: nomeSalvo,
+                            serie: serieSalva,
+                            status: 'online',
+                            ultimoAcesso: new Date().toISOString()
+                        });
+                    }
+
+                    iniciarMonitoramentoStatusIndividual();
+                    sessaoSincronizada = true;
                 }
+
                 document.getElementById('modalLogin').classList.remove('visivel');
                 mostrarApp();
             } else {
@@ -1007,20 +1078,23 @@
             aplicarDadosUsuario(nome, serieCompleta);
 
             if (!alunoId) {
-                const novoAlunoRef = push(ref(db, 'alunos'));
+                const novoAlunoRef = db.ref('alunos').push();
                 alunoId = novoAlunoRef.key;
                 localStorage.setItem('firebaseId', alunoId);
             }
 
-            update(ref(db, 'alunos/' + alunoId), {
+            db.ref('alunos/' + alunoId).update({
                 nome: nome,
                 serie: serieCompleta,
                 acertos: 0,
                 erros: 0,
                 entrouEm: new Date().toISOString(),
-                status: 'online'
+                status: 'online',
+                status_individual: 'liberado'
             });
 
+            iniciarMonitoramentoStatusIndividual();
+            sessaoSincronizada = true;
             document.getElementById('modalLogin').classList.remove('visivel');
             mostrarApp();
         };
@@ -1120,7 +1194,7 @@ function _aplicarPontuacaoQuestaoAtualSeNecessario() {
           const errosTotal   = errosIntro + errosComp;
 
           // Mantém compatibilidade: "acertos" e "erros" agora são o TOTAL do aluno no site
-          update(ref(db, 'alunos/' + alunoId), {
+          db.ref('alunos/' + alunoId).update({
             acertos: acertosTotal,
             erros: errosTotal,
             acertosIntro,
@@ -1383,14 +1457,11 @@ function restaurarEstadoRespostaSeExistir() {
         }
 
         // BLOQUEIO/LIBERAÇÃO REMOTA
-        const statusRef = ref(db, 'status_atividade');
-        onValue(statusRef, (snapshot) => {
+        const statusRef = db.ref('status_atividade');
+        statusRef.on('value', (snapshot) => {
             const dados = snapshot.val();
-            if (dados && dados.comando === 'finalizar') {
-                document.getElementById('telaBloqueio').classList.add('visivel');
-            } else {
-                document.getElementById('telaBloqueio').classList.remove('visivel');
-            }
+            statusGlobalComando = (dados && dados.comando === 'finalizar') ? 'finalizar' : 'liberado';
+            atualizarTelaBloqueio();
         });
 
         // ✅ Confirmação ao tentar sair/recarregar (o navegador pode ignorar o texto por segurança)
@@ -1398,6 +1469,10 @@ function restaurarEstadoRespostaSeExistir() {
             e.preventDefault();
             e.returnValue = '';
         });
+
+        if (alunoId) {
+            iniciarMonitoramentoStatusIndividual();
+        }
 
         ativarProtecoes();
         window.onload = carregar;
