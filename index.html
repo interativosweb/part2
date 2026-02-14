@@ -1087,7 +1087,7 @@ function _aplicarPontuacaoQuestaoAtualSeNecessario() {
     salvarProgresso();
     atualizarPlacarVisual();
 
-    if (alunoId && window.modoAtual === 'complementar') {
+    if (alunoId) {
         (() => {
           const acertosIntro = (window.placarIntro && window.placarIntro.acertos) ? window.placarIntro.acertos : 0;
           const errosIntro   = (window.placarIntro && window.placarIntro.erros)   ? window.placarIntro.erros   : 0;
