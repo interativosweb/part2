@@ -820,8 +820,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-
-        // =========================================================================
+// =========================================================================
         // VARIÁVEIS GLOBAIS
         // =========================================================================
         window.modoAtual = 'intro'; 
@@ -829,22 +828,19 @@
         window.placarIntro = { acertos: 0, erros: 0 };
         window.placarComp = { acertos: 0, erros: 0 };
         
-        // Listas para salvar QUAIS questões o aluno acertou/errou
         window.listaAcertos = [];
         window.listaErros = [];
 
-        // Identidade
+        // Identidade e Controle
         let meuId = localStorage.getItem('aluno_id'); 
-        let bloqueioIndividualAtivo = false; // NOVA VARIÁVEL IMPORTANTE
+        let bloqueioIndividualAtivo = false; // <--- O SEGREDO ESTÁ AQUI
 
         // =========================================================================
-        // ✅ MONITORAMENTO DE BLOQUEIO (GLOBAL E INDIVIDUAL)
+        // ✅ 1. MONITORAMENTO GERAL (STATUS DA TURMA)
         // =========================================================================
-        
-        // 1. Monitoramento GLOBAL (Status da Turma)
         const statusRef = ref(db, 'status_atividade');
         onValue(statusRef, (snapshot) => {
-            // Se houver um bloqueio/liberação individual explícito, ignoramos o comando geral
+            // Se o aluno tiver um status individual (liberado ou finalizado), IGNORA o geral
             if (bloqueioIndividualAtivo) return;
 
             const val = snapshot.val();
@@ -852,6 +848,7 @@
             const h1 = tela.querySelector('h1');
             const p = tela.querySelector('p');
 
+            // Se o professor mandou finalizar TUDO
             if (val && val.comando === 'finalizar') {
                 tela.classList.add('visivel');
                 h1.innerText = "Atividade Pausada";
@@ -862,7 +859,9 @@
             }
         });
 
-        // 2. NOVA FUNÇÃO: Monitoramento INDIVIDUAL (Status do Aluno)
+        // =========================================================================
+        // ✅ 2. MONITORAMENTO INDIVIDUAL (STATUS DO ALUNO)
+        // =========================================================================
         function iniciarMonitoramentoIndividual() {
             if (!meuId) return;
             const alunoStatusRef = ref(db, `alunos/${meuId}/status_individual`);
@@ -874,27 +873,26 @@
                 const p = tela.querySelector('p');
 
                 if (status === 'finalizado') {
-                    // Bloqueio Individual (Tem prioridade sobre o geral)
-                    bloqueioIndividualAtivo = true;
+                    // PRIORIDADE MÁXIMA: BLOQUEAR
+                    bloqueioIndividualAtivo = true; 
                     tela.classList.add('visivel');
                     h1.innerText = "Atividade Encerrada";
                     h1.style.color = "#ff3b30";
                     p.innerText = "O professor finalizou sua atividade.";
                 } else if (status === 'liberado') {
-                    // Liberação Individual (Tem prioridade sobre o geral)
-                    bloqueioIndividualAtivo = true;
+                    // PRIORIDADE MÁXIMA: LIBERAR
+                    bloqueioIndividualAtivo = true; 
                     tela.classList.remove('visivel');
                 } else {
-                    // Sem status individual definido, volta a obedecer o global
+                    // Se não tiver status individual, volta a obedecer o geral
                     bloqueioIndividualAtivo = false;
                     
-                    // Verifica o status global imediatamente para não ficar no estado errado
+                    // Checa o status geral imediatamente para não ficar bugado
                     get(child(ref(db), 'status_atividade')).then((snapGlobal) => {
                         const valGlobal = snapGlobal.val();
                         if (valGlobal && valGlobal.comando === 'finalizar') {
                             tela.classList.add('visivel');
                             h1.innerText = "Atividade Pausada";
-                            h1.style.color = "#ff3b30";
                             p.innerText = "Aguarde a liberação do professor.";
                         } else {
                             tela.classList.remove('visivel');
@@ -914,11 +912,13 @@
 
             if (savedId && savedNome && savedSerie) {
                 meuId = savedId;
-                iniciarMonitoramentoIndividual(); // <--- CHAMADA ADICIONADA AQUI
                 
+                // --- AQUI QUE FAZ FUNCIONAR ---
+                iniciarMonitoramentoIndividual(); 
+                // ------------------------------
+
                 aplicarDadosUsuario(savedNome, savedSerie);
                 
-                // Restaura estado
                 window.modoAtual = localStorage.getItem('modoAtual') || 'intro';
                 window.indice = Number(localStorage.getItem('indice')) || 0;
                 window.placarIntro = JSON.parse(localStorage.getItem('placarIntro')) || { acertos: 0, erros: 0 };
@@ -945,7 +945,6 @@
 
             const serieCompleta = `${serieEl.value} ${turmaEl.value}`; 
             
-            // Cria novo ID no Firebase
             const novoRef = push(ref(db, 'alunos'));
             meuId = novoRef.key;
 
@@ -954,9 +953,11 @@
             localStorage.setItem('aluno_serie', serieCompleta);
 
             aplicarDadosUsuario(nome, serieCompleta);
-            iniciarMonitoramentoIndividual(); // <--- CHAMADA ADICIONADA AQUI
+            
+            // --- AQUI TAMBÉM ---
+            iniciarMonitoramentoIndividual();
+            // -------------------
 
-            // Salva dados iniciais no DB
             update(ref(db, 'alunos/' + meuId), {
                 nome: nome,
                 serie: serieCompleta,
@@ -977,7 +978,6 @@
             document.getElementById('nomeAlunoFase').innerText = nome;
             document.getElementById('nomeAlunoFinal').innerText = nome;
         }
-
         function mostrarApp() {
             document.getElementById('appContainer').style.opacity = '1';
         }
@@ -1223,6 +1223,7 @@
 
 </body>
 </html>
+
 
 
 
