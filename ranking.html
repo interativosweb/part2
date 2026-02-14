@@ -21,6 +21,23 @@
             --btn-gray-dark: #8e8e93;
         }
 
+        /* --- ESTILO DE FRAÇÃO (VERTICAL) --- */
+        .fracao {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            margin: 0 5px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .fracao > span {
+            padding: 0 5px;
+        }
+        .fracao > span:first-child {
+            border-bottom: 2px solid currentColor;
+            padding-bottom: 1px;
+        }
+
         /* --- PROTEÇÃO ANTI-CÓPIA --- */
         body {
             -webkit-user-select: none;
@@ -69,10 +86,9 @@
         .opcao-item:hover { background-color: #f2f2f7; color: var(--accent); }
         .opcao-item.selecionado { background-color: var(--accent); color: white; }
 
-        /* BOTÕES DE AÇÃO (LIBERAR / FINALIZAR) */
+        /* BOTÕES DE AÇÃO */
         .btn-finalizar { background-color: white; color: var(--error); border: 1px solid rgba(255, 59, 48, 0.3); }
         .btn-finalizar:hover { background-color: var(--error); color: white; border-color: var(--error); box-shadow: 0 6px 15px rgba(255, 59, 48, 0.25); }
-
         .btn-liberar { background-color: white; color: var(--success); border: 1px solid rgba(52, 199, 89, 0.3); }
         .btn-liberar:hover { background-color: var(--success); color: white; border-color: var(--success); box-shadow: 0 6px 15px rgba(52, 199, 89, 0.25); }
 
@@ -118,16 +134,11 @@
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .modal-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
         .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.4; }
-
-        /* Input de Senha */
         .input-senha { width: 100%; padding: 12px; border: 1px solid #d2d2d7; border-radius: 8px; font-size: 1rem; margin-bottom: 20px; outline: none; text-align: center; transition: border 0.2s; }
         .input-senha:focus { border-color: var(--accent); }
-
-        /* Estilo Botões de Reset */
         .grid-botoes-reset { display: flex; flex-direction: column; gap: 10px; }
         .btn-reset-opcao { padding: 15px; border-radius: 12px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.2s; background-color: #e5e5ea; color: var(--text-main); }
         .btn-reset-opcao:hover { transform: scale(1.02); background-color: var(--error); color: white; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3); }
-
         .btn-cancelar { margin-top: 15px; background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 0.9rem; text-decoration: underline; }
         .botoes-confirmacao { display: flex; gap: 15px; justify-content: center; }
         .btn-conf-sim { background-color: var(--error); color: white; flex: 1; }
@@ -150,267 +161,70 @@
         /* =======================
            ✅ Modal do aluno
            ======================= */
-        .aluno-modal-overlay{
-          position: fixed;
-          inset: 0;
-          background: rgba(0,0,0,.45);
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          z-index: 9999;
-          padding: 18px;
-        }
-        .aluno-modal{
-          width: min(520px, 96vw);
-          background: #ffffff;
-          border-radius: 16px;
-          box-shadow: 0 18px 50px rgba(0,0,0,.25);
-          padding: 16px 16px 14px 16px;
-          position: relative;
-        }
-        .aluno-modal-header{
-          display:flex;
-          align-items:flex-start;
-          justify-content:space-between;
-          gap: 12px;
-          margin-bottom: 10px;
-        }
-        .aluno-modal-nome{
-          font-size: 1.2rem;
-          font-weight: 800;
-          color: #111827;
-          line-height: 1.2;
-        }
-        .aluno-modal-sub{
-          font-size: .92rem;
-          color: #6b7280;
-          margin-top: 2px;
-        }
-        .aluno-modal-fechar{
-          border: none;
-          background: #f3f4f6;
-          color: #111827;
-          width: 36px;
-          height: 36px;
-          border-radius: 10px;
-          cursor: pointer;
-          font-size: 18px;
-          transition: transform .15s ease, background .15s ease;
-        }
-        .aluno-modal-fechar:hover{
-          transform: scale(1.06);
-          background: #e5e7eb;
-        }
+        .aluno-modal-overlay{ position: fixed; inset: 0; background: rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; z-index: 9999; padding: 18px; }
+        .aluno-modal{ width: min(520px, 96vw); background: #ffffff; border-radius: 16px; box-shadow: 0 18px 50px rgba(0,0,0,.25); padding: 16px 16px 14px 16px; position: relative; }
+        .aluno-modal-header{ display:flex; align-items:flex-start; justify-content:space-between; gap: 12px; margin-bottom: 10px; }
+        .aluno-modal-nome{ font-size: 1.2rem; font-weight: 800; color: #111827; line-height: 1.2; }
+        .aluno-modal-sub{ font-size: .92rem; color: #6b7280; margin-top: 2px; }
+        .aluno-modal-fechar{ border: none; background: #f3f4f6; color: #111827; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; font-size: 18px; transition: transform .15s ease, background .15s ease; }
+        .aluno-modal-fechar:hover{ transform: scale(1.06); background: #e5e7eb; }
+        
+        .aluno-modal-botoes{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+        .btn-placar{ display:flex; align-items:center; justify-content:space-between; gap: 10px; border: none; border-radius: 14px; padding: 14px 14px; cursor: pointer; font-weight: 800; transition: transform .16s ease, box-shadow .16s ease, filter .16s ease; user-select:none; }
+        .btn-placar:hover{ transform: translateY(-2px) scale(1.02); box-shadow: 0 14px 30px rgba(0,0,0,.18); filter: brightness(1.02); }
+        .btn-placar:active{ transform: translateY(0) scale(.99); }
+        
+        /* ✅ CORES ATUALIZADAS (PEDIDO DO USUÁRIO) */
+        .btn-acerto{ background: #34c759; color: #ffffff; }
+        .btn-erro{ background: #ff3b30; color: #ffffff; }
 
-        .aluno-modal-botoes{
-          display:grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-          margin-top: 12px;
-        }
-        .btn-placar{
-          display:flex;
-          align-items:center;
-          justify-content:space-between;
-          gap: 10px;
-          border: none;
-          border-radius: 14px;
-          padding: 14px 14px;
-          cursor: pointer;
-          font-weight: 800;
-          transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
-          user-select:none;
-        }
-        .btn-placar:hover{
-          transform: translateY(-2px) scale(1.02);
-          box-shadow: 0 14px 30px rgba(0,0,0,.18);
-          filter: brightness(1.02);
-        }
-        .btn-placar:active{
-          transform: translateY(0) scale(.99);
-        }
-        .btn-acerto{
-          background: #10b981;
-          color: #ffffff;
-        }
-        .btn-erro{
-          background: #ef4444;
-          color: #ffffff;
-        }
-        .btn-num{
-          background: rgba(255,255,255,.22);
-          padding: 6px 10px;
-          border-radius: 999px;
-          font-weight: 900;
-          min-width: 46px;
-          text-align:center;
-        }
-        .dot{
-          width: 10px;
-          height: 10px;
-          border-radius: 999px;
-          display:inline-block;
-          margin-right: 10px;
-          box-shadow: 0 0 0 6px rgba(255,255,255,.18);
-        }
+        .btn-num{ background: rgba(255,255,255,.22); padding: 6px 10px; border-radius: 999px; font-weight: 900; min-width: 46px; text-align:center; }
+        .dot{ width: 10px; height: 10px; border-radius: 999px; display:inline-block; margin-right: 10px; box-shadow: 0 0 0 6px rgba(255,255,255,.18); }
         .dot-verde{ background:#065f46; }
         .dot-vermelho{ background:#7f1d1d; }
-
-        .aluno-modal-dica{
-          margin-top: 12px;
-          font-size: .92rem;
-          color: #374151;
-          background: #f9fafb;
-          border: 1px solid #e5e7eb;
-          padding: 10px 12px;
-          border-radius: 12px;
-        }
+        .aluno-modal-dica{ margin-top: 12px; font-size: .92rem; color: #374151; background: #f9fafb; border: 1px solid #e5e7eb; padding: 10px 12px; border-radius: 12px; }
 
         /* Lista ao lado */
-        .lista-modal{
-          width: min(520px, 96vw);
-          background: #ffffff;
-          border-radius: 16px;
-          box-shadow: 0 18px 50px rgba(0,0,0,.25);
-          padding: 14px;
-          position: fixed;
-          right: 18px;
-          top: 18px;
-          max-height: calc(100vh - 36px);
-          overflow: hidden;
-        }
+        .lista-modal{ width: min(520px, 96vw); background: #ffffff; border-radius: 16px; box-shadow: 0 18px 50px rgba(0,0,0,.25); padding: 14px; position: fixed; right: 18px; top: 18px; max-height: calc(100vh - 36px); overflow: hidden; }
         @media (max-width: 1100px){
-          .lista-modal{
-            position: static;
-            margin-top: 12px;
-            width: min(520px, 96vw);
-          }
-          .aluno-modal-overlay{
-            flex-direction: column;
-            overflow:auto;
-          }
+          .lista-modal{ position: static; margin-top: 12px; width: min(520px, 96vw); }
+          .aluno-modal-overlay{ flex-direction: column; overflow:auto; }
         }
-        .lista-modal-header{
-          display:flex;
-          align-items:center;
-          justify-content:space-between;
-          gap: 10px;
-          margin-bottom: 10px;
-        }
-        .lista-modal-titulo{
-          font-size: 1.05rem;
-          font-weight: 900;
-          color: #111827;
-        }
-        .lista-modal-fechar{
-          border: none;
-          background: #f3f4f6;
-          color: #111827;
-          width: 34px;
-          height: 34px;
-          border-radius: 10px;
-          cursor: pointer;
-          font-size: 16px;
-          transition: transform .15s ease, background .15s ease;
-        }
-        .lista-modal-fechar:hover{
-          transform: scale(1.06);
-          background: #e5e7eb;
-        }
-        .lista-questoes{
-          overflow:auto;
-          max-height: calc(100vh - 120px);
-          padding-right: 6px;
-        }
+        .lista-modal-header{ display:flex; align-items:center; justify-content:space-between; gap: 10px; margin-bottom: 10px; }
+        .lista-modal-titulo{ font-size: 1.05rem; font-weight: 900; color: #111827; }
+        .lista-modal-fechar{ border: none; background: #f3f4f6; color: #111827; width: 34px; height: 34px; border-radius: 10px; cursor: pointer; font-size: 16px; transition: transform .15s ease, background .15s ease; }
+        .lista-modal-fechar:hover{ transform: scale(1.06); background: #e5e7eb; }
+        .lista-questoes{ overflow:auto; max-height: calc(100vh - 120px); padding-right: 6px; }
+
+        /* ITEM DA QUESTÃO */
         .item-questao{
           border: 1px solid #e5e7eb;
           border-radius: 14px;
           padding: 10px 12px;
           margin-bottom: 10px;
           cursor: pointer;
-          transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+          transition: all 0.2s ease;
           background: #ffffff;
         }
+
+        /* ✅ HOVER VERDE + TEXTO BRANCO */
         .item-questao:hover{
           transform: translateY(-2px);
           box-shadow: 0 12px 22px rgba(0,0,0,.12);
-          border-color: #d1d5db;
+          background-color: #34c759;
+          border-color: #34c759;
+          color: white;
         }
-        .item-questao .linha1{
-          display:flex;
-          align-items:center;
-          justify-content:space-between;
-          gap:10px;
-          margin-bottom: 6px;
-        }
-        .chip{
-          font-size: .78rem;
-          font-weight: 800;
-          padding: 4px 10px;
-          border-radius: 999px;
-          background: #f3f4f6;
-          color:#111827;
-          flex: 0 0 auto;
-        }
-        .txt-curto{
-          font-size: .92rem;
-          color:#374151;
-          line-height: 1.25;
-          display:-webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow:hidden;
-        }
+        .item-questao:hover .txt-curto { color: white; }
+        .item-questao:hover .chip { background: rgba(255,255,255,0.25); color: white; }
+
+        .item-questao .linha1{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 6px; }
+        .chip{ font-size: .78rem; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: #f3f4f6; color:#111827; flex: 0 0 auto; transition: background 0.2s, color 0.2s; }
+        .txt-curto{ font-size: .92rem; color:#374151; line-height: 1.25; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow:hidden; transition: color 0.2s; }
 
     </style>
 </head>
 <body>
-    <script>
-        (function () {
-            const block = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            };
-
-            // Botão direito / menu de contexto
-            document.addEventListener('contextmenu', block, { capture: true });
-
-            // Seleção/arrasto/cópia
-            document.addEventListener('selectstart', block, { capture: true });
-            document.addEventListener('dragstart', block, { capture: true });
-            document.addEventListener('copy', block, { capture: true });
-            document.addEventListener('cut', block, { capture: true });
-            document.addEventListener('paste', block, { capture: true });
-
-            // Atalhos comuns de inspeção/visualização/salvar/imprimir
-            document.addEventListener('keydown', function (e) {
-                const k = (e.key || '').toLowerCase();
-
-                // F12
-                if (e.key === 'F12' || e.keyCode === 123) return block(e);
-
-                // Ctrl+Shift+I/J/C (DevTools)
-                if (e.ctrlKey && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) return block(e);
-
-                // Ctrl+U (view-source)
-                if (e.ctrlKey && k === 'u') return block(e);
-
-                // Ctrl+S (salvar)
-                if (e.ctrlKey && k === 's') return block(e);
-
-                // Ctrl+P (imprimir)
-                if (e.ctrlKey && k === 'p') return block(e);
-
-                // Ctrl+C / Ctrl+X (copiar/recortar)
-                if (e.ctrlKey && (k === 'c' || k === 'x')) return block(e);
-            }, { capture: true });
-
-            // Bloqueia print via UI quando possível
-            window.addEventListener('beforeprint', (e) => block(e));
-        })();
-    </script>
-
     <div id="containerNotificacoes" class="notificacao-container"></div>
 
     <div class="container">
@@ -512,7 +326,6 @@
         <div class="modal-box">
             <div class="modal-titulo">Limpar Dados</div>
             <div class="modal-desc">Selecione o que deseja apagar (Pedirá senha em seguida).</div>
-
             <div class="grid-botoes-reset">
                 <button class="btn-reset-opcao" onclick="prepararReset('hoje')">Limpar registros de <b>Hoje</b></button>
                 <button class="btn-reset-opcao" onclick="prepararReset('mes')">Limpar registros do <b>Mês</b></button>
@@ -535,10 +348,7 @@
     <div id="modalFinalizar" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-titulo" style="color:var(--error)">Finalizar Atividade?</div>
-            <div class="modal-desc">
-                Digite a senha para encerrar a atividade.<br>
-                <small>Isso bloqueará a tela dos alunos.</small>
-            </div>
+            <div class="modal-desc">Digite a senha para encerrar a atividade.<br><small>Isso bloqueará a tela dos alunos.</small></div>
             <input type="password" id="inputSenhaFinalizar" class="input-senha" placeholder="Senha do Professor">
             <div class="botoes-confirmacao">
                 <button class="btn-reset-opcao btn-conf-nao" onclick="fecharModalFinalizar()">Não</button>
@@ -550,10 +360,7 @@
     <div id="modalLiberar" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-titulo" style="color:var(--success)">Liberar Atividade?</div>
-            <div class="modal-desc">
-                Digite a senha para desbloquear a tela dos alunos.<br>
-                <small>Todos poderão acessar novamente.</small>
-            </div>
+            <div class="modal-desc">Digite a senha para desbloquear a tela dos alunos.<br><small>Todos poderão acessar novamente.</small></div>
             <input type="password" id="inputSenhaLiberar" class="input-senha" placeholder="Senha do Professor">
             <div class="botoes-confirmacao">
                 <button class="btn-reset-opcao btn-conf-nao" onclick="fecharModalLiberar()">Não</button>
@@ -566,7 +373,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         
-        // SUA CONFIGURAÇÃO
         const firebaseConfig = {
           apiKey: "AIzaSyCHfcVVxma4M1LbYO5M-oMX4fnlaNUPi24",
           authDomain: "fracoesbanco.firebaseapp.com",
@@ -580,9 +386,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // ============================================================
-        // ✅ FUNÇÕES AUXILIARES (MOVIDAS PARA O ESCOPO GLOBAL)
-        // ============================================================
+        // FUNÇÕES GLOBAIS
         function normalizarLista(v){
             if (Array.isArray(v)) return v;
             if (!v) return [];
@@ -597,31 +401,20 @@
             return String(s ?? "").replace(/[&<>"]/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[c]));
         }
 
-        // ============================================================
-        // ✅ Banco de questões
-        // ============================================================
         let questoesIntro = [];
         let questoesComp = [];
-
         (async () => {
-            const candidatos = [
-                "./banco_questoes.js",
-                "./banco_questoes (21).js",
-                "./banco_questoes(21).js"
-            ];
-
+            const candidatos = ["./banco_questoes.js", "./banco_questoes (21).js", "./banco_questoes(21).js", "./banco_questoes (23).js"];
             for (const caminho of candidatos) {
                 try {
                     const mod = await import(caminho);
                     questoesIntro = mod.questoesIntro || [];
                     questoesComp = mod.questoesComp || [];
-                    console.log("Banco de questões carregado:", caminho);
+                    console.log("Banco carregado:", caminho);
                     return;
-                } catch (e) {
-                    // tenta o próximo
-                }
+                } catch (e) {}
             }
-            console.warn("Não foi possível carregar o banco de questões.");
+            console.warn("Banco não encontrado.");
         })();
 
         let todosRegistros = [];
@@ -635,8 +428,7 @@
             const aI = Number(aluno.acertosIntro);
             const aC = Number(aluno.acertosComp);
             if (!Number.isNaN(aI) || !Number.isNaN(aC)) return (Number.isNaN(aI)?0:aI) + (Number.isNaN(aC)?0:aC);
-            const a = Number(aluno.acertos);
-            return Number.isNaN(a) ? 0 : a;
+            return Number.isNaN(Number(aluno.acertos)) ? 0 : Number(aluno.acertos);
         }
 
         function getErrosTotal(aluno){
@@ -645,16 +437,13 @@
             const eI = Number(aluno.errosIntro);
             const eC = Number(aluno.errosComp);
             if (!Number.isNaN(eI) || !Number.isNaN(eC)) return (Number.isNaN(eI)?0:eI) + (Number.isNaN(eC)?0:eC);
-            const e = Number(aluno.erros);
-            return Number.isNaN(e) ? 0 : e;
+            return Number.isNaN(Number(aluno.erros)) ? 0 : Number(aluno.erros);
         }
 
         const alunosRef = ref(db, 'alunos');
-
         onValue(alunosRef, (snapshot) => {
             const dados = snapshot.val();
             todosRegistros = [];
-
             if (dados) {
                 Object.keys(dados).forEach(key => {
                     const aluno = dados[key];
@@ -669,7 +458,6 @@
                         serie: aluno.serie,
                         acertos: getAcertosTotal(aluno),
                         erros: getErrosTotal(aluno),
-                        // Agora a função normalizarLista está visível aqui!
                         listaAcertos: normalizarLista(aluno.listaAcertos),
                         listaErros: normalizarLista(aluno.listaErros),
                         data: aluno.entrouEm ? aluno.entrouEm.split('T')[0] : '',
@@ -677,7 +465,6 @@
                         timestamp: aluno.entrouEm ? new Date(aluno.entrouEm).getTime() : 0,
                     });
                 });
-
                 const agora = new Date().getTime();
                 const ultimosNotificados = JSON.parse(sessionStorage.getItem('notificados')) || [];
                 todosRegistros.forEach(a => {
@@ -688,65 +475,43 @@
                 });
                 sessionStorage.setItem('notificados', JSON.stringify(ultimosNotificados));
             }
-            
-            // Chama o render
-            if (typeof window.renderizarRanking === 'function') {
-                window.renderizarRanking();
-            } else {
-                setTimeout(() => { if (typeof window.renderizarRanking === 'function') window.renderizarRanking(); }, 0);
-            }
+            if (typeof window.renderizarRanking === 'function') window.renderizarRanking();
+            else setTimeout(() => { if (typeof window.renderizarRanking === 'function') window.renderizarRanking(); }, 0);
         });
 
-        // --- NOTIFICAÇÕES ---
         window.mostrarNotificacao = function(texto, tipo = 'sucesso') {
             const container = document.getElementById('containerNotificacoes');
             const toast = document.createElement('div');
             toast.className = 'toast';
             if(tipo === 'alerta') toast.classList.add('alerta');
-
             const icon = tipo === 'alerta'
                 ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
                 : `<svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
-
             toast.innerHTML = `${icon} ${texto}`;
             container.appendChild(toast);
             setTimeout(() => { toast.classList.add('saindo'); setTimeout(() => toast.remove(), 500); }, 3000);
         };
 
-        // --- FINALIZAR COM SENHA ---
-        window.abrirModalFinalizar = () => {
-            document.getElementById('inputSenhaFinalizar').value = '';
-            document.getElementById('modalFinalizar').classList.add('visivel');
-        }
+        window.abrirModalFinalizar = () => { document.getElementById('inputSenhaFinalizar').value = ''; document.getElementById('modalFinalizar').classList.add('visivel'); }
         window.fecharModalFinalizar = () => document.getElementById('modalFinalizar').classList.remove('visivel');
-
         window.confirmarFinalizar = function() {
-            const senha = document.getElementById('inputSenhaFinalizar').value;
-            if (senha !== '4241') { alert('Senha incorreta!'); return; }
+            if (document.getElementById('inputSenhaFinalizar').value !== '4241') { alert('Senha incorreta!'); return; }
             window.fecharModalFinalizar();
             set(ref(db, 'status_atividade'), { comando: 'finalizar', data: new Date().toISOString() });
-            window.mostrarNotificacao("Atividade encerrada para todos!", 'alerta');
+            window.mostrarNotificacao("Atividade encerrada!", 'alerta');
         };
 
-        // --- LIBERAR COM SENHA ---
-        window.abrirModalLiberar = () => {
-            document.getElementById('inputSenhaLiberar').value = '';
-            document.getElementById('modalLiberar').classList.add('visivel');
-        }
+        window.abrirModalLiberar = () => { document.getElementById('inputSenhaLiberar').value = ''; document.getElementById('modalLiberar').classList.add('visivel'); }
         window.fecharModalLiberar = () => document.getElementById('modalLiberar').classList.remove('visivel');
-
         window.confirmarLiberar = function() {
-            const senha = document.getElementById('inputSenhaLiberar').value;
-            if (senha !== '4241') { alert('Senha incorreta!'); return; }
+            if (document.getElementById('inputSenhaLiberar').value !== '4241') { alert('Senha incorreta!'); return; }
             window.fecharModalLiberar();
             set(ref(db, 'status_atividade'), { comando: 'liberado', data: new Date().toISOString() });
             window.mostrarNotificacao("Atividade liberada!", 'sucesso');
         };
 
-        // --- RESET COM SENHA ---
         window.abrirModalReset = () => document.getElementById('modalReset').classList.add('visivel');
         window.fecharModalReset = () => document.getElementById('modalReset').classList.remove('visivel');
-
         window.prepararReset = function(tipo) {
             tipoResetPendente = tipo;
             window.fecharModalReset();
@@ -755,15 +520,12 @@
             document.getElementById('modalSenhaAction').classList.add('visivel');
         }
         window.fecharModalSenhaAction = () => document.getElementById('modalSenhaAction').classList.remove('visivel');
-
         window.executarResetConfirmado = function() {
-            const senha = document.getElementById('inputSenhaAction').value;
-            if (senha !== '4241') { alert('Senha incorreta!'); return; }
-
+            if (document.getElementById('inputSenhaAction').value !== '4241') { alert('Senha incorreta!'); return; }
             if (tipoResetPendente === 'tudo') {
                 remove(ref(db, 'alunos'));
                 set(ref(db, 'status_atividade'), { comando: 'liberado' });
-                alert("Banco de dados limpo e reiniciado!");
+                alert("Reiniciado!");
             } else if (tipoResetPendente === 'hoje') {
                 const hoje = new Date().toISOString().split('T')[0];
                 todosRegistros.forEach(aluno => { if (aluno.data === hoje) remove(ref(db, 'alunos/' + aluno.id)); });
@@ -773,42 +535,29 @@
                 todosRegistros.forEach(aluno => { if ((aluno.data || '').startsWith(mesAtual)) remove(ref(db, 'alunos/' + aluno.id)); });
                 alert("Registros do mês apagados.");
             }
-
             window.fecharModalSenhaAction();
         }
 
-        // --- DROPDOWNS / FILTROS ---
         window.toggleDropdown = function(id) {
             const el = document.getElementById(id);
             const estaAberto = el.classList.contains('aberto');
             document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
             if(!estaAberto) el.classList.add('aberto');
         }
-
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('.dropdown-wrapper')) {
-                document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
-            }
+            if (!e.target.closest('.dropdown-wrapper')) document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
         });
-
         window.selecionarOpcao = function(tipo, valor, textoExibicao, elemento) {
             const wrapperId = tipo === 'ano' ? 'dropAno' : 'dropTurma';
             const wrapper = document.getElementById(wrapperId);
             wrapper.querySelectorAll('.opcao-item').forEach(i => i.classList.remove('selecionado'));
             elemento.classList.add('selecionado');
-
-            if(tipo === 'ano') {
-                filtroAnoAtual = valor;
-                document.getElementById('textoAno').innerText = 'Ano: ' + textoExibicao;
-            } else {
-                filtroTurmaAtual = valor;
-                document.getElementById('textoTurma').innerText = 'Turma: ' + textoExibicao;
-            }
+            if(tipo === 'ano') { filtroAnoAtual = valor; document.getElementById('textoAno').innerText = 'Ano: ' + textoExibicao; } 
+            else { filtroTurmaAtual = valor; document.getElementById('textoTurma').innerText = 'Turma: ' + textoExibicao; }
             wrapper.classList.remove('aberto');
             window.renderizarRanking();
         }
 
-        // --- RENDER ---
         const listaEl = document.getElementById('listaRanking');
         const filtroData = document.getElementById('filtroData');
         filtroData.valueAsDate = new Date();
@@ -816,37 +565,26 @@
 
         window.renderizarRanking = function() {
             const dataSel = filtroData.value;
-
             let filtrados = todosRegistros.filter(item => {
                 const bateData = item.data === dataSel;
                 const bateAno = filtroAnoAtual === 'todas' ? true : (item.serie || '').includes(filtroAnoAtual);
                 const bateTurma = filtroTurmaAtual === 'todas' ? true : (item.serie || '').endsWith(" " + filtroTurmaAtual);
                 return bateData && bateAno && bateTurma;
             });
-
             filtrados.sort((a, b) => (b.acertos || 0) - (a.acertos || 0));
-
             document.getElementById('totalAcessos').innerText = filtrados.length;
-
             let totalAcertos = filtrados.reduce((sum, item) => sum + (item.acertos || 0), 0);
             let media = filtrados.length ? (totalAcertos / filtrados.length).toFixed(1) : "0.0";
             document.getElementById('mediaAcertos').innerText = media;
             document.getElementById('melhorAluno').innerText = filtrados.length > 0 ? filtrados[0].nome : "-";
-
             listaEl.innerHTML = "";
-            if (filtrados.length === 0) {
-                listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Aguardando dados...</li>`;
-                return;
-            }
-
+            if (filtrados.length === 0) { listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Aguardando dados...</li>`; return; }
             filtrados.forEach((aluno, index) => {
-                let rankClass = "";
-                let iconePosicao = index + 1;
+                let rankClass = "", iconePosicao = index + 1;
                 if (index === 0) { rankClass = "rank-1"; iconePosicao = "🥇"; }
                 else if (index === 1) { rankClass = "rank-2"; iconePosicao = "🥈"; }
                 else if (index === 2) { rankClass = "rank-3"; iconePosicao = "🥉"; }
-
-                const html = `
+                listaEl.innerHTML += `
                     <li class="item-aluno ${rankClass}" data-aluno-id="${aluno.id}">
                         <div class="posicao">${iconePosicao}</div>
                         <div class="info-nome">${aluno.nome || '-'}</div>
@@ -856,13 +594,9 @@
                         <div class="info-tempo">${aluno.hora || '--:--'}</div>
                     </li>
                 `;
-                listaEl.innerHTML += html;
             });
         }
-    
-        // ============================================================
-        // ✅ Modal do aluno: Lógica de UI
-        // ============================================================
+
         window.addEventListener('DOMContentLoaded', () => {
             const overlay = document.getElementById('alunoModalOverlay');
             const modalNome = document.getElementById('alunoModalNome');
@@ -872,12 +606,10 @@
             const btnErros = document.getElementById('btnErrosAluno');
             const btnAcertosNum = document.getElementById('btnAcertosAlunoNum');
             const btnErrosNum = document.getElementById('btnErrosAlunoNum');
-
             const listaModal = document.getElementById('listaModal');
             const listaTitulo = document.getElementById('listaModalTitulo');
             const listaFechar = document.getElementById('listaModalFechar');
             const listaQuestoesDiv = document.getElementById('listaQuestoes');
-
             let alunoSelecionado = null;
 
             function abrirModalAluno(aluno){
@@ -886,145 +618,136 @@
                 const turma = aluno.turma ? `Turma: ${aluno.turma}` : "Turma: —";
                 const ano = aluno.ano ? `Ano: ${aluno.ano}` : "Ano: —";
                 modalInfo.textContent = `${turma} • ${ano}`;
-
                 btnAcertosNum.textContent = aluno.acertos ?? 0;
                 btnErrosNum.textContent = aluno.erros ?? 0;
-
                 overlay.style.display = "flex";
                 listaModal.style.display = "none";
                 listaQuestoesDiv.innerHTML = "";
             }
-
-            function fecharModalAluno(){
-                overlay.style.display = "none";
-                listaModal.style.display = "none";
-                alunoSelecionado = null;
-            }
-
+            function fecharModalAluno(){ overlay.style.display = "none"; listaModal.style.display = "none"; alunoSelecionado = null; }
             btnFechar.addEventListener('click', fecharModalAluno);
-            overlay.addEventListener('click', (e)=>{
-                if (e.target === overlay) fecharModalAluno();
-            });
-            document.addEventListener('keydown', (e)=>{
-                if (e.key === "Escape" && overlay.style.display !== "none") fecharModalAluno();
-            });
-
-            listaFechar.addEventListener('click', ()=>{
-                listaModal.style.display = "none";
-                listaQuestoesDiv.innerHTML = "";
-            });
+            overlay.addEventListener('click', (e)=>{ if (e.target === overlay) fecharModalAluno(); });
+            document.addEventListener('keydown', (e)=>{ if (e.key === "Escape" && overlay.style.display !== "none") fecharModalAluno(); });
+            listaFechar.addEventListener('click', ()=>{ listaModal.style.display = "none"; listaQuestoesDiv.innerHTML = ""; });
 
             function getQuestaoPorId(qId){
                 const [modo, idxStr] = String(qId || "").split("-");
                 const idx = Number(idxStr);
-                let q = null;
-                let titulo = null;
-
-                if (modo === "intro") {
-                    q = (Array.isArray(questoesIntro) ? questoesIntro : [])[idx];
-                    titulo = "Introdução";
-                } else if (modo === "complementar") {
-                    q = (Array.isArray(questoesComp) ? questoesComp : [])[idx];
-                    titulo = "Complementar";
-                }
-
+                let q = null, titulo = null;
+                if (modo === "intro") { q = (Array.isArray(questoesIntro) ? questoesIntro : [])[idx]; titulo = "Introdução"; } 
+                else if (modo === "complementar") { q = (Array.isArray(questoesComp) ? questoesComp : [])[idx]; titulo = "Complementar"; }
                 return { modo, idx, q, titulo };
+            }
+
+            // ✅ LÓGICA: ABRIR NOVA ABA COM ESTILOS
+            listaQuestoesDiv.addEventListener('click', (e) => {
+                const item = e.target.closest('.item-questao');
+                if (item && item.dataset.id) {
+                    abrirQuestaoNovaAba(item.dataset.id);
+                }
+            });
+
+            function abrirQuestaoNovaAba(id) {
+                const info = getQuestaoPorId(id);
+                if (!info || !info.q) return;
+                
+                const win = window.open("", "_blank");
+                if (!win) { alert("O pop-up foi bloqueado pelo navegador. Permita pop-ups para ver a questão."); return; }
+                
+                const q = info.q;
+                // Constrói o HTML da nova aba, INJETANDO O CSS DA FRAÇÃO
+                const htmlContent = `
+                    <!DOCTYPE html>
+                    <html lang="pt-BR">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Questão ${info.titulo} - Q${info.idx + 1}</title>
+                        <style>
+                            body { font-family: -apple-system, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; background: #f5f5f7; color: #1d1d1f; }
+                            .card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+                            .header { margin-bottom: 20px; font-weight: 700; color: #86868b; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px; }
+                            .pergunta { font-size: 1.4rem; font-weight: 600; margin-bottom: 30px; line-height: 1.4; }
+                            .img-wrapper { text-align: center; margin: 30px 0; }
+                            img { max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+                            .opcoes { display: grid; gap: 10px; }
+                            .opcao { background: #f5f5f7; padding: 15px 20px; border-radius: 12px; font-size: 1.1rem; }
+                            
+                            /* --- CSS FRAÇÃO (COPIADO DO PAINEL PRINCIPAL) --- */
+                            .fracao { display: inline-flex; flex-direction: column; vertical-align: middle; margin: 0 5px; text-align: center; font-size: 0.9em; }
+                            .fracao > span { padding: 0 5px; }
+                            .fracao > span:first-child { border-bottom: 2px solid currentColor; padding-bottom: 1px; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="card">
+                            <div class="header">${info.titulo} • Questão ${info.idx + 1}</div>
+                            <div class="pergunta">${q.pergunta}</div>
+                            ${q.img ? `<div class="img-wrapper"><img src="${q.img}"></div>` : ''}
+                            <div class="opcoes">
+                                ${(q.opcoes || []).map((op, i) => `<div class="opcao"><b>${String.fromCharCode(65+i)})</b> ${op}</div>`).join('')}
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `;
+                
+                win.document.write(htmlContent);
+                win.document.close();
             }
 
             function renderListaQuestoes(tipo){
                 if (!alunoSelecionado) return;
-
-                const lista = (tipo === "acertos")
-                    ? (alunoSelecionado.listaAcertos || [])
-                    : (alunoSelecionado.listaErros || []);
-
+                const lista = (tipo === "acertos") ? (alunoSelecionado.listaAcertos || []) : (alunoSelecionado.listaErros || []);
                 listaTitulo.textContent = (tipo === "acertos") ? "Questões acertadas" : "Questões erradas";
                 listaModal.style.display = "block";
-
-                if (!Array.isArray(lista) || lista.length === 0){
-                    listaQuestoesDiv.innerHTML = `<div style="padding:10px;color:#6b7280;">Nenhuma questão registrada ainda.</div>`;
-                    return;
-                }
-
-                // Ordena por modo e índice
+                if (!Array.isArray(lista) || lista.length === 0){ listaQuestoesDiv.innerHTML = `<div style="padding:10px;color:#6b7280;">Nenhuma questão registrada.</div>`; return; }
                 const ordenada = [...lista].sort((a,b)=>{
-                    const [ma,ia]=String(a).split("-");
-                    const [mb,ib]=String(b).split("-");
-                    if (ma !== mb) return ma.localeCompare(mb);
-                    return (Number(ia)||0) - (Number(ib)||0);
+                    const [ma,ia]=String(a).split("-"); const [mb,ib]=String(b).split("-");
+                    if (ma !== mb) return ma.localeCompare(mb); return (Number(ia)||0) - (Number(ib)||0);
                 });
-
                 const itens = ordenada.map((id)=>{
                     const info = getQuestaoPorId(id);
                     const label = info.titulo ? `${info.titulo} • Q${(info.idx ?? 0)+1}` : `Q${(info.idx ?? 0)+1}`;
-                    const texto = info.q?.pergunta ? _escapeHTML(info.q.pergunta) : "Questão não encontrada (banco mudou).";
+                    const texto = info.q?.pergunta ? info.q.pergunta : "Questão não encontrada (banco mudou).";
                     const chip = `<span class="chip">${label}</span>`;
+                    
+                    // Adiciona data-id para o clique funcionar
                     return `
-                    <div class="item-questao">
-                        <div class="linha1">
-                        ${chip}
-                        </div>
+                    <div class="item-questao" data-id="${id}">
+                        <div class="linha1">${chip}</div>
                         <div class="txt-curto">${texto}</div>
-                    </div>
-                    `;
+                    </div>`;
                 }).join("");
-
                 listaQuestoesDiv.innerHTML = itens;
             }
-
             btnAcertos.addEventListener('click', ()=>renderListaQuestoes("acertos"));
             btnErros.addEventListener('click', ()=>renderListaQuestoes("erros"));
-
-            // Clique em aluno no ranking -> abre modal
             document.addEventListener('click', (e)=>{
                 const li = e.target.closest('li.item-aluno');
                 if (!li || !li.dataset || !li.dataset.alunoId) return;
-
                 const id = li.dataset.alunoId;
                 const aluno = (todosRegistros || []).find(x => x.id === id);
                 if (aluno) abrirModalAluno(aluno);
             });
         });
-
-</script>
+    </script>
 
     <div id="alunoModalOverlay" class="aluno-modal-overlay" style="display:none;">
       <div id="alunoModal" class="aluno-modal" role="dialog" aria-modal="true" aria-label="Detalhes do aluno">
         <div class="aluno-modal-header">
-          <div>
-            <div id="alunoModalNome" class="aluno-modal-nome"></div>
-            <div id="alunoModalInfo" class="aluno-modal-sub"></div>
-          </div>
+          <div><div id="alunoModalNome" class="aluno-modal-nome"></div><div id="alunoModalInfo" class="aluno-modal-sub"></div></div>
           <button id="alunoModalFechar" class="aluno-modal-fechar" title="Fechar">✕</button>
         </div>
-
         <div class="aluno-modal-botoes">
-          <button id="btnAcertosAluno" class="btn-placar btn-acerto" type="button">
-            <span class="dot dot-verde"></span>
-            <span>Acertos</span>
-            <span id="btnAcertosAlunoNum" class="btn-num">0</span>
-          </button>
-
-          <button id="btnErrosAluno" class="btn-placar btn-erro" type="button">
-            <span class="dot dot-vermelho"></span>
-            <span>Erros</span>
-            <span id="btnErrosAlunoNum" class="btn-num">0</span>
-          </button>
+          <button id="btnAcertosAluno" class="btn-placar btn-acerto" type="button"><span class="dot dot-verde"></span><span>Acertos</span><span id="btnAcertosAlunoNum" class="btn-num">0</span></button>
+          <button id="btnErrosAluno" class="btn-placar btn-erro" type="button"><span class="dot dot-vermelho"></span><span>Erros</span><span id="btnErrosAlunoNum" class="btn-num">0</span></button>
         </div>
-
-        <div class="aluno-modal-dica">
-          Clique em <b>Acertos</b> ou <b>Erros</b> para ver a lista de questões.
-        </div>
+        <div class="aluno-modal-dica">Clique em <b>Acertos</b> ou <b>Erros</b> para ver a lista de questões.</div>
       </div>
-
       <div id="listaModal" class="lista-modal" style="display:none;">
-        <div class="lista-modal-header">
-          <div id="listaModalTitulo" class="lista-modal-titulo"></div>
-          <button id="listaModalFechar" class="lista-modal-fechar" title="Fechar">✕</button>
-        </div>
+        <div class="lista-modal-header"><div id="listaModalTitulo" class="lista-modal-titulo"></div><button id="listaModalFechar" class="lista-modal-fechar" title="Fechar">✕</button></div>
         <div id="listaQuestoes" class="lista-questoes"></div>
       </div>
     </div>
-
 </body>
 </html>
