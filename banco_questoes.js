@@ -118,9 +118,9 @@ Sempre contamos quantas partes existem no total.`
   }
 ];
 
-export const questoesIntro = questoesIntroI;
+const questoesIntro = questoesIntroI;
 
-export const questoesComp = [
+const questoesComp = [
   // ✅ comp16 — imagem 40% maior
   {
     pergunta: `Uma pizza foi dividida em 6 partes iguais. Ana tinha ${f(5,6)} da pizza, mas deu ${f(1,6)} para sua amiga. Quanto restou da pizza com Ana?`,
@@ -242,3 +242,7 @@ A fração que representa as moedas restantes é ${f(5,7)}.`
     resolucao: resolucaoCompImgHTML(14, 1.4)
   }
 ];
+
+
+window.questoesIntro = questoesIntro;
+window.questoesComp = questoesComp;

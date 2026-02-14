@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Painel do Professor - Ranking</title>
     <style>
         /* =========================================
@@ -379,21 +382,24 @@
                     <span id="btnErrosAlunoNum" class="badge-count">0</span>
                 </button>
 
+                <div id="alunoModalCodigo" class="modal-sub" style="margin: 6px 0 14px 0; font-weight:700; color:#8e8e93;">Código: -</div>
+
                 <div class="modal-divisor"><span>AÇÕES INDIVIDUAIS</span></div>
 
                 <button id="btnLiberarIndividual" class="btn-pilula-acao acao-extra">
                     <span style="display:flex; align-items:center; gap:8px; color:var(--success);">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        Liberar Aluno
+                        Liberar Acesso
                     </span>
                 </button>
 
                 <button id="btnFinalizarIndividual" class="btn-pilula-acao acao-extra">
                     <span style="display:flex; align-items:center; gap:8px; color:var(--error);">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
-                        Finalizar Aluno
+                        Finalizar Acesso
                     </span>
                 </button>
+
             </div>
 
             <div id="painelLista" class="modal-box-lista">
@@ -524,6 +530,7 @@
                         erros: aluno.errosTotal ?? (aluno.erros || 0),
                         listaAcertos: normalizarLista(aluno.listaAcertos),
                         listaErros: normalizarLista(aluno.listaErros),
+                        codigoDispositivo: aluno.codigoDispositivo || '',
                         data: aluno.entrouEm ? aluno.entrouEm.split('T')[0] : '',
                         hora: horaFormatada,
                         timestamp: aluno.entrouEm ? new Date(aluno.entrouEm).getTime() : 0,
@@ -603,6 +610,7 @@
             alunoSelecionado = aluno;
             document.getElementById('alunoModalNome').textContent = aluno.nome;
             document.getElementById('alunoModalInfo').textContent = (aluno.serie || "Série n/a");
+            document.getElementById('alunoModalCodigo').textContent = `Código: ${aluno.codigoDispositivo || '- sem código -'}`;
             document.getElementById('btnAcertosAlunoNum').textContent = aluno.acertos;
             document.getElementById('btnErrosAlunoNum').textContent = aluno.erros;
             
@@ -615,32 +623,45 @@
         document.getElementById('btnAcertosAluno').onclick = () => renderListaQuestoes('acertos');
         document.getElementById('btnErrosAluno').onclick = () => renderListaQuestoes('erros');
 
-        // ============================================
-        // AÇÕES INDIVIDUAIS (CORRIGIDO)
-        // ============================================
-        const btnLib = document.getElementById('btnLiberarIndividual');
-        const btnFin = document.getElementById('btnFinalizarIndividual');
+        document.getElementById('btnLiberarIndividual').onclick = () => executarAcaoIndividual('liberado');
+        document.getElementById('btnFinalizarIndividual').onclick = () => executarAcaoIndividual('finalizar');
 
-        btnLib.onclick = () => executarAcaoIndividual('liberado');
-        btnFin.onclick = () => executarAcaoIndividual('finalizado');
-
-        function executarAcaoIndividual(novoStatus) {
-            if(!alunoSelecionado || !alunoSelecionado.id) {
-                alert("Erro: Aluno não selecionado corretamente.");
+        function executarAcaoIndividual(comando) {
+            if (!alunoSelecionado || !alunoSelecionado.id) {
+                alert('Aluno não selecionado.');
                 return;
             }
-            if(!confirm(`Confirma definir status "${novoStatus.toUpperCase()}" para ${alunoSelecionado.nome}?`)) return;
 
-            // Atualiza status no Firebase
-            update(ref(db, 'alunos/' + alunoSelecionado.id), {
-                status_individual: novoStatus
-            }).then(() => {
-                alert(`Sucesso! O aluno agora está: ${novoStatus.toUpperCase()}.\n\n(Certifique-se que o index.html do aluno possui o código para ler esta alteração)`);
+            const codigo = alunoSelecionado.codigoDispositivo;
+            if (!codigo) {
+                alert('Este aluno ainda não possui código de dispositivo. Peça para ele entrar novamente na atividade.');
+                return;
+            }
+
+            const acao = comando === 'finalizar' ? 'finalizar acesso de' : 'liberar acesso de';
+            if (!confirm(`Confirma ${acao} o aluno ${alunoSelecionado.nome}?
+Código: ${codigo}`)) return;
+
+            const agora = new Date().toISOString();
+            Promise.all([
+                set(ref(db, 'comandos_individuais/' + codigo), {
+                    comando,
+                    alunoId: alunoSelecionado.id,
+                    nome: alunoSelecionado.nome || '',
+                    codigoDispositivo: codigo,
+                    atualizadoEm: agora
+                }),
+                update(ref(db, 'alunos/' + alunoSelecionado.id), {
+                    status_individual: comando === 'finalizar' ? 'finalizado' : 'liberado',
+                    codigoDispositivo: codigo,
+                    ultimoComandoIndividualEm: agora
+                })
+            ]).then(() => {
+                mostrarNotificacao(`Acesso ${comando === 'finalizar' ? 'finalizado' : 'liberado'} para ${alunoSelecionado.nome} (${codigo}).`, comando === 'finalizar' ? 'alerta' : 'sucesso');
             }).catch((e) => {
-                alert("Erro ao atualizar: " + e.message);
+                alert('Erro ao enviar comando individual: ' + e.message);
             });
         }
-        // ============================================
 
         function getQuestaoPorId(qId){
             const [modo, idxStr] = String(qId || "").split("-");
@@ -823,6 +844,7 @@
             wrapper.classList.remove('aberto');
             renderizarRanking();
         }
+
 
         function mostrarNotificacao(texto, tipo = 'sucesso') {
             const container = document.getElementById('containerNotificacoes');
