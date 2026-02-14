@@ -1230,7 +1230,13 @@ function restaurarEstadoRespostaSeExistir() {
             document.getElementById('areaResposta').style.display = 'none';
             document.getElementById('btnProximo').style.display = 'none';
 
-            document.getElementById('imgQuestao').src = q.img;
+            const imgEl = document.getElementById('imgQuestao');
+            imgEl.src = q.img;
+
+            // ✅ Ajuste de tamanho por questão (quando existir q.imgScale)
+            const scale = (q.imgScale && Number.isFinite(q.imgScale)) ? q.imgScale : 1;
+            imgEl.style.transform = `scale(${scale})`;
+            imgEl.style.transformOrigin = 'top center';
             document.getElementById('textoPergunta').innerHTML = q.pergunta;
 
             const divBotoes = document.getElementById('containerOpcoes');
