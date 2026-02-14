@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Painel do Professor - Ranking</title>
     <style>
         /* =========================================
@@ -206,6 +209,12 @@
         }
         .btn-pilula-acao:hover .badge-count { background: rgba(255,255,255,0.3); color: white; }
 
+        /* Defesa extra: se HTML antigo/cacheado ainda tiver os botões individuais, não exibe */
+        #btnLiberarIndividual,
+        #btnFinalizarIndividual {
+            display: none !important;
+        }
+
         /* Divisor */
         .modal-divisor {
             height: 1px; background-color: #f0f0f5; width: 100%; margin: 20px 0; position: relative;
@@ -379,21 +388,6 @@
                     <span id="btnErrosAlunoNum" class="badge-count">0</span>
                 </button>
 
-                <div class="modal-divisor"><span>AÇÕES INDIVIDUAIS</span></div>
-
-                <button id="btnLiberarIndividual" class="btn-pilula-acao acao-extra">
-                    <span style="display:flex; align-items:center; gap:8px; color:var(--success);">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        Liberar Aluno
-                    </span>
-                </button>
-
-                <button id="btnFinalizarIndividual" class="btn-pilula-acao acao-extra">
-                    <span style="display:flex; align-items:center; gap:8px; color:var(--error);">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
-                        Finalizar Aluno
-                    </span>
-                </button>
             </div>
 
             <div id="painelLista" class="modal-box-lista">
@@ -607,40 +601,40 @@
             document.getElementById('btnErrosAlunoNum').textContent = aluno.erros;
             
             document.getElementById('painelLista').style.display = 'none';
+            limparBotoesIndividuaisDoPopup();
             toggleModal('modalUnificadoOverlay', true);
         };
         
         window.fecharModalUnificado = () => toggleModal('modalUnificadoOverlay', false);
 
-        document.getElementById('btnAcertosAluno').onclick = () => renderListaQuestoes('acertos');
-        document.getElementById('btnErrosAluno').onclick = () => renderListaQuestoes('erros');
 
-        // ============================================
-        // AÇÕES INDIVIDUAIS (CORRIGIDO)
-        // ============================================
-        const btnLib = document.getElementById('btnLiberarIndividual');
-        const btnFin = document.getElementById('btnFinalizarIndividual');
+        function limparBotoesIndividuaisDoPopup() {
+            const popup = document.getElementById('modalUnificadoOverlay');
+            if (!popup) return;
 
-        btnLib.onclick = () => executarAcaoIndividual('liberado');
-        btnFin.onclick = () => executarAcaoIndividual('finalizado');
+            // Remove por IDs conhecidos
+            ['btnLiberarIndividual', 'btnFinalizarIndividual'].forEach((id) => {
+                const el = popup.querySelector('#' + id);
+                if (el) el.remove();
+            });
 
-        function executarAcaoIndividual(novoStatus) {
-            if(!alunoSelecionado || !alunoSelecionado.id) {
-                alert("Erro: Aluno não selecionado corretamente.");
-                return;
-            }
-            if(!confirm(`Confirma definir status "${novoStatus.toUpperCase()}" para ${alunoSelecionado.nome}?`)) return;
+            // Remove por texto (proteção para versões antigas/cacheadas)
+            popup.querySelectorAll('button').forEach((btn) => {
+                const txt = (btn.innerText || btn.textContent || '').trim().toLowerCase();
+                if (txt.includes('liberar aluno') || txt.includes('finalizar aluno') || txt.includes('liberar acesso')) {
+                    btn.remove();
+                }
+            });
 
-            // Atualiza status no Firebase
-            update(ref(db, 'alunos/' + alunoSelecionado.id), {
-                status_individual: novoStatus
-            }).then(() => {
-                alert(`Sucesso! O aluno agora está: ${novoStatus.toUpperCase()}.\n\n(Certifique-se que o index.html do aluno possui o código para ler esta alteração)`);
-            }).catch((e) => {
-                alert("Erro ao atualizar: " + e.message);
+            // Remove divisor antigo de ações individuais se existir
+            popup.querySelectorAll('.modal-divisor').forEach((div) => {
+                const txt = (div.innerText || div.textContent || '').trim().toLowerCase();
+                if (txt.includes('ações individuais')) div.remove();
             });
         }
-        // ============================================
+
+        document.getElementById('btnAcertosAluno').onclick = () => renderListaQuestoes('acertos');
+        document.getElementById('btnErrosAluno').onclick = () => renderListaQuestoes('erros');
 
         function getQuestaoPorId(qId){
             const [modo, idxStr] = String(qId || "").split("-");
@@ -822,6 +816,15 @@
             else { filtroTurmaAtual = valor; document.getElementById('textoTurma').innerText = 'Turma: ' + textoExibicao; }
             wrapper.classList.remove('aberto');
             renderizarRanking();
+        }
+
+
+        // Defesa extra contínua para versões antigas/cacheadas.
+        limparBotoesIndividuaisDoPopup();
+        const popupObserver = new MutationObserver(() => limparBotoesIndividuaisDoPopup());
+        const popupRoot = document.getElementById('modalUnificadoOverlay');
+        if (popupRoot) {
+            popupObserver.observe(popupRoot, { childList: true, subtree: true });
         }
 
         function mostrarNotificacao(texto, tipo = 'sucesso') {
