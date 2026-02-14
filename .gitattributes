@@ -1,0 +1,4 @@
+# Auto-resolve high-churn classroom app files by preferring branch version during merges
+index.html merge=ours
+ranking.html merge=ours
+banco_questoes.js merge=ours
