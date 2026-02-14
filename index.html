@@ -56,7 +56,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            opacity: 1;
+            opacity: 0;
             transition: opacity 0.5s;
         }
 
@@ -264,7 +264,7 @@
             padding-top: 20px;
             animation: fadeIn 0.5s ease;
         }
-        @keyframes fadeIn { from { opacity: 1; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .titulo-feedback { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; display: block; }
         .texto-resolucao { font-size: 1.1rem; line-height: 1.6; color: var(--text-main); margin-bottom: 20px; }
@@ -312,7 +312,7 @@
         }
 
         .modal-overlay.visivel { display: flex; }
-        @keyframes fadeInModal { from { opacity: 1; } to { opacity: 1; } }
+        @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
 
         .modal-box {
             background: white;
@@ -347,7 +347,7 @@
             z-index: 20;
         }
 
-        @keyframes popIn { from { transform: scale(0.9); opacity: 1; } to { transform: scale(1); opacity: 1; } }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .modal-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
         .modal-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 20px; }
@@ -798,9 +798,11 @@
         })();
     </script>
 
-    <script>
-(async () => {
+    <script type="module">
+        import { questoesIntro, questoesComp } from "./banco_questoes.js";
 
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         // =========================================================================
         // PROTEÇÕES ANTI-CÓPIA
@@ -832,26 +834,13 @@
         };
 
         // =========================================================================
-        // QUESTÕES DO BANCO (tolerante a falhas)
+        // QUESTÕES DO BANCO
         // =========================================================================
-        let questoesIntro = [];
-        let questoesComp  = [];
-        try {
-            const modQuestoes = await import("./banco_questoes.js");
-            questoesIntro = modQuestoes.questoesIntro || [];
-            questoesComp  = modQuestoes.questoesComp  || [];
-        } catch (e) {
-            console.warn("Não consegui carregar ./banco_questoes.js. Verifique se o arquivo está na mesma pasta do index.html e se você está abrindo via servidor (Live Server / GitHub Pages).", e);
-            // fallback: se por acaso já existir global (script tradicional), usa.
-            questoesIntro = window.questoesIntro || [];
-            questoesComp  = window.questoesComp  || [];
-        }
         window.questoesIntro = questoesIntro;
         window.questoesComp  = questoesComp;
 
-
         // =========================================================================
-        // FIREBASE (tolerante a falhas)
+        // FIREBASE (MANTIDO)
         // =========================================================================
         const firebaseConfig = {
           apiKey: "AIzaSyCHfcVVxma4M1LbYO5M-oMX4fnlaNUPi24",
@@ -863,37 +852,8 @@
           appId: "1:873014790580:web:09b340386d10d7f88a4ae1"
         };
 
-        const __params = new URLSearchParams(window.location.search);
-        window.isPreview = __params.get('preview') === '1';
-        const __modoParam = __params.get('modo');      // 'intro' | 'complementar'
-        const __indiceParam = parseInt(__params.get('indice') || '', 10);
-
-        // Stubs (modo offline)
-        let db = null;
-        let ref = () => null;
-        let update = async () => {};
-        let onValue = () => {};
-        let push = () => ({ key: null });
-        window.__firebaseAtivo = false;
-
-        try {
-            const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js");
-            const fbdb = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js");
-            const app = initializeApp(firebaseConfig);
-            db = fbdb.getDatabase(app);
-            ref = fbdb.ref;
-            update = fbdb.update;
-            onValue = fbdb.onValue;
-            push = fbdb.push;
-            window.__firebaseAtivo = true;
-        } catch (e) {
-            console.warn("Firebase não carregou (ok, modo offline). Se você estiver abrindo por file://, use Live Server / GitHub Pages.", e);
-        }
-
-        // expõe para debug/uso
-        window.__db = db;
-        window.__fb = { ref, update, onValue, push };
-
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
         let alunoId = localStorage.getItem('firebaseId');
 
         const iconCadeadoAberto = `<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>`;
@@ -903,14 +863,6 @@
         window.indice = parseInt(localStorage.getItem('indice')) || 0;
         window.placarIntro = JSON.parse(localStorage.getItem('placarIntro')) || { acertos: 0, erros: 0 };
         window.placarComp = JSON.parse(localStorage.getItem('placarComp')) || { acertos: 0, erros: 0 };
-
-        // ============================================================
-        // ✅ NOVO: listas de questões acertadas/erradas (para o Painel da Turma)
-        // Formato do ID: "intro-<indice>" ou "complementar-<indice>"
-        // ============================================================
-        window.listaAcertos = JSON.parse(localStorage.getItem('listaAcertos')) || [];
-        window.listaErros   = JSON.parse(localStorage.getItem('listaErros'))   || [];
-
 
         // =========================================================================
         // ACESSO DO PROFESSOR COM POPUP + SENHA
@@ -1113,7 +1065,6 @@ function _limparEstadoQuestoes() {
 
 // Aplica pontuação UMA ÚNICA VEZ, somente quando o aluno clica em "Próxima Questão".
 function _aplicarPontuacaoQuestaoAtualSeNecessario() {
-    if (window.isPreview === true) return; // não contabiliza nem grava em preview
     const listaQuestao = window.modoAtual === 'intro' ? window.questoesIntro : window.questoesComp;
     const q = listaQuestao[window.indice];
     if (!q) return;
@@ -1130,34 +1081,6 @@ function _aplicarPontuacaoQuestaoAtualSeNecessario() {
     let placarAtual = window.modoAtual === 'intro' ? window.placarIntro : window.placarComp;
     if (acertou) placarAtual.acertos++;
     else placarAtual.erros++;
-
-    // ✅ registra a questão na lista (uma única vez)
-    const qId = `${window.modoAtual}-${window.indice}`;
-    if (acertou) {
-        if (!Array.isArray(window.listaAcertos)) window.listaAcertos = [];
-        if (!window.listaAcertos.includes(qId)) window.listaAcertos.push(qId);
-        if (Array.isArray(window.listaErros)) window.listaErros = window.listaErros.filter(x => x !== qId);
-    } else {
-        if (!Array.isArray(window.listaErros)) window.listaErros = [];
-        if (!window.listaErros.includes(qId)) window.listaErros.push(qId);
-        if (Array.isArray(window.listaAcertos)) window.listaAcertos = window.listaAcertos.filter(x => x !== qId);
-    }
-    localStorage.setItem('listaAcertos', JSON.stringify(window.listaAcertos));
-    localStorage.setItem('listaErros', JSON.stringify(window.listaErros));
-
-    // ✅ registra a questão na lista (uma única vez)
-    const qId = `${window.modoAtual}-${window.indice}`;
-    if (acertou) {
-        if (!window.listaAcertos.includes(qId)) window.listaAcertos.push(qId);
-        // se por algum motivo estava na lista de erros, remove
-        window.listaErros = window.listaErros.filter(x => x !== qId);
-    } else {
-        if (!window.listaErros.includes(qId)) window.listaErros.push(qId);
-        window.listaAcertos = window.listaAcertos.filter(x => x !== qId);
-    }
-
-    localStorage.setItem('listaAcertos', JSON.stringify(window.listaAcertos));
-    localStorage.setItem('listaErros', JSON.stringify(window.listaErros));
 
     _setEstadoQuestao(window.modoAtual, window.indice, { scored: true });
 
@@ -1182,10 +1105,6 @@ function _aplicarPontuacaoQuestaoAtualSeNecessario() {
             errosIntro,
             acertosComp,
             errosComp,
-            listaAcertos: window.listaAcertos || [],
-            listaErros: window.listaErros || [],
-            listaAcertos: window.listaAcertos || [],
-            listaErros: window.listaErros || [],
             ultimoAcesso: new Date().toISOString()
           });
         })();
@@ -1459,9 +1378,7 @@ function restaurarEstadoRespostaSeExistir() {
         ativarProtecoes();
         window.onload = carregar;
 
-    
-})();
-</script>
+    </script>
 
     <!-- Proteções extras -->
     <script>
