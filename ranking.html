@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Painel do Professor - Ranking</title>
     <style>
         /* =========================================
@@ -598,10 +601,37 @@
             document.getElementById('btnErrosAlunoNum').textContent = aluno.erros;
             
             document.getElementById('painelLista').style.display = 'none';
+            limparBotoesIndividuaisDoPopup();
             toggleModal('modalUnificadoOverlay', true);
         };
         
         window.fecharModalUnificado = () => toggleModal('modalUnificadoOverlay', false);
+
+
+        function limparBotoesIndividuaisDoPopup() {
+            const popup = document.getElementById('modalUnificadoOverlay');
+            if (!popup) return;
+
+            // Remove por IDs conhecidos
+            ['btnLiberarIndividual', 'btnFinalizarIndividual'].forEach((id) => {
+                const el = popup.querySelector('#' + id);
+                if (el) el.remove();
+            });
+
+            // Remove por texto (proteção para versões antigas/cacheadas)
+            popup.querySelectorAll('button').forEach((btn) => {
+                const txt = (btn.innerText || btn.textContent || '').trim().toLowerCase();
+                if (txt.includes('liberar aluno') || txt.includes('finalizar aluno') || txt.includes('liberar acesso')) {
+                    btn.remove();
+                }
+            });
+
+            // Remove divisor antigo de ações individuais se existir
+            popup.querySelectorAll('.modal-divisor').forEach((div) => {
+                const txt = (div.innerText || div.textContent || '').trim().toLowerCase();
+                if (txt.includes('ações individuais')) div.remove();
+            });
+        }
 
         document.getElementById('btnAcertosAluno').onclick = () => renderListaQuestoes('acertos');
         document.getElementById('btnErrosAluno').onclick = () => renderListaQuestoes('erros');
@@ -789,11 +819,13 @@
         }
 
 
-        // Defesa extra para versões cacheadas: remove botões individuais se existirem no DOM.
-        ;['btnLiberarIndividual', 'btnFinalizarIndividual'].forEach((id) => {
-            const el = document.getElementById(id);
-            if (el) el.remove();
-        });
+        // Defesa extra contínua para versões antigas/cacheadas.
+        limparBotoesIndividuaisDoPopup();
+        const popupObserver = new MutationObserver(() => limparBotoesIndividuaisDoPopup());
+        const popupRoot = document.getElementById('modalUnificadoOverlay');
+        if (popupRoot) {
+            popupObserver.observe(popupRoot, { childList: true, subtree: true });
+        }
 
         function mostrarNotificacao(texto, tipo = 'sucesso') {
             const container = document.getElementById('containerNotificacoes');
