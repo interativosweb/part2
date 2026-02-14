@@ -690,7 +690,12 @@ let todosRegistros = [];
                 });
                 sessionStorage.setItem('notificados', JSON.stringify(ultimosNotificados));
             }
-            window.renderizarRanking();
+            if (typeof window.renderizarRanking === 'function') {
+                window.renderizarRanking();
+            } else {
+                // garante que a função exista antes de renderizar
+                setTimeout(() => { if (typeof window.renderizarRanking === 'function') window.renderizarRanking(); }, 0);
+            }
         });
 
         // --- NOTIFICAÇÕES ---
