@@ -672,8 +672,8 @@ let todosRegistros = [];
                         serie: aluno.serie,
                         acertos: getAcertosTotal(aluno),
                         erros: getErrosTotal(aluno),
-                        listaAcertos: aluno.listaAcertos || [],
-                        listaErros: aluno.listaErros || [],
+                        listaAcertos: normalizarLista(aluno.listaAcertos),
+                        listaErros: normalizarLista(aluno.listaErros),
                         data: aluno.entrouEm ? aluno.entrouEm.split('T')[0] : '',
                         hora: horaFormatada,
                         timestamp: aluno.entrouEm ? new Date(aluno.entrouEm).getTime() : 0,
@@ -876,7 +876,18 @@ let todosRegistros = [];
 
         let alunoSelecionado = null;
 
-        function _escapeHTML(s){
+        function normalizarLista(v){
+  if (Array.isArray(v)) return v;
+  if (!v) return [];
+  if (typeof v === 'string') return [v];
+  if (typeof v === 'object') {
+    // Firebase RTDB pode devolver arrays como objetos {0:...,1:...}
+    try { return Object.values(v).filter(x=>x!==null && x!==undefined); } catch(e) { return []; }
+  }
+  return [];
+}
+
+function _escapeHTML(s){
           return String(s ?? "").replace(/[&<>"]/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[c]));
         }
 
