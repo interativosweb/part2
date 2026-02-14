@@ -634,32 +634,13 @@
             return Number.isNaN(e) ? 0 : e;
         }
 
-        // ✅ Normaliza lista (Firebase às vezes entrega como array ou como objeto {0:...,1:...})
-        function normalizeLista(v){
-            if (Array.isArray(v)) return v.filter(Boolean);
-            if (v && typeof v === "object") {
-                // objeto com chaves numéricas
-                return Object.keys(v)
-                    .sort((a,b)=>Number(a)-Number(b))
-                    .map(k=>v[k])
-                    .filter(Boolean);
-            }
+
+        // ✅ Normaliza lista vinda do Firebase (pode vir como Array ou Objeto {0:...,1:...})
+        function normalizarLista(lista){
+            if (Array.isArray(lista)) return lista;
+            if (lista && typeof lista === 'object') return Object.values(lista);
             return [];
         }
-
-        // ✅ Preview curto da pergunta (remove HTML e corta)
-        function previewPergunta(pergunta, maxLen = 90){
-            const s = String(pergunta ?? "")
-                .replace(/<[^>]*>/g, " ")
-                .replace(/\s+/g, " ")
-                .trim();
-            if (s.length <= maxLen) return s;
-            return s.slice(0, maxLen-1) + "…";
-        }
-
-        // ✅ URL da atividade (ajuste se sua atividade estiver em outra pasta)
-        const URL_ATIVIDADE = "./index.html";
-
 
 
         const alunosRef = ref(db, 'alunos');
@@ -682,8 +663,8 @@
                         serie: aluno.serie,
                         acertos: getAcertosTotal(aluno),
                         erros: getErrosTotal(aluno),
-                        listaAcertos: normalizeLista(aluno.listaAcertos),
-                        listaErros: normalizeLista(aluno.listaErros),
+                        listaAcertos: normalizarLista(aluno.listaAcertos),
+                        listaErros: normalizarLista(aluno.listaErros),
                         data: aluno.entrouEm ? aluno.entrouEm.split('T')[0] : '',
                         hora: horaFormatada,
                         timestamp: aluno.entrouEm ? new Date(aluno.entrouEm).getTime() : 0,
@@ -945,8 +926,8 @@
           if (!alunoSelecionado) return;
 
           const lista = (tipo === "acertos")
-            ? normalizeLista(alunoSelecionado.listaAcertos)
-            : normalizeLista(alunoSelecionado.listaErros);
+            ? (alunoSelecionado.listaAcertos || [])
+            : (alunoSelecionado.listaErros || []);
 
           listaTitulo.textContent = (tipo === "acertos") ? "Questões acertadas" : "Questões erradas";
           listaModal.style.display = "block";
@@ -967,7 +948,7 @@
           const itens = ordenada.map((id)=>{
             const info = getQuestaoPorId(id);
             const label = info.titulo ? `${info.titulo} • Q${(info.idx ?? 0)+1}` : `Q${(info.idx ?? 0)+1}`;
-            const texto = info.q?.pergunta ? _escapeHTML(previewPergunta(info.q.pergunta)) : "Questão não encontrada (banco mudou).";
+            const texto = info.q?.pergunta ? _escapeHTML(info.q.pergunta) : "Questão não encontrada (banco mudou).";
             const img = info.q?.img || "";
             const chip = `<span class="chip">${label}</span>`;
             const imgOk = img ? "1" : "0";
@@ -989,11 +970,11 @@
             el.addEventListener('click', ()=>{
               const qid = el.getAttribute('data-qid');
               const info = getQuestaoPorId(qid);
-              const modo = info.modo;
-              const indice = info.idx;
-              if (modo && Number.isFinite(indice)) {
-                window.open(`${URL_ATIVIDADE}?preview=1&modo=${encodeURIComponent(modo)}&indice=${encodeURIComponent(indice)}`, "_blank");
-              }
+              const url = info.q?.img;
+              const modo = info.modo === 'intro' ? 'intro' : 'complementar';
+              const indice = (info.idx ?? 0);
+              // abre a questão completa no index em modo preview (não grava pontuação)
+              window.open(`./index.html?preview=1&modo=${modo}&indice=${indice}`, "_blank");
             });
           });
         }
