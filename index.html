@@ -1088,11 +1088,26 @@ function _aplicarPontuacaoQuestaoAtualSeNecessario() {
     atualizarPlacarVisual();
 
     if (alunoId && window.modoAtual === 'complementar') {
-        update(ref(db, 'alunos/' + alunoId), {
-            acertos: window.placarComp.acertos,
-            erros: window.placarComp.erros,
+        (() => {
+          const acertosIntro = (window.placarIntro && window.placarIntro.acertos) ? window.placarIntro.acertos : 0;
+          const errosIntro   = (window.placarIntro && window.placarIntro.erros)   ? window.placarIntro.erros   : 0;
+          const acertosComp  = (window.placarComp && window.placarComp.acertos)  ? window.placarComp.acertos  : 0;
+          const errosComp    = (window.placarComp && window.placarComp.erros)    ? window.placarComp.erros    : 0;
+
+          const acertosTotal = acertosIntro + acertosComp;
+          const errosTotal   = errosIntro + errosComp;
+
+          // Mantém compatibilidade: "acertos" e "erros" agora são o TOTAL do aluno no site
+          update(ref(db, 'alunos/' + alunoId), {
+            acertos: acertosTotal,
+            erros: errosTotal,
+            acertosIntro,
+            errosIntro,
+            acertosComp,
+            errosComp,
             ultimoAcesso: new Date().toISOString()
-        });
+          });
+        })();
     }
 }
 
