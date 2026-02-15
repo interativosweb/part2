@@ -639,11 +639,32 @@
         document.getElementById('btnAcertosAluno').onclick = () => abrirListaQuestoesModal('acertos');
         document.getElementById('btnErrosAluno').onclick = () => abrirListaQuestoesModal('erros');
         function getQuestaoPorId(qId){
-            const [modo, idxStr] = String(qId || "").split("-");
+            const raw = String(qId ?? "").trim();
+
+            // formatos aceitos:
+            // - "intro-0" / "complementar-3"
+            // - "0" (assume intro-0)
+            // - "comp-2" (alias)
+            let modo = "intro";
+            let idxStr = raw;
+
+            if (raw.includes("-")){
+                const parts = raw.split("-");
+                modo = (parts[0] || "intro").toLowerCase();
+                idxStr = parts[1] ?? "0";
+            } else if (/^\d+$/.test(raw)){
+                modo = "intro";
+                idxStr = raw;
+            }
+
+            if (modo === "comp") modo = "complementar";
+
             const idx = Number(idxStr);
             let q = null, titulo = null;
+
             if (modo === "intro") { q = (Array.isArray(questoesIntro) ? questoesIntro : [])[idx]; titulo = "Introdução"; } 
             else if (modo === "complementar") { q = (Array.isArray(questoesComp) ? questoesComp : [])[idx]; titulo = "Complementar"; }
+
             return { modo, idx, q, titulo };
         }
 
@@ -657,6 +678,18 @@
             return s.replace(/(\d+)\s*\/\s*(\d+)/g, (m, a, b) => {
                 return `<span class="fracao"><span>${a}</span><span>${b}</span></span>`;
             });
+        }
+
+        function stripHTMLToText(html){
+            const div = document.createElement('div');
+            div.innerHTML = String(html ?? '');
+            return (div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim();
+        }
+
+        function truncarTexto(txt, max=90){
+            const s = String(txt ?? '').trim();
+            if (s.length <= max) return s;
+            return s.slice(0, max - 1).trimEnd() + "…";
         }
 
         // ===========================================
@@ -692,7 +725,9 @@
 
             ordenada.forEach((id) => {
                 const info = getQuestaoPorId(id);
-                const texto = info.q?.pergunta ? info.q.pergunta : "Questão não encontrada.";
+                const textoBruto = (info.q && (info.q.pergunta ?? info.q.enunciado ?? info.q.texto)) ? (info.q.pergunta ?? info.q.enunciado ?? info.q.texto) : "";
+                const textoLimpo = textoBruto ? truncarTexto(stripHTMLToText(textoBruto), 90) : "Questão não encontrada.";
+                const texto = formatarFracoesHTML(textoLimpo);
                 const item = document.createElement('div');
                 item.className = 'item-questao';
                 // hover verde para acerto e vermelho para erro
@@ -702,7 +737,7 @@
                         <span>${info.titulo || 'Questão'} • Q${(info.idx ?? 0) + 1}</span>
                         <span style="color:${cor}">${tipo === 'acertos' ? 'ACERTO' : 'ERRO'}</span>
                     </div>
-                    <div class="q-texto">${formatarFracoesHTML(texto)}</div>
+                    <div class="q-texto">${texto}</div>
                 `;
 
                 item.addEventListener('click', () => {
