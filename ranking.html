@@ -87,19 +87,7 @@
         .rank-text{
             font-variant-numeric: tabular-nums;
         }
-        .medal{
-            width:20px;
-            height:20px;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            flex:0 0 auto;
-        }
-        .medal svg{ width:20px; height:20px; display:block; }
-
-        .rank-1 .posicao { color: transparent; text-shadow: 0 0 0 var(--warning); font-size: 1.5rem; }
-        .rank-2 .posicao { color: transparent; text-shadow: 0 0 0 var(--silver); font-size: 1.5rem; }
-        .rank-3 .posicao { color: transparent; text-shadow: 0 0 0 var(--bronze); font-size: 1.5rem; }
+        .medal-emoji{ font-size:1.25rem; line-height:1; }
         .info-nome { font-weight: 600; font-size: 1.05rem; display:flex; align-items:center; gap:10px; }
         .classif { font-size: 0.85rem; color: var(--text-light); font-weight: 700; }
         .info-serie { display: inline-block; padding: 4px 12px; border-radius: 20px; background-color: #f2f2f7; color: var(--text-light); font-size: 0.8rem; font-weight: 600; }
@@ -538,34 +526,10 @@
     return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   }
 
-  function medalIcon(rank){
-    if(rank===1) return `<span class="medal" title="1º lugar" aria-label="1º lugar">
-      <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
-        <path d="M20 2h10l6 14-16 0-0-14z" fill="#d32f2f"></path>
-        <path d="M34 2h10v14l-16 0 6-14z" fill="#1976d2"></path>
-        <circle cx="32" cy="40" r="18" fill="#f5c542"></circle>
-        <circle cx="32" cy="40" r="12" fill="#ffd86b"></circle>
-        <path d="M32 30l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1 3-6z" fill="#b8860b"></path>
-      </svg>
-    </span>`;
-    if(rank===2) return `<span class="medal" title="2º lugar" aria-label="2º lugar">
-      <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
-        <path d="M20 2h10l6 14-16 0-0-14z" fill="#d32f2f"></path>
-        <path d="M34 2h10v14l-16 0 6-14z" fill="#1976d2"></path>
-        <circle cx="32" cy="40" r="18" fill="#b0b7c3"></circle>
-        <circle cx="32" cy="40" r="12" fill="#d7dbe2"></circle>
-        <path d="M32 30l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1 3-6z" fill="#7a808a"></path>
-      </svg>
-    </span>`;
-    if(rank===3) return `<span class="medal" title="3º lugar" aria-label="3º lugar">
-      <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
-        <path d="M20 2h10l6 14-16 0-0-14z" fill="#d32f2f"></path>
-        <path d="M34 2h10v14l-16 0 6-14z" fill="#1976d2"></path>
-        <circle cx="32" cy="40" r="18" fill="#cd7f32"></circle>
-        <circle cx="32" cy="40" r="12" fill="#e3a56a"></circle>
-        <path d="M32 30l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1 3-6z" fill="#8b4513"></path>
-      </svg>
-    </span>`;
+  function medalEmoji(rank){
+    if (rank === 1) return `<span class="medal-emoji" aria-label="1º lugar">🥇</span>`;
+    if (rank === 2) return `<span class="medal-emoji" aria-label="2º lugar">🥈</span>`;
+    if (rank === 3) return `<span class="medal-emoji" aria-label="3º lugar">🥉</span>`;
     return "";
   }
 
@@ -737,7 +701,7 @@ filtrados.forEach((aluno, index) => {
 const li = document.createElement("li");
       li.className = `item-aluno ${rankClass}`;
       li.innerHTML = `
-        <div class="posicao">${medalIcon(rank)}<span class="rank-text">#${rank}</span></div>
+        <div class="posicao">${medalEmoji(rank)}<span class="rank-text">#${rank}</span></div>
         <div class="info-nome">
           <span>${aluno.nome || "-"}</span>
           
