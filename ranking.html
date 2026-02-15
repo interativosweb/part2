@@ -441,405 +441,450 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue, set, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-        
-        const firebaseConfig = {
-          apiKey: "AIzaSyCHfcVVxma4M1LbYO5M-oMX4fnlaNUPi24",
-          authDomain: "fracoesbanco.firebaseapp.com",
-          databaseURL: "https://fracoesbanco-default-rtdb.firebaseio.com",
-          projectId: "fracoesbanco",
-          storageBucket: "fracoesbanco.firebasestorage.app",
-          messagingSenderId: "873014790580",
-          appId: "1:873014790580:web:09b340386d10d7f88a4ae1"
-        };
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyCHfcVVxma4M1LbYO5M-oMX4fnlaNUPi24",
+    authDomain: "fracoesbanco.firebaseapp.com",
+    databaseURL: "https://fracoesbanco-default-rtdb.firebaseio.com",
+    projectId: "fracoesbanco",
+    storageBucket: "fracoesbanco.firebasestorage.app",
+    messagingSenderId: "873014790580",
+    appId: "1:873014790580:web:09b340386d10d7f88a4ae1"
+  };
 
-        /* --- FUNÇÕES GLOBAIS --- */
-        function normalizarLista(v){
-            if (Array.isArray(v)) return v;
-            if (!v) return [];
-            if (typeof v === 'string') return [v];
-            if (typeof v === 'object') {
-                try { return Object.values(v).filter(x=>x!==null && x!==undefined); } catch(e) { return []; }
-            }
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-        // Normaliza qualquer formato de data/hora salvo no Firebase para YYYY-MM-DD
-        function toISODate(value){
-            if(!value) return "";
-            const d = new Date(value);
-            if (isNaN(d.getTime())) return "";
-            return d.toISOString().slice(0,10);
-        }
+  // ==========================
+  // Helpers
+  // ==========================
+  function normalizarLista(v) {
+    if (Array.isArray(v)) return v;
+    if (!v) return [];
+    if (typeof v === "string") return [v];
+    if (typeof v === "object") {
+      try { return Object.values(v).filter(x => x !== null && x !== undefined); } catch { return []; }
+    }
+    return [];
+  }
 
-        function toHora(value){
-            if(!value) return "--:--";
-            const d = new Date(value);
-            if (isNaN(d.getTime())) return "--:--";
-            return d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-        }
+  function parseDateValue(v) {
+    if (v === null || v === undefined || v === "") return null;
 
-            return [];
-        }
+    // number timestamp
+    if (typeof v === "number") {
+      const d = new Date(v);
+      return isNaN(d.getTime()) ? null : d;
+    }
 
-        // Banco de Questões
-        let questoesIntro = [];
-        let questoesComp = [];
-        (async () => {
-            const candidatos = ["./banco_questoes.js", "./banco_questoes (21).js", "./banco_questoes(21).js", "./banco_questoes (23).js"];
-            for (const caminho of candidatos) {
-                try {
-                    const mod = await import(caminho);
-                    questoesIntro = mod.questoesIntro || [];
-                    questoesComp = mod.questoesComp || [];
-                    console.log("Banco carregado:", caminho);
-                    return;
-                } catch (e) {}
-            }
-        })();
+    // string: maybe timestamp or ISO
+    if (typeof v === "string") {
+      const s = v.trim();
+      if (!s) return null;
 
-        let todosRegistros = [];
-        let filtroAnoAtual = "todas";
-        let filtroTurmaAtual = "todas";
-        let tipoResetPendente = null;
+      // numeric string => timestamp
+      if (/^\d+$/.test(s)) {
+        const d = new Date(Number(s));
+        return isNaN(d.getTime()) ? null : d;
+      }
 
-        /* --- FIREBASE DATA --- */
-        const alunosRef = ref(db, 'alunos');
-        onValue(alunosRef, (snapshot) => {
-            const dados = snapshot.val();
-            todosRegistros = [];
-            if (dados) {
-                Object.keys(dados).forEach(key => {
-                    const aluno = dados[key];
-                    let horaFormatada = toHora(aluno.entrouEm);
-                    }
-                    todosRegistros.push({
-                        id: key,
-                        nome: aluno.nome,
-                        serie: aluno.serie,
-                        acertos: aluno.acertosTotal ?? (aluno.acertos || 0),
-                        erros: aluno.errosTotal ?? (aluno.erros || 0),
-                        listaAcertos: normalizarLista(aluno.listaAcertos),
-                        listaErros: normalizarLista(aluno.listaErros),
-                        codigoDispositivo: aluno.codigoDispositivo || '',
-                        data: toISODate(aluno.entrouEm),
-                        hora: horaFormatada,
-                        timestamp: aluno.entrouEm ? (new Date(aluno.entrouEm)).getTime() : 0,
-                    });
-                });
-                
-                const agora = new Date().getTime();
-                const ultimosNotificados = JSON.parse(sessionStorage.getItem('notificados')) || [];
-                todosRegistros.forEach(a => {
-                    if (agora - a.timestamp < 20000 && !ultimosNotificados.includes(a.id)) {
-                        mostrarNotificacao(a.nome + " entrou na atividade");
-                        ultimosNotificados.push(a.id);
-                    }
-                });
-                sessionStorage.setItem('notificados', JSON.stringify(ultimosNotificados));
-            }
-            renderizarRanking();
+      const d = new Date(s);
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    // Firebase can return Date-like object? (rare)
+    try {
+      const d = new Date(v);
+      return isNaN(d.getTime()) ? null : d;
+    } catch {
+      return null;
+    }
+  }
+
+  function toISODate(v) {
+    const d = parseDateValue(v);
+    if (!d) return "";
+    // YYYY-MM-DD in local timezone is better for your filter (input[type=date] uses local)
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function toHora(v) {
+    const d = parseDateValue(v);
+    if (!d) return "--:--";
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
+
+  // Frações verticais no texto (somente padrões tipo 3/4)
+  function formatarFracoesHTML(str) {
+    const s = String(str ?? "");
+    return s.replace(/(\d+)\s*\/\s*(\d+)/g, (m, a, b) => {
+      return `<span class="fracao"><span>${a}</span><span>${b}</span></span>`;
+    });
+  }
+
+  function stripTags(s) {
+    return String(s ?? "").replace(/<[^>]*>/g, "");
+  }
+
+  function resumoEnunciado90(s) {
+    const clean = stripTags(s).replace(/\s+/g, " ").trim();
+    if (clean.length <= 90) return clean;
+    return clean.slice(0, 90).trimEnd() + "…";
+  }
+
+  function mostrarNotificacao(texto, tipo = "sucesso") {
+    const container = document.getElementById("containerNotificacoes");
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    if (tipo === "alerta") toast.classList.add("alerta");
+    toast.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle>${tipo === "alerta" ? '<line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>' : '<path d="M8 12l2 2 4-4"/>'}</svg> ${texto}`;
+    container.appendChild(toast);
+    setTimeout(() => { toast.classList.add("saindo"); setTimeout(() => toast.remove(), 500); }, 3000);
+  }
+
+  // ==========================
+  // Carregar banco_questoes.js (sem depender de "import")
+  // ==========================
+  async function loadAnyScript(candidatos) {
+    // se já existe no window, não faz nada
+    if (Array.isArray(window.questoesIntro) || Array.isArray(window.questoesComp)) return true;
+
+    for (const src of candidatos) {
+      const ok = await new Promise((resolve) => {
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = () => resolve(true);
+        s.onerror = () => resolve(false);
+        document.head.appendChild(s);
+      });
+      if (ok) return true;
+    }
+    return false;
+  }
+
+  await loadAnyScript([
+    "./banco_questoes.js",
+    "./banco_questoes (24).js",
+    "./banco_questoes (23).js",
+    "./banco_questoes (22).js",
+    "./banco_questoes (21).js",
+    "./banco_questoes(24).js",
+    "./banco_questoes(23).js",
+    "./banco_questoes(22).js",
+    "./banco_questoes(21).js",
+  ]);
+
+  let questoesIntro = Array.isArray(window.questoesIntro) ? window.questoesIntro : [];
+  let questoesComp  = Array.isArray(window.questoesComp)  ? window.questoesComp  : [];
+
+  function getQuestaoPorId(qId) {
+    const [modo, idxStr] = String(qId || "").split("-");
+    const idx = Number(idxStr);
+    let q = null, titulo = null;
+    if (modo === "intro") { q = (Array.isArray(questoesIntro) ? questoesIntro : [])[idx]; titulo = "Introdução"; }
+    else if (modo === "complementar") { q = (Array.isArray(questoesComp) ? questoesComp : [])[idx]; titulo = "Complementar"; }
+    return { modo, idx, q, titulo };
+  }
+
+  // ==========================
+  // Estado / filtros
+  // ==========================
+  let todosRegistros = [];
+  let filtroAnoAtual = "todas";
+  let filtroTurmaAtual = "todas";
+  let tipoResetPendente = null;
+
+  const listaEl = document.getElementById("listaRanking");
+  const filtroData = document.getElementById("filtroData");
+  filtroData.valueAsDate = new Date();
+  filtroData.addEventListener("change", () => renderizarRanking());
+
+  // ==========================
+  // Firebase listener
+  // ==========================
+  const alunosRef = ref(db, "alunos");
+  onValue(alunosRef, (snapshot) => {
+    const dados = snapshot.val();
+    todosRegistros = [];
+
+    if (dados) {
+      Object.keys(dados).forEach((key) => {
+        const aluno = dados[key] || {};
+        const d = parseDateValue(aluno.entrouEm);
+        const ts = d ? d.getTime() : 0;
+
+        todosRegistros.push({
+          id: key,
+          nome: aluno.nome || "",
+          serie: aluno.serie || "",
+          acertos: aluno.acertosTotal ?? aluno.acertos ?? 0,
+          erros: aluno.errosTotal ?? aluno.erros ?? 0,
+          listaAcertos: normalizarLista(aluno.listaAcertos),
+          listaErros: normalizarLista(aluno.listaErros),
+          codigoDispositivo: aluno.codigoDispositivo || "",
+          data: toISODate(aluno.entrouEm),
+          hora: toHora(aluno.entrouEm),
+          timestamp: ts,
         });
+      });
 
-        /* --- SISTEMA DE RANKING --- */
-        const listaEl = document.getElementById('listaRanking');
-        const filtroData = document.getElementById('filtroData');
-        filtroData.valueAsDate = new Date();
-        filtroData.addEventListener('change', () => renderizarRanking());
-
-        window.renderizarRanking = function() {
-            const dataSel = filtroData.value;
-            let filtrados = todosRegistros.filter(item => {
-                const bateData = item.data === dataSel;
-                const bateAno = filtroAnoAtual === 'todas' ? true : (item.serie || '').includes(filtroAnoAtual);
-                const bateTurma = filtroTurmaAtual === 'todas' ? true : (item.serie || '').endsWith(" " + filtroTurmaAtual);
-                return bateData && bateAno && bateTurma;
-            });
-            filtrados.sort((a, b) => (b.acertos || 0) - (a.acertos || 0));
-
-            document.getElementById('totalAcessos').innerText = filtrados.length;
-            let totalAcertos = filtrados.reduce((sum, item) => sum + (item.acertos || 0), 0);
-            let media = filtrados.length ? (totalAcertos / filtrados.length).toFixed(1) : "0.0";
-            document.getElementById('mediaAcertos').innerText = media;
-            document.getElementById('melhorAluno').innerText = filtrados.length > 0 ? filtrados[0].nome : "-";
-
-            listaEl.innerHTML = "";
-            if (filtrados.length === 0) { listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Aguardando dados...</li>`; return; }
-
-            filtrados.forEach((aluno, index) => {
-                const posicao = index + 1;
-                let rankClass = "", iconePosicao = index + 1;
-                if (index === 0) { rankClass = "rank-1"; iconePosicao = "🥇"; }
-                else if (index === 1) { rankClass = "rank-2"; iconePosicao = "🥈"; }
-                else if (index === 2) { rankClass = "rank-3"; iconePosicao = "🥉"; }
-                
-                const li = document.createElement('li');
-                li.className = `item-aluno ${rankClass}`;
-                li.innerHTML = `
-                    <div class="posicao">${iconePosicao}</div>
-                    <div class="info-nome"><span>${aluno.nome || '-'}</span><span class="classif">#${posicao}</span></div>
-                    <div><span class="info-serie">${aluno.serie || '-'}</span></div>
-                    <div class="info-nota">${aluno.acertos || 0} pts</div>
-                    <div class="info-erro">${aluno.erros || 0} err</div>
-                    <div class="info-tempo">${aluno.hora || '--:--'}</div>
-                `;
-                li.onclick = () => abrirModalAluno(aluno);
-                listaEl.appendChild(li);
-            });
+      // notificação de entrada (últimos 20s)
+      const agora = Date.now();
+      const ultimosNotificados = JSON.parse(sessionStorage.getItem("notificados") || "[]");
+      todosRegistros.forEach((a) => {
+        if (a.timestamp && (agora - a.timestamp < 20000) && !ultimosNotificados.includes(a.id)) {
+          mostrarNotificacao(`${a.nome || "Aluno"} entrou na atividade`);
+          ultimosNotificados.push(a.id);
         }
+      });
+      sessionStorage.setItem("notificados", JSON.stringify(ultimosNotificados));
+    }
 
-        /* --- SISTEMA DE MODAIS (CLEAN) --- */
-        function toggleModal(id, show) {
-            const el = document.getElementById(id);
-            if(show) el.classList.add('visivel');
-            else el.classList.remove('visivel');
-        }
+    renderizarRanking();
+  });
 
-        // Modal Aluno + Lista Lado a Lado
-        let alunoSelecionado = null;
-        
-        window.abrirModalAluno = (aluno) => {
-            alunoSelecionado = aluno;
-            document.getElementById('alunoModalNome').textContent = aluno.nome;
-            document.getElementById('alunoModalInfo').textContent = (aluno.serie || "Série n/a");
-            document.getElementById('alunoModalCodigo').textContent = `Código: ${aluno.codigoDispositivo || '- sem código -'}`;
-            document.getElementById('btnAcertosAlunoNum').textContent = aluno.acertos;
-            document.getElementById('btnErrosAlunoNum').textContent = aluno.erros;
-            
-            document.getElementById('painelLista').style.display = 'none';
-            toggleModal('modalUnificadoOverlay', true);
-        };
-        
-        window.fecharModalUnificado = () => toggleModal('modalUnificadoOverlay', false);
+  // ==========================
+  // Render ranking
+  // ==========================
+  window.renderizarRanking = function renderizarRanking() {
+    const dataSel = filtroData.value;
 
-        document.getElementById('btnAcertosAluno').onclick = () => abrirListaQuestoesModal('acertos');
-        document.getElementById('btnErrosAluno').onclick = () => abrirListaQuestoesModal('erros');
-        function getQuestaoPorId(qId){
-            const raw = String(qId || "");
-            const [modoRaw, idxStr] = raw.split("-");
-            const modo = (modoRaw || "").toLowerCase().trim();
-            const idx = Number(idxStr);
+    let filtrados = todosRegistros.filter((item) => {
+      const bateData = item.data === dataSel;
+      const bateAno = filtroAnoAtual === "todas" ? true : (item.serie || "").includes(filtroAnoAtual);
+      const bateTurma = filtroTurmaAtual === "todas" ? true : (item.serie || "").endsWith(" " + filtroTurmaAtual);
+      return bateData && bateAno && bateTurma;
+    });
 
-            const introArr = (window.questoesIntro || window.questoesIntroI || window.questoesIntro1 || []);
-            const compArr  = (window.questoesComp  || []);
+    filtrados.sort((a, b) => (b.acertos || 0) - (a.acertos || 0));
 
-            let q = null, titulo = null;
+    document.getElementById("totalAcessos").innerText = filtrados.length;
+    const totalAcertos = filtrados.reduce((sum, item) => sum + (item.acertos || 0), 0);
+    const media = filtrados.length ? (totalAcertos / filtrados.length).toFixed(1) : "0.0";
+    document.getElementById("mediaAcertos").innerText = media;
+    document.getElementById("melhorAluno").innerText = filtrados.length > 0 ? (filtrados[0].nome || "-") : "-";
 
-            const isIntro = ["intro","introducao","introdução","i","introi","intro1"].includes(modo);
-            const isComp  = ["comp","complementar","c"].includes(modo);
+    listaEl.innerHTML = "";
+    if (filtrados.length === 0) {
+      listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Aguardando dados...</li>`;
+      return;
+    }
 
-            if (Number.isFinite(idx) && idx >= 0){
-                if (isIntro){ q = (Array.isArray(introArr) ? introArr : [])[idx]; titulo = "Introdução"; }
-                else if (isComp){ q = (Array.isArray(compArr) ? compArr : [])[idx]; titulo = "Complementar"; }
-            }
+    filtrados.forEach((aluno, index) => {
+      let rankClass = "", iconePosicao = index + 1;
+      if (index === 0) { rankClass = "rank-1"; iconePosicao = "🥇"; }
+      else if (index === 1) { rankClass = "rank-2"; iconePosicao = "🥈"; }
+      else if (index === 2) { rankClass = "rank-3"; iconePosicao = "🥉"; }
 
-            return { modo: (isIntro ? "intro" : (isComp ? "complementar" : modo)), idx, q, titulo };
-        }
+      const li = document.createElement("li");
+      li.className = `item-aluno ${rankClass}`;
+      li.innerHTML = `
+        <div class="posicao">${iconePosicao}</div>
+        <div class="info-nome">
+          <span>${aluno.nome || "-"}</span>
+          <span class="classif">#${index + 1}</span>
+        </div>
+        <div><span class="info-serie">${aluno.serie || "-"}</span></div>
+        <div class="info-nota">${aluno.acertos || 0} pts</div>
+        <div class="info-erro">${aluno.erros || 0} err</div>
+        <div class="info-tempo">${aluno.hora || "--:--"}</div>
+      `;
+      li.onclick = () => abrirModalAluno(aluno);
+      listaEl.appendChild(li);
+    });
+  };
 
-        
-        // ==========================
-        // 🧩 Frações verticais no texto
-        // ==========================
-        function formatarFracoesHTML(str){
-            const s = String(str ?? '');
-            // evita mexer em tags já existentes
-            return s.replace(/(\d+)\s*\/\s*(\d+)/g, (m, a, b) => {
-                return `<span class="fracao"><span>${a}</span><span>${b}</span></span>`;
-            });
-        }
+  // ==========================
+  // Modais
+  // ==========================
+  function toggleModal(id, show) {
+    const el = document.getElementById(id);
+    if (show) el.classList.add("visivel");
+    else el.classList.remove("visivel");
+  }
 
-function esc(str){
-            return String(str ?? '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
+  let alunoSelecionado = null;
 
-        function htmlParaTextoSeguro(htmlStr){
-            const div = document.createElement('div');
-            div.innerHTML = String(htmlStr ?? '');
+  window.abrirModalAluno = (aluno) => {
+    alunoSelecionado = aluno;
+    document.getElementById("alunoModalNome").textContent = aluno.nome || "-";
+    document.getElementById("alunoModalInfo").textContent = (aluno.serie || "Série n/a");
+    document.getElementById("alunoModalCodigo").textContent = `Código: ${aluno.codigoDispositivo || "- sem código -"}`;
+    document.getElementById("btnAcertosAlunoNum").textContent = aluno.acertos || 0;
+    document.getElementById("btnErrosAlunoNum").textContent = aluno.erros || 0;
 
-            // Converte frações do banco (div.fracao) para texto "a/b" para facilitar o corte por caracteres
-            div.querySelectorAll('.fracao').forEach(fr => {
-                const n = (fr.querySelector('.num')?.textContent || '').trim();
-                const d = (fr.querySelector('.den')?.textContent || '').trim();
-                fr.replaceWith(document.createTextNode((n && d) ? `${n}/${d}` : (fr.textContent || '')));
-            });
+    document.getElementById("painelLista").style.display = "none";
+    toggleModal("modalUnificadoOverlay", true);
+  };
 
-            return (div.textContent || '').replace(/\s+/g,' ').trim();
-        }
+  window.fecharModalUnificado = () => toggleModal("modalUnificadoOverlay", false);
 
-        function cortarTexto(str, max=90){
-            const s = String(str || '');
-            if (s.length <= max) return s;
-            return s.slice(0, Math.max(0, max-1)).trimEnd() + '…';
-        }
+  document.getElementById("btnAcertosAluno").onclick = () => abrirListaQuestoesModal("acertos");
+  document.getElementById("btnErrosAluno").onclick = () => abrirListaQuestoesModal("erros");
 
-        function enunciadoResumoHTML(perguntaHtml){
-            const texto = cortarTexto(htmlParaTextoSeguro(perguntaHtml), 90);
-            // volta para HTML com frações verticais (apenas a/b simples)
-            return formatarFracoesHTML(esc(texto));
-        }\n\n        // ===========================================
-        // 📌 Modal lateral: lista de acertos/erros
-        // ===========================================
-        function abrirListaQuestoesModal(tipo){
-            if (!alunoSelecionado) return;
+  function abrirListaQuestoesModal(tipo) {
+    if (!alunoSelecionado) return;
 
-            const lista = (tipo === "acertos") ? (alunoSelecionado.listaAcertos || []) : (alunoSelecionado.listaErros || []);
-            const titulo = (tipo === "acertos") ? "Questões acertadas" : "Questões com erro";
-            const cor = (tipo === "acertos") ? "#34c759" : "#ff3b30";
+    // Atualiza referências do banco (caso tenha carregado depois)
+    questoesIntro = Array.isArray(window.questoesIntro) ? window.questoesIntro : questoesIntro;
+    questoesComp  = Array.isArray(window.questoesComp)  ? window.questoesComp  : questoesComp;
 
-            const painel = document.getElementById('painelLista');
-            const tituloEl = document.getElementById('listaModalTitulo');
-            const listaEl = document.getElementById('listaQuestoes');
+    const lista = (tipo === "acertos") ? (alunoSelecionado.listaAcertos || []) : (alunoSelecionado.listaErros || []);
+    const titulo = (tipo === "acertos") ? "Questões acertadas" : "Questões com erro";
+    const cor = (tipo === "acertos") ? "#34c759" : "#ff3b30";
 
-            tituloEl.textContent = titulo;
-            painel.classList.add('ativo');
-            painel.style.display = 'flex';
-            listaEl.innerHTML = "";
+    const painel = document.getElementById("painelLista");
+    const tituloEl = document.getElementById("listaModalTitulo");
+    const listaEl2 = document.getElementById("listaQuestoes");
 
-            if (!Array.isArray(lista) || lista.length === 0) {
-                listaEl.innerHTML = `<div style="padding:16px; color:#86868b; text-align:center;">Nenhuma questão registrada.</div>`;
-                return;
-            }
+    tituloEl.textContent = titulo;
+    painel.classList.add("ativo");
+    painel.style.display = "flex";
+    listaEl2.innerHTML = "";
 
-            // Ordena por modo/índice pra ficar organizado
-            const ordenada = [...lista].sort((a,b)=>{
-                const [ma,ia]=String(a).split("-"); const [mb,ib]=String(b).split("-");
-                if (ma !== mb) return ma.localeCompare(mb);
-                return (Number(ia)||0) - (Number(ib)||0);
-            });
+    if (!Array.isArray(lista) || lista.length === 0) {
+      listaEl2.innerHTML = `<div style="padding:16px; color:#86868b; text-align:center;">Nenhuma questão registrada.</div>`;
+      return;
+    }
 
-            ordenada.forEach((rawId) => {
-                const id = (typeof rawId === 'string') ? rawId : (rawId?.id || rawId?.qId || rawId?.questaoId || String(rawId || ''));
-                const info = getQuestaoPorId(id);
-                const texto = info.q?.pergunta ? enunciadoResumoHTML(info.q.pergunta) : `<span style="color:#ff3b30">Questão não encontrada.</span>`;
-                const item = document.createElement('div');
-                item.className = 'item-questao';
-                // hover verde para acerto e vermelho para erro
-                item.style.setProperty('--hoverColor', cor);
-                item.innerHTML = `
-                    <div class="q-header">
-                        <span>${info.titulo || 'Questão'} • Q${(info.idx ?? 0) + 1}</span>
-                        <span style="color:${cor}">${tipo === 'acertos' ? 'ACERTO' : 'ERRO'}</span>
-                    </div>
-                    <div class="q-texto">${texto}</div>
-                `;
+    const ordenada = [...lista].sort((a, b) => {
+      const [ma, ia] = String(a).split("-");
+      const [mb, ib] = String(b).split("-");
+      if (ma !== mb) return ma.localeCompare(mb);
+      return (Number(ia) || 0) - (Number(ib) || 0);
+    });
 
-                item.addEventListener('click', () => {
-                    // abre uma NOVA PÁGINA (arquivo) com a questão completa e a resposta destacada
-                    window.open(`questao.html?id=${encodeURIComponent(id)}`, "_blank");
-                });
+    ordenada.forEach((id) => {
+      const info = getQuestaoPorId(id);
+      const textoLongo = info.q?.pergunta ? info.q.pergunta : "";
+      const texto = textoLongo ? resumoEnunciado90(textoLongo) : "Questão não encontrada no banco.";
 
-                // Ajusta hover conforme tipo (sem mexer no CSS global do site)
-                item.addEventListener('mouseenter', () => {
-                    item.style.backgroundColor = cor;
-                    item.style.borderColor = cor;
-                    item.style.transform = 'scale(1.02)';
-                    item.style.boxShadow = (tipo === 'acertos')
-                        ? '0 5px 15px rgba(52, 199, 89, 0.3)'
-                        : '0 5px 15px rgba(255, 59, 48, 0.25)';
-                    item.querySelectorAll('*').forEach(el => el.style.color = 'white');
-                });
-                item.addEventListener('mouseleave', () => {
-                    item.style.backgroundColor = 'white';
-                    item.style.borderColor = '#e5e5ea';
-                    item.style.transform = '';
-                    item.style.boxShadow = '';
-                    // restaura cores padrão
-                    const header = item.querySelector('.q-header');
-                    const textoEl = item.querySelector('.q-texto');
-                    header.style.color = '#86868b';
-                    textoEl.style.color = '#1d1d1f';
-                    // restaura o badge ACERTO/ERRO
-                    header.querySelectorAll('span')[1].style.color = cor;
-                });
+      const item = document.createElement("div");
+      item.className = "item-questao";
+      item.innerHTML = `
+        <div class="q-header">
+          <span>${info.titulo || "Questão"} • Q${(info.idx ?? 0) + 1}</span>
+          <span style="color:${cor}">${tipo === "acertos" ? "ACERTO" : "ERRO"}</span>
+        </div>
+        <div class="q-texto">${formatarFracoesHTML(texto)}</div>
+      `;
 
-                listaEl.appendChild(item);
-            });
-        }
+      item.addEventListener("click", () => {
+        window.open(`questao.html?id=${encodeURIComponent(id)}`, "_blank");
+      });
 
-        /* --- OUTRAS AÇÕES (Senha, Reset) --- */
-        window.abrirModalFinalizar = () => { document.getElementById('inputSenhaFinalizar').value = ''; toggleModal('modalFinalizar', true); }
-        window.fecharModalFinalizar = () => toggleModal('modalFinalizar', false);
-        window.confirmarFinalizar = function() {
-            if (document.getElementById('inputSenhaFinalizar').value !== '4241') { alert('Senha incorreta!'); return; }
-            fecharModalFinalizar();
-            set(ref(db, 'status_atividade'), { comando: 'finalizar', data: new Date().toISOString() });
-            mostrarNotificacao("Atividade encerrada!", 'alerta');
-        };
+      item.addEventListener("mouseenter", () => {
+        item.style.backgroundColor = cor;
+        item.style.borderColor = cor;
+        item.style.transform = "scale(1.02)";
+        item.style.boxShadow = (tipo === "acertos")
+          ? "0 5px 15px rgba(52, 199, 89, 0.3)"
+          : "0 5px 15px rgba(255, 59, 48, 0.25)";
+        item.querySelectorAll("*").forEach((el) => el.style.color = "white");
+      });
 
-        window.abrirModalLiberar = () => { document.getElementById('inputSenhaLiberar').value = ''; toggleModal('modalLiberar', true); }
-        window.fecharModalLiberar = () => toggleModal('modalLiberar', false);
-        window.confirmarLiberar = function() {
-            if (document.getElementById('inputSenhaLiberar').value !== '4241') { alert('Senha incorreta!'); return; }
-            fecharModalLiberar();
-            set(ref(db, 'status_atividade'), { comando: 'liberado', data: new Date().toISOString() });
-            mostrarNotificacao("Atividade liberada!", 'sucesso');
-        };
+      item.addEventListener("mouseleave", () => {
+        item.style.backgroundColor = "white";
+        item.style.borderColor = "#e5e5ea";
+        item.style.transform = "";
+        item.style.boxShadow = "";
+        const header = item.querySelector(".q-header");
+        const textoEl = item.querySelector(".q-texto");
+        header.style.color = "#86868b";
+        textoEl.style.color = "#1d1d1f";
+        header.querySelectorAll("span")[1].style.color = cor;
+      });
 
-        window.abrirModalReset = () => toggleModal('modalReset', true);
-        window.fecharModalReset = () => toggleModal('modalReset', false);
-        window.prepararReset = function(tipo) {
-            tipoResetPendente = tipo;
-            fecharModalReset();
-            document.getElementById('inputSenhaAction').value = '';
-            document.getElementById('descSenhaAction').innerText = `Confirma apagar: ${tipo.toUpperCase()}?`;
-            toggleModal('modalSenhaAction', true);
-        }
-        window.fecharModalSenhaAction = () => toggleModal('modalSenhaAction', false);
-        window.executarResetConfirmado = function() {
-            if (document.getElementById('inputSenhaAction').value !== '4241') { alert('Senha incorreta!'); return; }
-            if (tipoResetPendente === 'tudo') {
-                remove(ref(db, 'alunos'));
-                set(ref(db, 'status_atividade'), { comando: 'liberado' });
-                alert("Reiniciado!");
-            } else if (tipoResetPendente === 'hoje') {
-                const hoje = new Date().toISOString().split('T')[0];
-                todosRegistros.forEach(aluno => { if (aluno.data === hoje) remove(ref(db, 'alunos/' + aluno.id)); });
-                alert("Registros de hoje apagados.");
-            } else if (tipoResetPendente === 'mes') {
-                const mesAtual = new Date().toISOString().slice(0, 7);
-                todosRegistros.forEach(aluno => { if ((aluno.data || '').startsWith(mesAtual)) remove(ref(db, 'alunos/' + aluno.id)); });
-                alert("Registros do mês apagados.");
-            }
-            fecharModalSenhaAction();
-        }
+      listaEl2.appendChild(item);
+    });
+  }
 
-        window.toggleDropdown = function(id) {
-            const el = document.getElementById(id);
-            const estaAberto = el.classList.contains('aberto');
-            document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
-            if(!estaAberto) el.classList.add('aberto');
-        }
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.dropdown-wrapper')) document.querySelectorAll('.dropdown-wrapper').forEach(d => d.classList.remove('aberto'));
-        });
-        window.selecionarOpcao = function(tipo, valor, textoExibicao, elemento) {
-            const wrapperId = tipo === 'ano' ? 'dropAno' : 'dropTurma';
-            const wrapper = document.getElementById(wrapperId);
-            wrapper.querySelectorAll('.opcao-item').forEach(i => i.classList.remove('selecionado'));
-            elemento.classList.add('selecionado');
-            if(tipo === 'ano') { filtroAnoAtual = valor; document.getElementById('textoAno').innerText = 'Ano: ' + textoExibicao; } 
-            else { filtroTurmaAtual = valor; document.getElementById('textoTurma').innerText = 'Turma: ' + textoExibicao; }
-            wrapper.classList.remove('aberto');
-            renderizarRanking();
-        }
+  // ==========================
+  // Ações professor
+  // ==========================
+  window.abrirModalFinalizar = () => { document.getElementById("inputSenhaFinalizar").value = ""; toggleModal("modalFinalizar", true); };
+  window.fecharModalFinalizar = () => toggleModal("modalFinalizar", false);
+  window.confirmarFinalizar = () => {
+    if (document.getElementById("inputSenhaFinalizar").value !== "4241") { alert("Senha incorreta!"); return; }
+    fecharModalFinalizar();
+    set(ref(db, "status_atividade"), { comando: "finalizar", data: new Date().toISOString() });
+    mostrarNotificacao("Atividade encerrada!", "alerta");
+  };
 
+  window.abrirModalLiberar = () => { document.getElementById("inputSenhaLiberar").value = ""; toggleModal("modalLiberar", true); };
+  window.fecharModalLiberar = () => toggleModal("modalLiberar", false);
+  window.confirmarLiberar = () => {
+    if (document.getElementById("inputSenhaLiberar").value !== "4241") { alert("Senha incorreta!"); return; }
+    fecharModalLiberar();
+    set(ref(db, "status_atividade"), { comando: "liberado", data: new Date().toISOString() });
+    mostrarNotificacao("Atividade liberada!");
+  };
 
-        function mostrarNotificacao(texto, tipo = 'sucesso') {
-            const container = document.getElementById('containerNotificacoes');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            if(tipo === 'alerta') toast.classList.add('alerta');
-            toast.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle>${tipo==='alerta'?'<line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>':'<path d="M8 12l2 2 4-4"/>'}</svg> ${texto}`;
-            container.appendChild(toast);
-            setTimeout(() => { toast.classList.add('saindo'); setTimeout(() => toast.remove(), 500); }, 3000);
-        }
-    </script>
+  window.abrirModalReset = () => toggleModal("modalReset", true);
+  window.fecharModalReset = () => toggleModal("modalReset", false);
+  window.prepararReset = (tipo) => {
+    tipoResetPendente = tipo;
+    fecharModalReset();
+    document.getElementById("inputSenhaAction").value = "";
+    document.getElementById("descSenhaAction").innerText = `Confirma apagar: ${tipo.toUpperCase()}?`;
+    toggleModal("modalSenhaAction", true);
+  };
+  window.fecharModalSenhaAction = () => toggleModal("modalSenhaAction", false);
+
+  window.executarResetConfirmado = () => {
+    if (document.getElementById("inputSenhaAction").value !== "4241") { alert("Senha incorreta!"); return; }
+
+    if (tipoResetPendente === "tudo") {
+      remove(ref(db, "alunos"));
+      set(ref(db, "status_atividade"), { comando: "liberado" });
+      alert("Reiniciado!");
+    } else if (tipoResetPendente === "hoje") {
+      const hoje = toISODate(Date.now());
+      todosRegistros.forEach((aluno) => { if (aluno.data === hoje) remove(ref(db, "alunos/" + aluno.id)); });
+      alert("Registros de hoje apagados.");
+    } else if (tipoResetPendente === "mes") {
+      const d = new Date();
+      const mesAtual = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      todosRegistros.forEach((aluno) => { if ((aluno.data || "").startsWith(mesAtual)) remove(ref(db, "alunos/" + aluno.id)); });
+      alert("Registros do mês apagados.");
+    }
+
+    fecharModalSenhaAction();
+  };
+
+  // ==========================
+  // Dropdown
+  // ==========================
+  window.toggleDropdown = (id) => {
+    const el = document.getElementById(id);
+    const estaAberto = el.classList.contains("aberto");
+    document.querySelectorAll(".dropdown-wrapper").forEach((d) => d.classList.remove("aberto"));
+    if (!estaAberto) el.classList.add("aberto");
+  };
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".dropdown-wrapper")) {
+      document.querySelectorAll(".dropdown-wrapper").forEach((d) => d.classList.remove("aberto"));
+    }
+  });
+
+  window.selecionarOpcao = (tipo, valor, textoExibicao, elemento) => {
+    const wrapperId = tipo === "ano" ? "dropAno" : "dropTurma";
+    const wrapper = document.getElementById(wrapperId);
+    wrapper.querySelectorAll(".opcao-item").forEach((i) => i.classList.remove("selecionado"));
+    elemento.classList.add("selecionado");
+
+    if (tipo === "ano") { filtroAnoAtual = valor; document.getElementById("textoAno").innerText = "Ano: " + textoExibicao; }
+    else { filtroTurmaAtual = valor; document.getElementById("textoTurma").innerText = "Turma: " + textoExibicao; }
+
+    wrapper.classList.remove("aberto");
+    renderizarRanking();
+  };
+</script>
 </body>
 </html>
