@@ -465,6 +465,22 @@
             if (typeof v === 'object') {
                 try { return Object.values(v).filter(x=>x!==null && x!==undefined); } catch(e) { return []; }
             }
+
+        // Normaliza qualquer formato de data/hora salvo no Firebase para YYYY-MM-DD
+        function toISODate(value){
+            if(!value) return "";
+            const d = new Date(value);
+            if (isNaN(d.getTime())) return "";
+            return d.toISOString().slice(0,10);
+        }
+
+        function toHora(value){
+            if(!value) return "--:--";
+            const d = new Date(value);
+            if (isNaN(d.getTime())) return "--:--";
+            return d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+        }
+
             return [];
         }
 
@@ -497,10 +513,7 @@
             if (dados) {
                 Object.keys(dados).forEach(key => {
                     const aluno = dados[key];
-                    let horaFormatada = "--:--";
-                    if(aluno.entrouEm) {
-                        const d = new Date(aluno.entrouEm);
-                        horaFormatada = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    let horaFormatada = toHora(aluno.entrouEm);
                     }
                     todosRegistros.push({
                         id: key,
@@ -511,9 +524,9 @@
                         listaAcertos: normalizarLista(aluno.listaAcertos),
                         listaErros: normalizarLista(aluno.listaErros),
                         codigoDispositivo: aluno.codigoDispositivo || '',
-                        data: aluno.entrouEm ? aluno.entrouEm.split('T')[0] : '',
+                        data: toISODate(aluno.entrouEm),
                         hora: horaFormatada,
-                        timestamp: aluno.entrouEm ? new Date(aluno.entrouEm).getTime() : 0,
+                        timestamp: aluno.entrouEm ? (new Date(aluno.entrouEm)).getTime() : 0,
                     });
                 });
                 
