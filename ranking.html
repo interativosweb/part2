@@ -7,7 +7,9 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Painel do Professor - Ranking</title>
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
     <style>
+        img.emoji{height:18px;width:18px;vertical-align:-0.2em;margin-right:6px;}
         /* =========================================
            🎨 ESTILO GERAL (CLEAN / APPLE STYLE)
            ========================================= */
@@ -120,6 +122,7 @@
             .btn-filtro-trigger, .btn-finalizar, .btn-liberar { width: 100%; min-width: auto; }
         }
 
+        img.emoji{height:18px;width:18px;vertical-align:-0.2em;margin-right:6px;}
         /* =======================================================
            ✨ DESIGN DOS MODAIS UNIFICADOS
            ======================================================= */
@@ -714,6 +717,11 @@ const li = document.createElement("li");
       li.onclick = () => abrirModalAluno(aluno);
       listaEl.appendChild(li);
     });
+
+    // Renderiza emojis de medalha em SVG (mais clean) quando disponível
+    if (window.twemoji) {
+      try { window.twemoji.parse(listaEl, { folder: 'svg', ext: '.svg' }); } catch(e) {}
+    }
   };
 
   // ==========================
