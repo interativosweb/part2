@@ -48,7 +48,7 @@
         .filtro-data-container { background: white; padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 10px; min-height: 48px; }
         .input-data { border: none; background: transparent; font-size: 1rem; color: var(--accent); font-weight: 600; cursor: pointer; outline: none; }
 
-        .area-filtros-topo { display: flex; justify-content: flex-start; align-items: stretch; gap: 14px; margin-bottom: 36px; flex-wrap: wrap; }
+        .area-filtros-topo { display: flex; justify-content: flex-start; align-items: stretch; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
         .dropdown-wrapper { position: relative; display: inline-flex; }
         .btn-filtro-trigger { background-color: white; color: var(--text-main); padding: 12px 22px; border-radius: 50px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s ease; min-width: 190px; min-height: 48px; justify-content: space-between; }
         .btn-filtro-trigger:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.12); }
@@ -68,7 +68,7 @@
 
         /* Cards e Tabela */
         .grid-resumo { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 30px; }
-        .card-resumo { background: var(--card-bg); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-height: 126px; }
+        .card-resumo { background: var(--card-bg); padding: 16px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-height: 104px; }
         .card-titulo { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 8px; }
         .card-valor { font-size: 2.2rem; font-weight: 700; color: var(--text-main); letter-spacing: -1px; }
         .painel-ranking { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; min-height: 300px; }
@@ -81,7 +81,8 @@
         .rank-1 .posicao { color: transparent; text-shadow: 0 0 0 var(--warning); font-size: 1.5rem; }
         .rank-2 .posicao { color: transparent; text-shadow: 0 0 0 var(--silver); font-size: 1.5rem; }
         .rank-3 .posicao { color: transparent; text-shadow: 0 0 0 var(--bronze); font-size: 1.5rem; }
-        .info-nome { font-weight: 600; font-size: 1.05rem; }
+        .info-nome { font-weight: 600; font-size: 1.05rem; display:flex; align-items:center; gap:10px; }
+        .classif { font-size: 0.85rem; color: var(--text-light); font-weight: 700; }
         .info-serie { display: inline-block; padding: 4px 12px; border-radius: 20px; background-color: #f2f2f7; color: var(--text-light); font-size: 0.8rem; font-weight: 600; }
         .info-nota { font-weight: 700; color: var(--success); }
         .info-erro { font-weight: 700; color: var(--error); }
@@ -555,6 +556,7 @@
             if (filtrados.length === 0) { listaEl.innerHTML = `<li style="padding:40px; text-align:center; color:var(--text-light)">Aguardando dados...</li>`; return; }
 
             filtrados.forEach((aluno, index) => {
+                const posicao = index + 1;
                 let rankClass = "", iconePosicao = index + 1;
                 if (index === 0) { rankClass = "rank-1"; iconePosicao = "🥇"; }
                 else if (index === 1) { rankClass = "rank-2"; iconePosicao = "🥈"; }
@@ -564,7 +566,7 @@
                 li.className = `item-aluno ${rankClass}`;
                 li.innerHTML = `
                     <div class="posicao">${iconePosicao}</div>
-                    <div class="info-nome">${aluno.nome || '-'}</div>
+                    <div class="info-nome"><span>${aluno.nome || '-'}</span><span class="classif">#${posicao}</span></div>
                     <div><span class="info-serie">${aluno.serie || '-'}</span></div>
                     <div class="info-nota">${aluno.acertos || 0} pts</div>
                     <div class="info-erro">${aluno.erros || 0} err</div>
@@ -602,12 +604,25 @@
         document.getElementById('btnAcertosAluno').onclick = () => abrirListaQuestoesModal('acertos');
         document.getElementById('btnErrosAluno').onclick = () => abrirListaQuestoesModal('erros');
         function getQuestaoPorId(qId){
-            const [modo, idxStr] = String(qId || "").split("-");
+            const raw = String(qId || "");
+            const [modoRaw, idxStr] = raw.split("-");
+            const modo = (modoRaw || "").toLowerCase().trim();
             const idx = Number(idxStr);
+
+            const introArr = (window.questoesIntro || window.questoesIntroI || window.questoesIntro1 || []);
+            const compArr  = (window.questoesComp  || []);
+
             let q = null, titulo = null;
-            if (modo === "intro") { q = (Array.isArray(questoesIntro) ? questoesIntro : [])[idx]; titulo = "Introdução"; } 
-            else if (modo === "complementar") { q = (Array.isArray(questoesComp) ? questoesComp : [])[idx]; titulo = "Complementar"; }
-            return { modo, idx, q, titulo };
+
+            const isIntro = ["intro","introducao","introdução","i","introi","intro1"].includes(modo);
+            const isComp  = ["comp","complementar","c"].includes(modo);
+
+            if (Number.isFinite(idx) && idx >= 0){
+                if (isIntro){ q = (Array.isArray(introArr) ? introArr : [])[idx]; titulo = "Introdução"; }
+                else if (isComp){ q = (Array.isArray(compArr) ? compArr : [])[idx]; titulo = "Complementar"; }
+            }
+
+            return { modo: (isIntro ? "intro" : (isComp ? "complementar" : modo)), idx, q, titulo };
         }
 
         
@@ -622,7 +637,40 @@
             });
         }
 
-        // ===========================================
+function esc(str){
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function htmlParaTextoSeguro(htmlStr){
+            const div = document.createElement('div');
+            div.innerHTML = String(htmlStr ?? '');
+
+            // Converte frações do banco (div.fracao) para texto "a/b" para facilitar o corte por caracteres
+            div.querySelectorAll('.fracao').forEach(fr => {
+                const n = (fr.querySelector('.num')?.textContent || '').trim();
+                const d = (fr.querySelector('.den')?.textContent || '').trim();
+                fr.replaceWith(document.createTextNode((n && d) ? `${n}/${d}` : (fr.textContent || '')));
+            });
+
+            return (div.textContent || '').replace(/\s+/g,' ').trim();
+        }
+
+        function cortarTexto(str, max=90){
+            const s = String(str || '');
+            if (s.length <= max) return s;
+            return s.slice(0, Math.max(0, max-1)).trimEnd() + '…';
+        }
+
+        function enunciadoResumoHTML(perguntaHtml){
+            const texto = cortarTexto(htmlParaTextoSeguro(perguntaHtml), 90);
+            // volta para HTML com frações verticais (apenas a/b simples)
+            return formatarFracoesHTML(esc(texto));
+        }\n\n        // ===========================================
         // 📌 Modal lateral: lista de acertos/erros
         // ===========================================
         function abrirListaQuestoesModal(tipo){
@@ -653,9 +701,10 @@
                 return (Number(ia)||0) - (Number(ib)||0);
             });
 
-            ordenada.forEach((id) => {
+            ordenada.forEach((rawId) => {
+                const id = (typeof rawId === 'string') ? rawId : (rawId?.id || rawId?.qId || rawId?.questaoId || String(rawId || ''));
                 const info = getQuestaoPorId(id);
-                const texto = info.q?.pergunta ? info.q.pergunta : "Questão não encontrada.";
+                const texto = info.q?.pergunta ? enunciadoResumoHTML(info.q.pergunta) : `<span style="color:#ff3b30">Questão não encontrada.</span>`;
                 const item = document.createElement('div');
                 item.className = 'item-questao';
                 // hover verde para acerto e vermelho para erro
@@ -665,7 +714,7 @@
                         <span>${info.titulo || 'Questão'} • Q${(info.idx ?? 0) + 1}</span>
                         <span style="color:${cor}">${tipo === 'acertos' ? 'ACERTO' : 'ERRO'}</span>
                     </div>
-                    <div class="q-texto">${formatarFracoesHTML(texto)}</div>
+                    <div class="q-texto">${texto}</div>
                 `;
 
                 item.addEventListener('click', () => {
