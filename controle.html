@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Controle do Site</title>
+
+  <style>
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: Arial, sans-serif;
+      color:white;
+      background: linear-gradient(180deg, #0b1220, #0f172a);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .modal{
+      width:400px;
+      border-radius:18px;
+      background:#0b1b34;
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 18px 60px rgba(0,0,0,.55);
+      padding:22px;
+    }
+
+    h1{
+      margin:0 0 10px 0;
+      font-size:20px;
+    }
+
+    .status{
+      font-weight:bold;
+      margin-bottom:15px;
+    }
+
+    input{
+      width:100%;
+      padding:10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:white;
+      font-size:15px;
+      margin-bottom:15px;
+    }
+
+    .btn{
+      width:100%;
+      padding:12px;
+      border-radius:12px;
+      border:none;
+      font-weight:bold;
+      cursor:pointer;
+      margin-bottom:10px;
+    }
+
+    .bloquear{
+      background:#ef4444;
+      color:white;
+    }
+
+    .desbloquear{
+      background:#22c55e;
+      color:white;
+    }
+
+    .toast{
+      position:fixed;
+      bottom:20px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#0f172a;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.10);
+      display:none;
+    }
+
+    .toast.show{
+      display:block;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="modal">
+
+  <h1>Controle do Site</h1>
+
+  <div class="status" id="status"></div>
+
+  <input type="password" id="senha" placeholder="Digite a senha">
+
+  <button class="btn bloquear" onclick="bloquear()">
+    Bloquear site
+  </button>
+
+  <button class="btn desbloquear" onclick="desbloquear()">
+    Desbloquear site
+  </button>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+const SENHA = "9141"
+const KEY = "site_bloqueado"
+
+const statusEl = document.getElementById("status")
+const senhaEl = document.getElementById("senha")
+const toastEl = document.getElementById("toast")
+
+function atualizarStatus(){
+
+  const bloqueado = localStorage.getItem(KEY)
+
+  if(bloqueado === "true"){
+    statusEl.innerHTML = "STATUS: BLOQUEADO"
+  }else{
+    statusEl.innerHTML = "STATUS: LIBERADO"
+  }
+}
+
+function toast(msg){
+  toastEl.innerHTML = msg
+  toastEl.classList.add("show")
+  setTimeout(()=>toastEl.classList.remove("show"),2000)
+}
+
+function bloquear(){
+
+  if(senhaEl.value !== SENHA){
+    toast("Senha incorreta")
+    return
+  }
+
+  localStorage.setItem(KEY,"true")
+
+  atualizarStatus()
+
+  toast("Site bloqueado")
+
+}
+
+function desbloquear(){
+
+  if(senhaEl.value !== SENHA){
+    toast("Senha incorreta")
+    return
+  }
+
+  localStorage.setItem(KEY,"false")
+
+  atualizarStatus()
+
+  toast("Site liberado")
+
+}
+
+atualizarStatus()
+
+</script>
+
+</body>
+</html>
