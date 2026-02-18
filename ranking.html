@@ -831,8 +831,14 @@ function normalizarLista(v){
                 const textoBase = perguntaHTML ? htmlPerguntaParaTextoComBarras(perguntaHTML) : '';
                 const textoTruncado = textoBase ? truncarTexto(textoBase, 90) : 'Questão não encontrada.';
                 const texto = formatarFracoesHTML(textoTruncado);
-                const item = document.createElement('div');
+                const item = document.createElement('a');
                 item.className = 'item-questao';
+                const url = `questao.html?id=${encodeURIComponent(info.canonicalId || id)}`;
+                item.href = url;
+                item.target = "_blank";
+                item.rel = "noopener";
+                item.style.textDecoration = "none";
+                item.style.color = "inherit";
                 // hover verde para acerto e vermelho para erro
                 item.style.setProperty('--hoverColor', cor);
                 item.innerHTML = `
@@ -842,12 +848,6 @@ function normalizarLista(v){
                     </div>
                     <div class="q-texto">${texto}</div>
                 `;
-
-                item.addEventListener('click', () => {
-                    // abre uma NOVA PÁGINA (arquivo) com a questão completa e a resposta destacada
-                    window.open(`questao.html?id=${encodeURIComponent(info.canonicalId || id)}`, "_blank");
-                });
-
                 // Ajusta hover conforme tipo (sem mexer no CSS global do site)
                 item.addEventListener('mouseenter', () => {
                     item.style.backgroundColor = cor;
