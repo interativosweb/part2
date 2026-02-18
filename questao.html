@@ -195,20 +195,22 @@
         .titulo-feedback { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; display: block; }
         .texto-resolucao { font-size: 1.1rem; line-height: 1.6; color: var(--text-main); margin-bottom: 20px; }
 
-        /* Badge de status - ESTILO UNIFICADO E MESMO TAMANHO */
+        /* Badge de status - TAMANHO FIXO ABSOLUTO */
         .status-badge {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            width: 320px; /* Largura fixa */
+            height: 44px; /* Altura fixa */
+            padding: 0 20px;
+            border-radius: 22px;
+            font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
             margin-bottom: 20px;
-            height: 40px; /* Altura fixa para ambos */
-            line-height: 1;
-            white-space: nowrap;
+            box-sizing: border-box;
+            flex-shrink: 0;
         }
         
         .status-badge.acerto {
@@ -285,7 +287,12 @@
             .header-unificado { gap: 10px; }
             .top-item { padding: 10px 15px; font-size: 0.8rem; }
             .enunciado { font-size: 1.2rem; }
-            .status-badge { font-size: 0.8rem; padding: 8px 16px; height: 36px; }
+            .status-badge { 
+                width: 280px; 
+                height: 40px; 
+                font-size: 0.75rem;
+                padding: 0 16px;
+            }
         }
 
         /* Overlay de proteção */
@@ -667,7 +674,7 @@
             document.getElementById('btnModo').textContent = tipoTexto;
             document.getElementById('btnInfo').textContent = `Questão ${index + 1}`;
 
-            // Badge de status - MESMO TAMANHO E ESTILO, apenas cores diferentes
+            // Badge de status - MESMO TAMANHO ABSOLUTO
             let statusHTML = '';
             if (status === 'acerto') {
                 statusHTML = `
