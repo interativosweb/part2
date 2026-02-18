@@ -195,7 +195,7 @@
         .titulo-feedback { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; display: block; }
         .texto-resolucao { font-size: 1.1rem; line-height: 1.6; color: var(--text-main); margin-bottom: 20px; }
 
-        /* Badge de status */
+        /* Badge de status - ESTILO UNIFICADO */
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -663,7 +663,7 @@
             document.getElementById('btnModo').textContent = tipoTexto;
             document.getElementById('btnInfo').textContent = `Questão ${index + 1}`;
 
-            // Badge de status - Agora padronizado com mesmo estilo
+            // Badge de status - ESTILO IDÊNTICO, apenas cor e texto diferem
             let statusHTML = '';
             if (status === 'acerto') {
                 statusHTML = `
@@ -678,9 +678,7 @@
                 statusHTML = `
                     <div class="status-badge erro">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="15" y1="9" x2="9" y2="15"></line>
-                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                            <path d="M18 6L6 18M6 6l12 12"/>
                         </svg>
                         Questão Errada pelo Aluno
                     </div>
