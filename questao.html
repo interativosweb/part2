@@ -21,17 +21,6 @@
             --btn-gray-light: #aeb0b5;
         }
 
-        /* --- PROTEÇÃO ANTI-CÓPIA --- */
-        body {
-            -webkit-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none;
-        }
-        @media print {
-            html, body { display: none !important; }
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 
         body {
@@ -49,10 +38,9 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            opacity: 1;
         }
 
-        /* --- HEADER --- */
+        /* Header */
         .header-unificado {
             display: flex;
             justify-content: center;
@@ -78,11 +66,10 @@
             white-space: nowrap;
         }
 
-        .top-item svg { width: 20px; height: 20px; fill: white; }
         .bg-verde-ativo { background-color: var(--success); }
         .bg-cinza-claro { background-color: var(--btn-gray-light); }
 
-        /* --- FRAÇÕES --- */
+        /* Frações */
         .fracao {
             display: inline-flex;
             flex-direction: column;
@@ -90,12 +77,11 @@
             vertical-align: middle;
             margin: 0 4px;
             font-size: 1.1em;
-            pointer-events: none;
         }
         .fracao .num { border-bottom: 2px solid currentColor; padding: 0 5px; display: block; line-height: 1.2; font-weight: 700; }
         .fracao .den { padding: 2px 5px 0 5px; display: block; line-height: 1.2; font-weight: 700; }
 
-        /* --- LAYOUT QUESTÃO --- */
+        /* Layout Questão */
         .secao-pergunta {
             display: flex;
             gap: 40px;
@@ -167,7 +153,6 @@
             justify-content: center;
         }
 
-        /* Estados das respostas */
         .btn-opcao.certo { 
             border-color: var(--success); 
             color: var(--success); 
@@ -179,7 +164,6 @@
             background-color: rgba(255, 59, 48, 0.1); 
         }
 
-        /* Seção de resposta */
         .secao-resposta {
             padding-top: 20px;
             animation: fadeIn 0.5s ease;
@@ -251,9 +235,7 @@
             color: var(--text-light);
         }
 
-        .erro {
-            color: var(--error);
-        }
+        .erro { color: var(--error); }
 
         .spinner {
             width: 40px;
@@ -265,18 +247,12 @@
             margin: 0 auto 20px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* Responsividade */
         @media (max-width: 900px) {
             .secao-pergunta { flex-direction: column; }
             .grid-opcoes { grid-template-columns: repeat(4, 1fr); }
-            .img-atividade {
-                max-width: 100%;
-                max-height: 550px;
-            }
         }
         
         @media (max-width: 600px) {
@@ -303,22 +279,23 @@
         </div>
 
         <div class="rodape">
-            <button class="btn-voltar" onclick="window.close()">
+            <button class="btn-voltar" onclick="voltar()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M15 18l-6-6 6-6"/>
                 </svg>
-                Fechar
+                Voltar ao Ranking
             </button>
             <span class="texto-creditos">Desenvolvido por Gilberto Fernandes - Matemática</span>
         </div>
     </div>
 
+    <!-- CARREGA O BANCO DE QUESTÕES PRIMEIRO (SÍNCRONO) -->
+    <script src="./banco_questoes.js"></script>
+
     <script>
         // ==========================================
         // 📌 VARIÁVEIS GLOBAIS
         // ==========================================
-        let questoesIntro = [];
-        let questoesComp = [];
         let questaoAtual = null;
         let modoAtual = 'intro';
         let indexAtual = 0;
@@ -337,40 +314,25 @@
         }
 
         // ==========================================
-        // 📌 CARREGAR BANCO DE QUESTÕES
+        // 📌 VERIFICAR SE O BANCO CARREGOU
         // ==========================================
-        function carregarBancoQuestoes() {
-            return new Promise((resolve, reject) => {
-                // Tenta carregar o script do banco de questões
-                const script = document.createElement('script');
-                script.src = './banco_questoes.js';
-                script.async = true;
-                
-                script.onload = () => {
-                    // Após carregar, verifica se as variáveis globais existem
-                    setTimeout(() => {
-                        questoesIntro = window.questoesIntro || [];
-                        questoesComp = window.questoesComp || [];
-                        
-                        console.log('Banco carregado:', {
-                            intro: questoesIntro.length,
-                            comp: questoesComp.length
-                        });
-                        
-                        if (questoesIntro.length === 0 && questoesComp.length === 0) {
-                            reject('Banco de questões vazio. Verifique se o arquivo banco_questoes.js está correto.');
-                        } else {
-                            resolve();
-                        }
-                    }, 100); // Pequeno delay para garantir que o script executou
-                };
-                
-                script.onerror = () => {
-                    reject('Não foi possível carregar o arquivo banco_questoes.js. Verifique se o arquivo existe na mesma pasta.');
-                };
-                
-                document.head.appendChild(script);
+        function verificarBanco() {
+            // Tenta pegar as variáveis globais que o banco_questoes.js deve ter definido
+            const intro = window.questoesIntro || [];
+            const comp = window.questoesComp || [];
+            
+            console.log('Verificando banco:', {
+                intro: intro.length,
+                comp: comp.length,
+                windowQuestoesIntro: typeof window.questoesIntro,
+                windowQuestoesComp: typeof window.questoesComp
             });
+            
+            return {
+                intro: intro,
+                comp: comp,
+                ok: intro.length > 0 || comp.length > 0
+            };
         }
 
         // ==========================================
@@ -380,21 +342,34 @@
             const params = getUrlParams();
             console.log('Parâmetros URL:', params);
             
+            // Verificar banco
+            const banco = verificarBanco();
+            if (!banco.ok) {
+                mostrarErro(`
+                    Não foi possível carregar o banco de questões.<br><br>
+                    <strong>Possíveis causas:</strong><br>
+                    • O arquivo banco_questoes.js não está na mesma pasta<br>
+                    • O arquivo está com nome diferente (ex: banco_questoes (26).js)<br>
+                    • O arquivo não define window.questoesIntro e window.questoesComp<br><br>
+                    <strong>Tentando carregar alternativas...</strong>
+                `);
+                
+                // Tenta carregar variações do nome do arquivo
+                tentarCarregarAlternativas();
+                return;
+            }
+
             // Determinar modo e índice
             let modo = 'intro';
             let index = 0;
 
             if (params.id) {
-                // Formato: "intro-0" ou "complementar-5"
                 const partes = params.id.split('-');
                 if (partes.length >= 2) {
                     const modoRaw = partes[0].toLowerCase();
                     modo = modoRaw.includes('comp') ? 'complementar' : 'intro';
                     index = parseInt(partes[1]);
                     if (isNaN(index)) index = 0;
-                } else if (!isNaN(parseInt(params.id))) {
-                    // Apenas número
-                    index = parseInt(params.id);
                 }
             } else if (params.modo && params.index !== null) {
                 modo = params.modo.includes('comp') ? 'complementar' : 'intro';
@@ -406,21 +381,20 @@
 
             console.log('Modo:', modo, 'Índice:', index);
             console.log('Questões disponíveis:', {
-                intro: questoesIntro.length,
-                comp: questoesComp.length
+                intro: banco.intro.length,
+                comp: banco.comp.length
             });
 
             // Selecionar array correto
-            const questoes = modo === 'intro' ? questoesIntro : questoesComp;
+            const questoes = modo === 'intro' ? banco.intro : banco.comp;
             
-            // Validar
             if (!questoes || questoes.length === 0) {
                 mostrarErro(`Nenhuma questão disponível no modo "${modo}".`);
                 return;
             }
 
             if (index < 0 || index >= questoes.length) {
-                mostrarErro(`Questão ${index + 1} não encontrada. O modo ${modo} tem ${questoes.length} questões (índices 0-${questoes.length - 1}).`);
+                mostrarErro(`Questão ${index + 1} não encontrada. O modo ${modo} tem ${questoes.length} questões.`);
                 return;
             }
 
@@ -429,7 +403,54 @@
         }
 
         // ==========================================
-        // 📌 RENDERIZAR QUESTÃO (MESMO LAYOUT DO INDEX)
+        // 📌 TENTAR CARREGAR ARQUIVOS ALTERNATIVOS
+        // ==========================================
+        function tentarCarregarAlternativas() {
+            const alternativas = [
+                './banco_questoes.js',
+                './banco_questoes (26).js',
+                './banco_questoes (25).js',
+                './banco_questoes (24).js',
+                './banco_questoes(26).js',
+                './banco_questoes(25).js',
+                './banco_questoes(24).js'
+            ];
+            
+            let tentativa = 0;
+            
+            function tentarProximo() {
+                if (tentativa >= alternativas.length) {
+                    mostrarErro('Nenhum arquivo de banco de questões encontrado. Verifique o nome do arquivo.');
+                    return;
+                }
+                
+                const src = alternativas[tentativa++];
+                console.log('Tentando carregar:', src);
+                
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => {
+                    setTimeout(() => {
+                        const banco = verificarBanco();
+                        if (banco.ok) {
+                            console.log('Sucesso com:', src);
+                            processarQuestao();
+                        } else {
+                            tentarProximo();
+                        }
+                    }, 100);
+                };
+                script.onerror = () => {
+                    tentarProximo();
+                };
+                document.head.appendChild(script);
+            }
+            
+            tentarProximo();
+        }
+
+        // ==========================================
+        // 📌 RENDERIZAR QUESTÃO
         // ==========================================
         function renderizarQuestao(questao, modo, index, status) {
             const container = document.getElementById('conteudo');
@@ -439,7 +460,7 @@
             document.getElementById('btnModo').textContent = tipoTexto;
             document.getElementById('btnInfo').textContent = `Questão ${index + 1}`;
 
-            // Badge de status (se veio do ranking)
+            // Badge de status
             let statusHTML = '';
             if (status === 'acerto') {
                 statusHTML = `
@@ -464,6 +485,7 @@
 
             // Processar imagem
             const imgSrc = questao.img || questao.imagem || '';
+            const imgScale = questao.imgScale || 1;
             
             // Processar enunciado
             const enunciado = questao.pergunta || questao.enunciado || questao.texto || 'Sem enunciado';
@@ -471,18 +493,14 @@
             // Processar alternativas
             const opcoes = questao.opcoes || questao.alternativas || [];
             const correta = questao.correta;
-            
-            // Se correta for array, pegar o primeiro
-            const indiceCorreta = Array.isArray(correta) ? correta[0] : correta;
+            const corretasArray = Array.isArray(correta) ? correta : [correta];
             
             let opcoesHTML = '';
             opcoes.forEach((opt, i) => {
                 let classe = '';
-                if (i === indiceCorreta) {
-                    classe = 'certo'; // Resposta correta sempre verde
+                if (corretasArray.includes(i)) {
+                    classe = 'certo';
                 }
-                // Se tiver status de erro e for a resposta errada do aluno, poderia marcar
-                // Mas como não sabemos qual o aluno escolheu, mostramos só a correta
                 
                 opcoesHTML += `
                     <div class="btn-opcao ${classe}">
@@ -494,12 +512,15 @@
             // Resolução
             const resolucao = questao.resolucao || questao.explicacao || 'Sem resolução disponível.';
 
+            // Estilo da imagem com scale
+            const imgStyle = imgScale !== 1 ? `style="max-height: ${550 * imgScale}px;"` : '';
+
             container.innerHTML = `
                 ${statusHTML}
                 
                 <section class="secao-pergunta">
                     <div class="coluna-imagem">
-                        ${imgSrc ? `<img class="img-atividade" src="${imgSrc}" alt="Questão">` : ''}
+                        ${imgSrc ? `<img class="img-atividade" src="${imgSrc}" alt="Questão" ${imgStyle}>` : ''}
                     </div>
 
                     <div class="coluna-conteudo">
@@ -535,32 +556,31 @@
                         <line x1="12" y1="8" x2="12" y2="12"></line>
                         <line x1="12" y1="16" x2="12.01" y2="16"></line>
                     </svg>
-                    <p><strong>Erro ao carregar questão:</strong></p>
                     <p>${mensagem}</p>
-                    <br>
-                    <p style="font-size: 0.9rem; color: var(--text-light);">
-                        Verifique se:<br>
-                        • O arquivo banco_questoes.js está na mesma pasta<br>
-                        • A questão existe no banco de dados<br>
-                        • Os parâmetros da URL estão corretos
-                    </p>
                 </div>
             `;
             document.getElementById('btnInfo').textContent = 'Erro';
         }
 
         // ==========================================
+        // 📌 VOLTAR
+        // ==========================================
+        function voltar() {
+            if (window.opener && !window.opener.closed) {
+                window.close();
+            } else {
+                // Tenta voltar para o ranking
+                window.location.href = 'ranking.html';
+            }
+        }
+
+        // ==========================================
         // 📌 INICIALIZAÇÃO
         // ==========================================
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                await carregarBancoQuestoes();
-                processarQuestao();
-            } catch (erro) {
-                console.error('Erro:', erro);
-                mostrarErro(erro);
-            }
-        });
+        // Aguarda um pouco para garantir que o script do banco carregou
+        setTimeout(() => {
+            processarQuestao();
+        }, 100);
     </script>
 </body>
 </html>
