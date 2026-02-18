@@ -843,11 +843,9 @@ function normalizarLista(v){
                     <div class="q-texto">${texto}</div>
                 `;
 
-                item.addEventListener('click', (e) => {
-                    // Tenta abrir em nova guia; se o navegador bloquear, abre na mesma guia
-                    const url = `questao.html?id=${encodeURIComponent(info.canonicalId || id)}`;
-                    const w = window.open(url, "_blank", "noopener");
-                    if (!w) window.location.href = url;
+                item.addEventListener('click', () => {
+                    // abre uma NOVA PÁGINA (arquivo) com a questão completa e a resposta destacada
+                    window.open(`quatoes.html?id=${encodeURIComponent(info.canonicalId || id)}`, "_blank");
                 });
 
                 // Ajusta hover conforme tipo (sem mexer no CSS global do site)
