@@ -123,13 +123,13 @@ const questoesIntro = questoesIntroI;
 const questoesComp = [
   // ✅ comp16 — imagem 40% maior
   {
-    pergunta: `Uma pizza foi dividida em 6 partes iguais. Ana tinha ${f(5,6)} da pizza, mas deu ${f(1,6)} para sua amiga. Quanto restou da pizza com Ana?`,
+    pergunta: `Uma pizza foi dividida em 8 partes iguais. Ana comeu ${f(3,8)} da pizza pela manhã e ${f(2,8)} à tarde. Quanto Ana comeu ao todo?`,
     img: pathComp + "comp16.png",
     imgScale: 1.4,
-    opcoes: [f(6,4), f(2,4), f(4,6), f(1,4)],
-    correta: 2,
-    resolucao: `Como as frações têm o mesmo denominador (6), basta subtrair os numeradores: 5 − 1 = 4.
-Então, restou ${f(4,6)} da pizza com a Ana.`
+    opcoes: [f(5,8), f(6,8), f(3,16), f(2,8)],
+    correta: 0,
+    resolucao: `Como as frações têm o mesmo denominador (8), basta somar os numeradores: 3 + 2 = 5.
+Então, Ana comeu ${f(5,8)} da pizza ao todo.`
   },
 
   // ✅ comp17 — imagem 40% maior
