@@ -846,9 +846,12 @@ function normalizarLista(v){
                // No arquivo ranking.html, na função abrirListaQuestoesModal
 // Altere a linha do window.open para:
 
+// No ranking.html, na função abrirListaQuestoesModal, substitua o click handler:
+
 item.addEventListener('click', () => {
     const status = tipo === 'acertos' ? 'acerto' : 'erro';
     const url = `questao.html?id=${encodeURIComponent(info.canonicalId || id)}&status=${status}`;
+    console.log('Abrindo questão:', url); // para debug
     window.open(url, "_blank");
 });
 
