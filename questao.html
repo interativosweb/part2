@@ -8,94 +8,195 @@
     <meta http-equiv="Expires" content="0">
     <title>Visualizar Questão</title>
     <style>
-        /* =========================================
-           🎨 ESTILO GERAL (CLEAN / APPLE STYLE)
-           ========================================= */
         :root {
             --bg-page: #f5f5f7;
-            --card-bg: #ffffff;
             --text-main: #1d1d1f;
             --text-light: #86868b;
+            --border-color: transparent;
             --accent: #0071e3;
             --success: #34c759;
-            --warning: #ffcc00;
             --error: #ff3b30;
-            --radius: 16px;
-            --shadow: 0 4px 20px rgba(0,0,0,0.05);
+            --radius: 12px;
+            --btn-gray-dark: #8e8e93;
+            --btn-gray-light: #aeb0b5;
         }
 
-        /* Fração Vertical */
-        .fracao { 
-            display: inline-flex; 
-            flex-direction: column; 
-            vertical-align: middle; 
-            margin: 0 5px; 
-            text-align: center; 
-            font-size: 0.9em; 
+        /* --- PROTEÇÃO ANTI-CÓPIA --- */
+        body {
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
         }
-        .fracao > span { padding: 0 5px; }
-        .fracao > span:first-child { 
-            border-bottom: 2px solid currentColor; 
-            padding-bottom: 1px; 
+        @media print {
+            html, body { display: none !important; }
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 
         body {
-            background-color: var(--bg-page); 
-            color: var(--text-main); 
+            background-color: var(--bg-page);
+            color: var(--text-main);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
             padding: 40px 20px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
         }
 
-        .container { 
-            max-width: 800px; 
-            margin: 0 auto; 
+        .app-container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            opacity: 1;
         }
 
-        /* Header */
-        header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 30px; 
+        /* --- HEADER --- */
+        .header-unificado {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 5px;
         }
-        
-        .titulo-pagina { 
-            font-size: 1.5rem; 
-            font-weight: 700; 
-            letter-spacing: -0.5px; 
-        }
-        
-        .btn-voltar { 
-            text-decoration: none; 
-            color: var(--accent); 
-            font-weight: 600; 
-            display: flex; 
-            align-items: center; 
-            gap: 5px; 
-            transition: opacity 0.2s; 
-            font-size: 0.9rem;
-            cursor: pointer;
-            border: none;
-            background: none;
-        }
-        .btn-voltar:hover { opacity: 0.7; }
 
-        /* Badge de status (Acerto/Erro) */
+        .top-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: white;
+            user-select: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 44px;
+            white-space: nowrap;
+        }
+
+        .top-item svg { width: 20px; height: 20px; fill: white; }
+        .bg-verde-ativo { background-color: var(--success); }
+        .bg-cinza-claro { background-color: var(--btn-gray-light); }
+
+        /* --- FRAÇÕES --- */
+        .fracao {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 4px;
+            font-size: 1.1em;
+            pointer-events: none;
+        }
+        .fracao .num { border-bottom: 2px solid currentColor; padding: 0 5px; display: block; line-height: 1.2; font-weight: 700; }
+        .fracao .den { padding: 2px 5px 0 5px; display: block; line-height: 1.2; font-weight: 700; }
+
+        /* --- LAYOUT QUESTÃO --- */
+        .secao-pergunta {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 50px;
+        }
+
+        .coluna-imagem {
+            flex: 1.2;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .img-atividade {
+            max-width: 100%;
+            max-height: 550px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: var(--radius);
+            pointer-events: none;
+            display: block;
+            margin: 0 auto 30px auto;
+        }
+
+        .coluna-conteudo { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+        .topo-info {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .enunciado {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            color: var(--text-main);
+        }
+        .enunciado b { font-weight: 700; }
+
+        .grid-opcoes {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn-opcao {
+            background-color: transparent;
+            border: 1px solid #d2d2d7;
+            border-radius: var(--radius);
+            aspect-ratio: 1 / 1;
+            font-size: 1.4rem;
+            cursor: default;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Estados das respostas */
+        .btn-opcao.certo { 
+            border-color: var(--success); 
+            color: var(--success); 
+            background-color: rgba(52, 199, 89, 0.1); 
+        }
+        .btn-opcao.errado { 
+            border-color: var(--error); 
+            color: var(--error); 
+            background-color: rgba(255, 59, 48, 0.1); 
+        }
+
+        /* Seção de resposta */
+        .secao-resposta {
+            padding-top: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .titulo-feedback { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; display: block; }
+        .texto-resolucao { font-size: 1.1rem; line-height: 1.6; color: var(--text-main); margin-bottom: 20px; }
+
+        /* Badge de status */
         .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
             margin-bottom: 20px;
@@ -111,160 +212,37 @@
             color: var(--error);
         }
 
-        /* Card da Questão */
-        .questao-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 30px;
-            margin-bottom: 20px;
-        }
-
-        .questao-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e5e5ea;
-        }
-
-        .questao-tipo {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-light);
-            letter-spacing: 0.5px;
-        }
-
-        .questao-numero {
-            font-size: 0.9rem;
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        .questao-enunciado {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: var(--text-main);
-            margin-bottom: 25px;
-        }
-
-        /* Alternativas */
-        .alternativas-container {
+        /* Rodapé */
+        .rodape {
+            margin-top: 40px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 30px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-        }
-
-        .alternativa {
-            display: flex;
+            gap: 15px;
             align-items: center;
-            gap: 12px;
-            padding: 15px 20px;
-            background: #f5f5f7;
-            border-radius: 12px;
-            border: 2px solid transparent;
-            transition: all 0.2s;
         }
 
-        .alternativa:hover {
-            background: #e8e8ed;
-        }
-
-        .alternativa-letra {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--accent);
+        .btn-voltar {
+            background-color: var(--btn-gray-dark);
             color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-
-        .alternativa-texto {
-            font-size: 1rem;
-            color: var(--text-main);
-        }
-
-        /* Resposta correta destacada */
-        .alternativa.correta {
-            background: rgba(52, 199, 89, 0.15);
-            border-color: var(--success);
-        }
-
-        .alternativa.correta .alternativa-letra {
-            background: var(--success);
-        }
-
-        /* Resposta errada destacada (se aplicável) */
-        .alternativa.errada {
-            background: rgba(255, 59, 48, 0.15);
-            border-color: var(--error);
-        }
-
-        .alternativa.errada .alternativa-letra {
-            background: var(--error);
-        }
-
-        /* Info da resposta */
-        .resposta-info {
-            margin-top: 25px;
-            padding: 20px;
-            background: #f5f5f7;
-            border-radius: 12px;
-        }
-
-        .resposta-label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 8px;
-        }
-
-        .resposta-texto {
-            font-size: 1.1rem;
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        /* Navegação */
-        .navegacao {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 30px;
-        }
-
-        .btn-nav {
-            padding: 12px 24px;
-            border-radius: 50px;
             border: none;
-            background: white;
-            color: var(--text-main);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: var(--shadow);
-            transition: all 0.2s;
-            display: flex;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            text-decoration: none;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
         }
+        .btn-voltar:hover { background-color: var(--accent); transform: scale(1.02); }
 
-        .btn-nav:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.12);
-        }
-
-        .btn-nav:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .texto-creditos { font-size: 0.8rem; color: var(--text-light); }
 
         /* Loading e Erro */
         .loading, .erro {
@@ -292,45 +270,46 @@
         }
 
         /* Responsividade */
+        @media (max-width: 900px) {
+            .secao-pergunta { flex-direction: column; }
+            .grid-opcoes { grid-template-columns: repeat(4, 1fr); }
+            .img-atividade {
+                max-width: 100%;
+                max-height: 550px;
+            }
+        }
+        
         @media (max-width: 600px) {
-            .questao-card {
-                padding: 20px;
-            }
-            
-            .questao-enunciado {
-                font-size: 1.1rem;
-            }
-            
-            .navegacao {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .btn-nav {
-                width: 100%;
-                justify-content: center;
-            }
+            .grid-opcoes { grid-template-columns: repeat(2, 1fr); }
+            .header-unificado { gap: 10px; }
+            .top-item { padding: 10px 15px; font-size: 0.8rem; }
+            .enunciado { font-size: 1.2rem; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <button class="btn-voltar" onclick="voltar()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M15 18l-6-6 6-6"/>
-                </svg>
-                Voltar
-            </button>
-            <h1 class="titulo-pagina">Visualizar Questão</h1>
-            <div></div>
-        </header>
+
+    <div id="appContainer" class="app-container">
+        <div class="header-unificado">
+            <div class="top-item bg-verde-ativo" id="btnModo">Visualizar Questão</div>
+            <div class="top-item bg-cinza-claro" id="btnInfo">Carregando...</div>
+        </div>
 
         <div id="conteudo">
             <div class="loading">
                 <div class="spinner"></div>
                 <p>Carregando questão...</p>
             </div>
+        </div>
+
+        <div class="rodape">
+            <button class="btn-voltar" onclick="window.close()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+                Fechar
+            </button>
+            <span class="texto-creditos">Desenvolvido por Gilberto Fernandes - Matemática</span>
         </div>
     </div>
 
@@ -341,7 +320,7 @@
         let questoesIntro = [];
         let questoesComp = [];
         let questaoAtual = null;
-        let modoAtual = 'intro'; // 'intro' ou 'complementar'
+        let modoAtual = 'intro';
         let indexAtual = 0;
 
         // ==========================================
@@ -350,10 +329,10 @@
         function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
             return {
-                id: params.get('id'),           // ex: "intro-0" ou "complementar-5"
-                modo: params.get('modo'),       // ex: "intro" ou "complementar"
-                index: params.get('index'),     // ex: "0", "5"
-                status: params.get('status')    // ex: "acerto" ou "erro" (opcional)
+                id: params.get('id'),
+                modo: params.get('modo'),
+                index: params.get('index'),
+                status: params.get('status')
             };
         }
 
@@ -361,65 +340,45 @@
         // 📌 CARREGAR BANCO DE QUESTÕES
         // ==========================================
         function carregarBancoQuestoes() {
-            const candidatos = [
-                "./banco_questoes.js",
-                "./banco_questoes (25).js",
-                "./banco_questoes (24).js",
-                "./banco_questoes (23).js",
-                "./banco_questoes (22).js",
-                "./banco_questoes (21).js",
-                "./banco_questoes(25).js",
-                "./banco_questoes(24).js",
-                "./banco_questoes(23).js",
-                "./banco_questoes(22).js",
-                "./banco_questoes(21).js"
-            ];
-
-            return new Promise((resolve) => {
-                const tentar = (i) => {
-                    if (i >= candidatos.length) {
-                        questoesIntro = Array.isArray(window.questoesIntro) ? window.questoesIntro : [];
-                        questoesComp = Array.isArray(window.questoesComp) ? window.questoesComp : [];
+            return new Promise((resolve, reject) => {
+                // Tenta carregar o script do banco de questões
+                const script = document.createElement('script');
+                script.src = './banco_questoes.js';
+                script.async = true;
+                
+                script.onload = () => {
+                    // Após carregar, verifica se as variáveis globais existem
+                    setTimeout(() => {
+                        questoesIntro = window.questoesIntro || [];
+                        questoesComp = window.questoesComp || [];
+                        
+                        console.log('Banco carregado:', {
+                            intro: questoesIntro.length,
+                            comp: questoesComp.length
+                        });
                         
                         if (questoesIntro.length === 0 && questoesComp.length === 0) {
-                            mostrarErro('Banco de questões não encontrado. Verifique se o arquivo banco_questoes.js está na mesma pasta.');
+                            reject('Banco de questões vazio. Verifique se o arquivo banco_questoes.js está correto.');
+                        } else {
+                            resolve();
                         }
-                        resolve();
-                        return;
-                    }
-
-                    const src = candidatos[i];
-                    
-                    // Verifica se já existe
-                    const ja = [...document.scripts].some(sc => (sc.getAttribute("src") || "") === src);
-                    if (ja) {
-                        questoesIntro = Array.isArray(window.questoesIntro) ? window.questoesIntro : [];
-                        questoesComp = Array.isArray(window.questoesComp) ? window.questoesComp : [];
-                        resolve();
-                        return;
-                    }
-
-                    const sc = document.createElement("script");
-                    sc.src = src;
-                    sc.async = true;
-                    sc.onload = () => {
-                        questoesIntro = Array.isArray(window.questoesIntro) ? window.questoesIntro : [];
-                        questoesComp = Array.isArray(window.questoesComp) ? window.questoesComp : [];
-                        resolve();
-                    };
-                    sc.onerror = () => tentar(i + 1);
-                    document.head.appendChild(sc);
+                    }, 100); // Pequeno delay para garantir que o script executou
                 };
-
-                tentar(0);
+                
+                script.onerror = () => {
+                    reject('Não foi possível carregar o arquivo banco_questoes.js. Verifique se o arquivo existe na mesma pasta.');
+                };
+                
+                document.head.appendChild(script);
             });
         }
 
         // ==========================================
-        // 📌 PROCESSAR PARÂMETROS E ABRIR QUESTÃO
+        // 📌 PROCESSAR QUESTÃO
         // ==========================================
         function processarQuestao() {
             const params = getUrlParams();
+            console.log('Parâmetros URL:', params);
             
             // Determinar modo e índice
             let modo = 'intro';
@@ -429,11 +388,15 @@
                 // Formato: "intro-0" ou "complementar-5"
                 const partes = params.id.split('-');
                 if (partes.length >= 2) {
-                    modo = partes[0].includes('comp') ? 'complementar' : 'intro';
-                    index = parseInt(partes[1]) || 0;
+                    const modoRaw = partes[0].toLowerCase();
+                    modo = modoRaw.includes('comp') ? 'complementar' : 'intro';
+                    index = parseInt(partes[1]);
+                    if (isNaN(index)) index = 0;
+                } else if (!isNaN(parseInt(params.id))) {
+                    // Apenas número
+                    index = parseInt(params.id);
                 }
             } else if (params.modo && params.index !== null) {
-                // Parâmetros separados
                 modo = params.modo.includes('comp') ? 'complementar' : 'intro';
                 index = parseInt(params.index) || 0;
             }
@@ -441,17 +404,23 @@
             modoAtual = modo;
             indexAtual = index;
 
+            console.log('Modo:', modo, 'Índice:', index);
+            console.log('Questões disponíveis:', {
+                intro: questoesIntro.length,
+                comp: questoesComp.length
+            });
+
             // Selecionar array correto
             const questoes = modo === 'intro' ? questoesIntro : questoesComp;
             
-            // Validar índice
+            // Validar
             if (!questoes || questoes.length === 0) {
-                mostrarErro('Nenhuma questão disponível no banco de dados.');
+                mostrarErro(`Nenhuma questão disponível no modo "${modo}".`);
                 return;
             }
 
             if (index < 0 || index >= questoes.length) {
-                mostrarErro(`Questão não encontrada. Índice ${index} inválido para o modo ${modo}.`);
+                mostrarErro(`Questão ${index + 1} não encontrada. O modo ${modo} tem ${questoes.length} questões (índices 0-${questoes.length - 1}).`);
                 return;
             }
 
@@ -460,15 +429,17 @@
         }
 
         // ==========================================
-        // 📌 RENDERIZAR QUESTÃO
+        // 📌 RENDERIZAR QUESTÃO (MESMO LAYOUT DO INDEX)
         // ==========================================
         function renderizarQuestao(questao, modo, index, status) {
             const container = document.getElementById('conteudo');
             
-            // Determinar tipo de questão
-            const tipoTexto = modo === 'intro' ? 'Introdução' : 'Complementar';
-            
-            // Status badge (se veio do ranking)
+            // Atualizar header
+            const tipoTexto = modo === 'intro' ? 'Introdução I' : 'Atividade Complementar';
+            document.getElementById('btnModo').textContent = tipoTexto;
+            document.getElementById('btnInfo').textContent = `Questão ${index + 1}`;
+
+            // Badge de status (se veio do ranking)
             let statusHTML = '';
             if (status === 'acerto') {
                 statusHTML = `
@@ -476,7 +447,7 @@
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <path d="M20 6L9 17l-5-5"/>
                         </svg>
-                        Questão Acertada
+                        Questão Acertada pelo Aluno
                     </div>
                 `;
             } else if (status === 'erro') {
@@ -486,85 +457,76 @@
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
-                        Questão com Erro
+                        Questão Errada pelo Aluno
                     </div>
                 `;
             }
 
-            // Processar enunciado (formatar frações)
-            const enunciado = formatarFracoes(questao.pergunta || questao.enunciado || questao.texto || 'Sem enunciado');
+            // Processar imagem
+            const imgSrc = questao.img || questao.imagem || '';
+            
+            // Processar enunciado
+            const enunciado = questao.pergunta || questao.enunciado || questao.texto || 'Sem enunciado';
 
             // Processar alternativas
-            const alternativas = questao.alternativas || questao.opcoes || [];
-            const correta = questao.correta || questao.respostaCorreta || 0;
+            const opcoes = questao.opcoes || questao.alternativas || [];
+            const correta = questao.correta;
             
-            let alternativasHTML = '';
-            alternativas.forEach((alt, i) => {
-                const letra = String.fromCharCode(65 + i); // A, B, C, D...
-                const texto = formatarFracoes(alt);
-                const isCorreta = i === correta;
+            // Se correta for array, pegar o primeiro
+            const indiceCorreta = Array.isArray(correta) ? correta[0] : correta;
+            
+            let opcoesHTML = '';
+            opcoes.forEach((opt, i) => {
+                let classe = '';
+                if (i === indiceCorreta) {
+                    classe = 'certo'; // Resposta correta sempre verde
+                }
+                // Se tiver status de erro e for a resposta errada do aluno, poderia marcar
+                // Mas como não sabemos qual o aluno escolheu, mostramos só a correta
                 
-                alternativasHTML += `
-                    <div class="alternativa ${isCorreta ? 'correta' : ''}">
-                        <div class="alternativa-letra">${letra}</div>
-                        <div class="alternativa-texto">${texto}</div>
+                opcoesHTML += `
+                    <div class="btn-opcao ${classe}">
+                        ${opt}
                     </div>
                 `;
             });
 
-            // Info da resposta correta
-            const respostaLetra = String.fromCharCode(65 + correta);
-            
+            // Resolução
+            const resolucao = questao.resolucao || questao.explicacao || 'Sem resolução disponível.';
+
             container.innerHTML = `
                 ${statusHTML}
                 
-                <div class="questao-card">
-                    <div class="questao-header">
-                        <span class="questao-tipo">${tipoTexto}</span>
-                        <span class="questao-numero">Questão ${index + 1} de ${modo === 'intro' ? questoesIntro.length : questoesComp.length}</span>
+                <section class="secao-pergunta">
+                    <div class="coluna-imagem">
+                        ${imgSrc ? `<img class="img-atividade" src="${imgSrc}" alt="Questão">` : ''}
                     </div>
-                    
-                    <div class="questao-enunciado">${enunciado}</div>
-                    
-                    <div class="alternativas-container">
-                        ${alternativasHTML}
+
+                    <div class="coluna-conteudo">
+                        <div class="topo-info">
+                            <div>
+                                <span style="color:var(--success)">Resposta Correta</span>
+                            </div>
+                        </div>
+
+                        <div class="enunciado">${enunciado}</div>
+                        
+                        <div class="grid-opcoes">
+                            ${opcoesHTML}
+                        </div>
                     </div>
-                    
-                    <div class="resposta-info">
-                        <div class="resposta-label">Resposta Correta</div>
-                        <div class="resposta-texto">Alternativa ${respostaLetra}</div>
-                    </div>
-                </div>
-                
-                <div class="navegacao">
-                    <button class="btn-nav" onclick="navegarAnterior()" ${index === 0 ? 'disabled' : ''}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M15 18l-6-6 6-6"/>
-                        </svg>
-                        Anterior
-                    </button>
-                    
-                    <button class="btn-nav" onclick="navegarProxima()" ${index >= (modo === 'intro' ? questoesIntro.length : questoesComp.length) - 1 ? 'disabled' : ''}>
-                        Próxima
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 18l6-6-6-6"/>
-                        </svg>
-                    </button>
-                </div>
+                </section>
+
+                <section class="secao-resposta">
+                    <span class="titulo-feedback" style="color: var(--success)">Resolução</span>
+                    <div class="texto-resolucao">${resolucao}</div>
+                </section>
             `;
         }
 
         // ==========================================
-        // 📌 UTILITÁRIOS
+        // 📌 MOSTRAR ERRO
         // ==========================================
-        function formatarFracoes(texto) {
-            if (!texto) return '';
-            // Converte "3/4" para fração vertical HTML
-            return texto.replace(/(\d+)\s*\/\s*(\d+)/g, (match, num, den) => {
-                return `<span class="fracao"><span>${num}</span><span>${den}</span></span>`;
-            });
-        }
-
         function mostrarErro(mensagem) {
             document.getElementById('conteudo').innerHTML = `
                 <div class="erro">
@@ -573,51 +535,31 @@
                         <line x1="12" y1="8" x2="12" y2="12"></line>
                         <line x1="12" y1="16" x2="12.01" y2="16"></line>
                     </svg>
-                    <p><strong>Erro:</strong> ${mensagem}</p>
+                    <p><strong>Erro ao carregar questão:</strong></p>
+                    <p>${mensagem}</p>
+                    <br>
+                    <p style="font-size: 0.9rem; color: var(--text-light);">
+                        Verifique se:<br>
+                        • O arquivo banco_questoes.js está na mesma pasta<br>
+                        • A questão existe no banco de dados<br>
+                        • Os parâmetros da URL estão corretos
+                    </p>
                 </div>
             `;
-        }
-
-        // ==========================================
-        // 📌 NAVEGAÇÃO
-        // ==========================================
-        function navegarAnterior() {
-            if (indexAtual > 0) {
-                indexAtual--;
-                atualizarUrl();
-                processarQuestao();
-            }
-        }
-
-        function navegarProxima() {
-            const max = modoAtual === 'intro' ? questoesIntro.length : questoesComp.length;
-            if (indexAtual < max - 1) {
-                indexAtual++;
-                atualizarUrl();
-                processarQuestao();
-            }
-        }
-
-        function atualizarUrl() {
-            const novaUrl = `?id=${modoAtual}-${indexAtual}&modo=${modoAtual}&index=${indexAtual}`;
-            window.history.replaceState({}, '', novaUrl);
-        }
-
-        function voltar() {
-            // Tenta voltar para o ranking, se não consegue, vai para index
-            if (window.opener && !window.opener.closed) {
-                window.close();
-            } else {
-                window.location.href = 'ranking.html';
-            }
+            document.getElementById('btnInfo').textContent = 'Erro';
         }
 
         // ==========================================
         // 📌 INICIALIZAÇÃO
         // ==========================================
         document.addEventListener('DOMContentLoaded', async () => {
-            await carregarBancoQuestoes();
-            processarQuestao();
+            try {
+                await carregarBancoQuestoes();
+                processarQuestao();
+            } catch (erro) {
+                console.error('Erro:', erro);
+                mostrarErro(erro);
+            }
         });
     </script>
 </body>
