@@ -843,12 +843,14 @@ function normalizarLista(v){
                     <div class="q-texto">${texto}</div>
                 `;
 
-                item.addEventListener('click', () => {
-                    // abre uma NOVA PÁGINA (arquivo) com a questão completa e a resposta destacada
-                    // Usa o ID original da questão para garantir que abra a questão correta
-                    const questaoId = info.canonicalId || info.originalId || id;
-                    window.open(`questao.html?id=${encodeURIComponent(questaoId)}&modo=${encodeURIComponent(info.modo)}&index=${info.idx}`, "_blank");
-                });
+               // No arquivo ranking.html, na função abrirListaQuestoesModal
+// Altere a linha do window.open para:
+
+item.addEventListener('click', () => {
+    const status = tipo === 'acertos' ? 'acerto' : 'erro';
+    const url = `questao.html?id=${encodeURIComponent(info.canonicalId || id)}&status=${status}`;
+    window.open(url, "_blank");
+});
 
                 // Ajusta hover conforme tipo (sem mexer no CSS global do site)
                 item.addEventListener('mouseenter', () => {
