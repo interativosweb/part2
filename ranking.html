@@ -831,14 +831,8 @@ function normalizarLista(v){
                 const textoBase = perguntaHTML ? htmlPerguntaParaTextoComBarras(perguntaHTML) : '';
                 const textoTruncado = textoBase ? truncarTexto(textoBase, 90) : 'Questão não encontrada.';
                 const texto = formatarFracoesHTML(textoTruncado);
-                const item = document.createElement('a');
+                const item = document.createElement('div');
                 item.className = 'item-questao';
-                const url = `questao.html?id=${encodeURIComponent(info.canonicalId || id)}`;
-                item.href = url;
-                item.target = "_blank";
-                item.rel = "noopener";
-                item.style.textDecoration = "none";
-                item.style.color = "inherit";
                 // hover verde para acerto e vermelho para erro
                 item.style.setProperty('--hoverColor', cor);
                 item.innerHTML = `
@@ -848,6 +842,14 @@ function normalizarLista(v){
                     </div>
                     <div class="q-texto">${texto}</div>
                 `;
+
+                item.addEventListener('click', (e) => {
+                    // Tenta abrir em nova guia; se o navegador bloquear, abre na mesma guia
+                    const url = `questao.html?id=${encodeURIComponent(info.canonicalId || id)}`;
+                    const w = window.open(url, "_blank", "noopener");
+                    if (!w) window.location.href = url;
+                });
+
                 // Ajusta hover conforme tipo (sem mexer no CSS global do site)
                 item.addEventListener('mouseenter', () => {
                     item.style.backgroundColor = cor;
